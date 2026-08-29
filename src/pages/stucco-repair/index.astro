@@ -1,0 +1,952 @@
+---
+/**
+ * /stucco-repair/ — primary service money page (keyword-plan Pillar 3) AND
+ * the site's single authoritative page for stucco repair COST.
+ *
+ * Target — services: `stucco repair`, `stucco repair near me`,
+ * `stucco contractor`, `stucco crack repair`, `stucco patching`.
+ * Target — cost: `stucco repair cost volusia county`,
+ * `stucco repair cost daytona beach`,
+ * `how much does stucco repair cost in florida`,
+ * `cost to re-stucco a house florida`, `stucco repair price per square foot`.
+ *
+ * ARCHITECTURE (2026-08-28): a separate /stucco-repair-cost/ page was built
+ * and then consolidated into this page by client direction. Do not re-split
+ * cost onto its own URL. All cost keywords, pricing content, and cost FAQs
+ * live here. The old URL redirects here (see astro.config.mjs).
+ *
+ * ------------------------------------------------------------------
+ * PRICING PROVENANCE — hard constraint.
+ * `repairPriceRanges` are RESEARCHED MARKET RANGES for the Daytona Beach /
+ * Central Florida area, not this company's quoted prices. Every place they
+ * render carries that framing. Never rewrite the table caption or
+ * `pricingDisclaimer` into "our prices".
+ *
+ * OFFER SEPARATION (brand/positioning.md): repair estimates are free; the
+ * Stucco Moisture Check is a separate paid $300-$500 service never credited
+ * toward repair work; repair work is a third, separately quoted thing.
+ *
+ * OMITTED — blocked on unsupplied facts, absent rather than stubbed:
+ *   - [SAMPLE LINE-ITEM QUOTE] quote-anatomy section
+ *   - [TYPICAL TIMELINE] by job size
+ * ------------------------------------------------------------------
+ */
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import {
+  business,
+  moistureCheck,
+  phone,
+  serviceArea,
+  openWallPhotos,
+  repairPriceRanges,
+  repairPerSquareFoot,
+  pricingDisclaimer,
+  pricingVariables,
+} from '../../config/site';
+
+const title = 'Stucco Repair & What It Costs | Daytona Beach Stucco Company';
+const description =
+  'Stucco repair in Daytona Beach and Volusia County — cracks, patching, water damage, and re-stucco, plus real price ranges for this area and what moves the number. Free repair estimates.';
+
+const usd = (n: number) => '$' + n.toLocaleString('en-US');
+const rangeText = (r: (typeof repairPriceRanges)[number]) =>
+  `${usd(r.low)}\u2013${usd(r.high)}${r.openEnded ? '+' : ''}`;
+
+const cheapQuoteOmissions = [
+  'Cutting the failed material back to something sound, instead of filling over it',
+  'Looking at what is behind the stucco before closing it up',
+  'Rebuilding the wall in proper coats rather than troweling one thick layer',
+  'Matching the texture that is already on the house, not an approximation of it',
+  'Sealing control joints and openings, which is where water gets in next',
+];
+
+/**
+ * Service schema. `provider` carries only verified fields; telephone and
+ * areaServed are appended only when real values exist. No aggregateRating —
+ * review count and rating are unverified (brand/positioning.md).
+ */
+const provider: Record<string, unknown> = {
+  '@type': 'HomeAndConstructionBusiness',
+  name: business.name,
+  foundingDate: String(business.founded),
+};
+if (phone) provider.telephone = phone;
+if (serviceArea) provider.areaServed = serviceArea;
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Stucco Repair',
+  serviceType: 'Stucco repair',
+  description,
+  provider,
+};
+
+/**
+ * FAQ schema drawn from the People Also Ask set captured in
+ * brand/keyword-plan.md. Answers must match the on-page copy exactly and must
+ * not contain a number the client has not verified.
+ */
+const faqs = [
+  {
+    q: 'How much does stucco repair cost in Florida?',
+    a:
+      'Around Daytona Beach and Volusia County, researched market ranges run from about ' +
+      usd(250) +
+      ' for minor crack repair up to ' +
+      usd(8000) +
+      ' or more for a full re-stucco. Most ordinary repairs land in the middle. Another way to look at it is roughly ' +
+      usd(repairPerSquareFoot.low) +
+      ' to ' +
+      usd(repairPerSquareFoot.high) +
+      ' per square foot depending on scope. These are market ranges for the area, not a quote.',
+  },
+  {
+    q: 'Is stucco repair expensive?',
+    a: 'Compared to what people fear, usually not. A limited run of cracking in sound wall is a few hundred dollars. What gets expensive is water that has been sitting behind the stucco for years, because at that point the wall behind the stucco is the actual job. That is the argument for finding out early rather than waiting.',
+  },
+  {
+    q: 'Why are stucco repair quotes so different?',
+    a: 'Usually because the contractors are quoting different jobs. One is pricing filling and painting the crack. Another is pricing cutting out the failed area, checking what is behind it, and rebuilding it. Both are called stucco repair. Only one of them addresses why the wall cracked.',
+  },
+  {
+    q: 'How much does it cost to re-stucco a whole house?',
+    a:
+      'Market ranges for full resurfacing or extensive re-stucco in this area run about ' +
+      usd(3000) +
+      ' to ' +
+      usd(8000) +
+      ' and up, driven mostly by the size of the house and how much has to come off before the new work goes on.',
+  },
+  {
+    q: 'Is stucco repair covered by insurance?',
+    a: 'It depends on the cause. Policies generally treat sudden accidental damage differently from gradual wear and long-term water intrusion, and the second is the more common reason stucco fails. Whether a specific claim is covered is between you and your insurer — read your policy and ask them, because we cannot tell you what your coverage does.',
+  },
+  {
+    q: 'Why does stucco keep cracking after it has been repaired?',
+    a: 'Usually because the repair fixed the surface and not the cause. If water is getting in behind the stucco, filling the crack seals the water in. It keeps working on the lath and the sheathing, and the crack opens again in the same place.',
+  },
+  {
+    q: 'When should I worry about a crack in stucco?',
+    a: 'Hairline cracking is common in Florida and a lot of it is cosmetic. What is worth looking at more closely is cracking that is widening, cracking paired with staining or bubbling paint, soft or hollow-sounding areas, and cracks that came back after a previous repair.',
+  },
+  {
+    q: 'How do I know if there is water behind my stucco?',
+    a: 'You cannot tell reliably from the outside, which is why the first repair often fails. The Stucco Moisture Check is a paid diagnostic service that uses a visual examination and moisture meter testing, with thermal imaging when appropriate, to investigate possible hidden moisture behind the stucco.',
+  },
+  {
+    q: 'Do you charge for an estimate?',
+    a:
+      'No. Estimates for repair work are free. The ' +
+      moistureCheck.name +
+      ' is a separate paid service and costs ' +
+      usd(moistureCheck.priceLow) +
+      ' to ' +
+      usd(moistureCheck.priceHigh) +
+      '. It is not included in the free estimate and it is not credited toward repair work.',
+  },
+  {
+    q: 'Should I repair the stucco or replace it?',
+    a: 'It depends on how much of the wall is affected and what condition the material behind it is in. Repairing a limited area is usually the right call. Replacement makes sense when the damage is widespread enough that patching would only buy a couple of years. We will tell you which one we think it is.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const services = [
+  {
+    title: 'Crack repair',
+    body: 'Hairline, stair-step, and diagonal cracking. We work out what caused the pattern before we fill anything, because the pattern is usually the clue.',
+  },
+  {
+    title: 'Patching and section repair',
+    body: 'Cutting out failed material back to something sound, rebuilding the wall in layers, and matching the texture that is already on the house.',
+  },
+  {
+    title: 'Water damage repair',
+    body: 'Where moisture has been sitting behind the stucco, the lath and sheathing behind it usually need attention too. Closing that up without addressing it is how the same repair comes back.',
+  },
+  {
+    title: 'Re-stucco and replacement',
+    body: 'When enough of a wall has failed that patching it is throwing money at it, we take the elevation back and rebuild it properly.',
+  },
+  {
+    title: 'Texture matching',
+    body: 'Knockdown, lace, dash, sand, smooth. A repair that is the right shape and the wrong texture still reads as a patch from the street.',
+  },
+  {
+    title: 'Stucco installation',
+    body: 'New work on additions and new construction, built in proper coats over correctly installed lath.',
+  },
+];
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <SiteHeader current="/stucco-repair/" />
+
+  <main>
+    {/* HERO */}
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">Stucco repair</p>
+        <h1>Stucco repair that doesn&rsquo;t come back</h1>
+        <p class="hero-lede">
+          Cracks, patching, water damage, and full re-stucco across Daytona
+          Beach and Volusia County. We find out why the wall failed before we
+          close it up.
+        </p>
+
+        <div class="hero-actions">
+          <ContactCta variant="inline" heading="" />
+        </div>
+      </div>
+    </section>
+
+    {/* THE ARGUMENT */}
+    <section class="section" id="why-repairs-fail">
+      <div class="wrap">
+        <h2>Most stucco repairs fail because nobody looked behind the wall</h2>
+
+        <p>
+          Here&rsquo;s what usually happens. Someone fills the crack, floats it
+          out, paints it, and the wall looks right again. A season or two
+          later it opens in the same line.
+        </p>
+
+        <p>
+          <strong>
+            The crack wasn&rsquo;t the problem. It was the evidence.
+          </strong>
+          If water is getting in behind the stucco, it doesn&rsquo;t dry out
+          on its own. It sits against the lath &mdash; the metal or wire mesh
+          the stucco is built on &mdash; and against the sheathing behind
+          that, and it keeps working. Patch the outside and you&rsquo;ve
+          sealed it in.
+        </p>
+
+        <p>
+          That&rsquo;s the difference between a repair that lasts and one you
+          pay for twice. Not better filler. Knowing what you&rsquo;re
+          closing up.
+        </p>
+
+        <p>
+          If a crack has already come back on you once, the longer version of
+          this is worth reading:{' '}
+          <a href="/blog/why-stucco-cracks-come-back/">
+            why stucco cracks come back
+          </a>{' '}
+          walks through the four causes and how to tell which one you have.
+        </p>
+      </div>
+    </section>
+
+    {/* YOU MAY NOT NEED US */}
+    <section class="section band" id="when-to-worry">
+      <div class="wrap">
+        <h2>A lot of cracking is cosmetic, and I&rsquo;ll tell you when it is</h2>
+
+        <p class="band-lede">
+          Stucco cracks. It&rsquo;s Florida &mdash; the ground moves, walls
+          expand in the heat, and stucco shows it. Hairline cracking on its own
+          is normal and often needs nothing.
+        </p>
+
+        <p><strong>What&rsquo;s worth a closer look:</strong></p>
+
+        <ul class="signals">
+          <li>Cracking that is getting wider or longer over time</li>
+          <li>Staining, streaking, or bubbling paint near a crack</li>
+          <li>Areas that sound hollow or feel soft when pressed</li>
+          <li>Stair-step cracking running out from a window or door corner</li>
+          <li>A crack that came back after somebody already repaired it</li>
+        </ul>
+
+        <p>
+          <strong>
+            If it&rsquo;s hairline, stable, and dry, you probably don&rsquo;t
+            need me yet.
+          </strong>
+          Send a photo and I&rsquo;ll say so. That&rsquo;s a cheaper answer
+          than a truck in your driveway.
+        </p>
+      </div>
+    </section>
+
+    {/* THE MOISTURE CHECK */}
+    <section class="section" id="moisture-check">
+      <div class="wrap">
+        <p class="eyebrow">A paid diagnostic service</p>
+        <h2>The {moistureCheck.name}</h2>
+
+        <p>
+          When the signs point to water rather than settling, the honest next
+          step is to find out before anyone starts cutting. That&rsquo;s a
+          separate piece of work from the repair, and it&rsquo;s what the
+          {' '}{moistureCheck.name} is.
+        </p>
+
+        <ol class="steps">
+          {moistureCheck.steps.map((step, i) => (
+            <li>
+              <span class="num">{i + 1}</span>
+              <div>
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        <p class="caveat">
+          Thermal imaging points us toward areas worth testing &mdash; it
+          doesn&rsquo;t prove moisture on its own, and it isn&rsquo;t needed on
+          every wall. The meters are what confirm what&rsquo;s actually there.
+        </p>
+
+        <h3 class="sub">What you get</h3>
+
+        <ul class="deliverable">
+          {moistureCheck.deliverable.map((item) => <li>{item}</li>)}
+        </ul>
+
+        <p class="note">
+          This is our own assessment of your stucco as the contractor who
+          performs the work. It isn&rsquo;t a home inspection, and it
+          isn&rsquo;t an independent inspection report.
+        </p>
+
+        {openWallPhotos && (
+          <div class="proof">
+            {openWallPhotos.map((src) => (
+              <img
+                src={src}
+                alt="Damaged substrate behind stucco that looked sound from the outside"
+                loading="lazy"
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+
+    {/* WHAT WE DO */}
+    <section class="section band" id="what-we-do">
+      <div class="wrap">
+        <h2>The work we do</h2>
+
+        <div class="services">
+          {services.map((s) => (
+            <div class="service">
+              <h3>{s.title}</h3>
+              <p>{s.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* PRICING — the consolidated cost content. This page is the site's
+        single authoritative source for stucco repair cost. */}
+    <section class="section" id="pricing">
+      <div class="wrap">
+        <h2>What stucco repair costs in Volusia County</h2>
+
+        <p>
+          Nobody around here publishes numbers. So here they are. Most stucco
+          repair around Daytona Beach falls somewhere between
+          <strong>{usd(250)} and {usd(8000)}</strong>{'. '}That is a wide spread
+          because &ldquo;stucco repair&rdquo; covers everything from a hairline
+          crack in one wall to taking a whole house back to the lath.
+        </p>
+
+        <p>
+          Here is how that breaks down by the kind of job. Another way to think
+          about it: roughly{' '}
+          <strong>{usd(repairPerSquareFoot.low)}&ndash;{usd(repairPerSquareFoot.high)} per square foot</strong>{`, ${repairPerSquareFoot.note}.`}
+        </p>
+
+        <div class="table-scroll">
+          <table>
+            <caption>
+              Researched market ranges for the Daytona Beach and Central
+              Florida area, 2026. Not quotes.
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Kind of job</th>
+                <th scope="col">Typical range</th>
+              </tr>
+            </thead>
+            <tbody>
+              {repairPriceRanges.map((r) => (
+                <tr>
+                  <th scope="row">
+                    {r.job}
+                    <span class="row-note">{r.note}</span>
+                  </th>
+                  <td class="figure">{rangeText(r)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <p class="disclaimer">{pricingDisclaimer}</p>
+
+        <p>
+          <strong>
+            The honest version: I can&rsquo;t price your wall from a table, and
+            neither can anybody else.
+          </strong>
+          What a table is good for is telling you whether the quote in your hand
+          is in the right neighborhood. If someone quoted you {usd(4000)} for a
+          few cracks in sound wall, now you know to ask why.
+        </p>
+      </div>
+    </section>
+
+    {/* WHY QUOTES DIFFER */}
+    <section class="section band" id="three-quotes">
+      <div class="wrap">
+        <h2>Why three contractors gave you three different numbers</h2>
+
+        <p class="band-lede">
+          Almost always because they quoted three different jobs, not because
+          two of them are trying to overcharge you.
+        </p>
+
+        <p>
+          One contractor looked at the crack and priced filling it. One priced
+          cutting out the area and patching it properly. One priced finding out
+          why it cracked before touching it. All three wrote
+          &ldquo;stucco repair&rdquo; on the quote.
+        </p>
+
+        <p>
+          <strong>So the number alone tells you almost nothing.</strong> What
+          tells you something is the scope. Ask each one what they are actually
+          going to do, in what order, and what happens if they open the wall and
+          find something behind it. The quote that can answer that is the one
+          worth comparing.
+        </p>
+      </div>
+    </section>
+
+    {/* WHAT MOVES THE PRICE */}
+    <section class="section" id="what-moves-it">
+      <div class="wrap">
+        <h2>What actually moves the price</h2>
+
+        <p>Six things, in roughly the order they matter:</p>
+
+        <ol class="drivers">
+          {pricingVariables.map((v) => (
+            <li>
+              <h3>{v.name}</h3>
+              <p>{v.body}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    {/* THE POSITIONING HINGE */}
+    <section class="section band" id="water-changes-the-number">
+      <div class="wrap">
+        <h2>The one that changes everything: whether water got behind it</h2>
+
+        <p class="band-lede">
+          Look at the table again. Minor crack repair starts around {usd(250)}.
+          Water-damaged repair starts around {usd(1000)} and runs to {usd(3500)}.
+          Major moisture and substrate restoration starts at {usd(4000)}.
+        </p>
+
+        <p>
+          <strong>That is the same wall.</strong> The difference is not how much
+          stucco is cracked. It is whether the lath and the sheathing behind it
+          are dry and sound, or wet and gone.
+        </p>
+
+        <p>
+          Here&rsquo;s the problem: you can&rsquo;t tell which one you have by
+          looking at the outside of the wall. Neither can I, and neither can the
+          contractor who quoted you {usd(400)} off a glance from the driveway.
+          That quote is a guess that it&rsquo;s the cheap version.
+        </p>
+
+        <p>
+          Sometimes the guess is right. When it&rsquo;s wrong, the patch goes
+          over a wet wall, the water keeps working, and the crack comes back in
+          a season or two &mdash; and now you are paying for the {usd(1000)}
+          version on top of the {usd(400)} you already spent.
+        </p>
+
+        <p>
+          That&rsquo;s the whole reason the {moistureCheck.name} exists, and
+          it&rsquo;s why it&rsquo;s a separate paid service rather than
+          something folded into a free quote.
+        </p>
+      </div>
+    </section>
+
+    {/* CHEAP QUOTE */}
+    <section class="section" id="cheap-quote">
+      <div class="wrap">
+        <h2>What a cheap quote is usually leaving out</h2>
+
+        <p>
+          A low number is not automatically a bad one. Sometimes the job really
+          is small and somebody priced it honestly.
+          <strong>
+            But when a quote comes in well under the others, it is usually
+            because it does not include one of these:
+          </strong>
+        </p>
+
+        <ul class="omissions">
+          {cheapQuoteOmissions.map((item) => <li>{item}</li>)}
+        </ul>
+
+        <p>
+          None of that is visible in a finished wall on the day the crew leaves.
+          It becomes visible in about two years.
+        </p>
+      </div>
+    </section>
+
+    {/* WHAT WE CHARGE — offer separation */}
+    <section class="section band" id="our-pricing">
+      <div class="wrap">
+        <h2>What we charge, and for what</h2>
+
+        <p class="band-lede">
+          Three separate things. I&rsquo;d rather spell them out than have you
+          find out at invoice time.
+        </p>
+
+        <div class="prices">
+          <div class="price-card">
+            <p class="price-label">Repair estimate</p>
+            <p class="price-figure">Free</p>
+            <p class="price-body">
+              I come look at what you&rsquo;ve got and give you a number for the
+              work. No charge, no obligation.
+            </p>
+          </div>
+
+          <div class="price-card featured">
+            <p class="price-label">{moistureCheck.name}</p>
+            <p class="price-figure">
+              {usd(moistureCheck.priceLow)}&ndash;{usd(moistureCheck.priceHigh)}
+            </p>
+            <p class="price-body">
+              A paid diagnostic service, priced {moistureCheck.priceNote}. Not
+              included in the free estimate.
+            </p>
+          </div>
+
+          <div class="price-card">
+            <p class="price-label">The repair itself</p>
+            <p class="price-figure">Quoted</p>
+            <p class="price-body">
+              Priced per job. The ranges above are what the market looks like,
+              not a number I can promise before seeing the wall.
+            </p>
+          </div>
+        </div>
+
+        <div class="separation">
+          <h3>The part most people want stated plainly</h3>
+          <p>
+            The estimate is free. The {moistureCheck.name} is
+            {' '}{usd(moistureCheck.priceLow)}&ndash;{usd(moistureCheck.priceHigh)},
+            paid on its own.
+            <strong>
+              It is not credited toward repair work if you hire us.
+            </strong>
+            If we do the repair, that is quoted and paid separately. Pay for a
+            Check and then hire us, and you pay both in full.
+          </p>
+          <p>
+            I charge for it for a reason. Because that fee isn&rsquo;t tied to
+            winning your repair job, I get paid the same whether the answer is
+            &ldquo;there&rsquo;s water in this wall&rdquo; or &ldquo;this is
+            cosmetic, leave it alone.&rdquo;
+            <strong>
+              Nobody here has a reason to find you an expensive problem.
+            </strong>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* INSURANCE */}
+    <section class="section" id="insurance">
+      <div class="wrap">
+        <h2>Is stucco repair covered by insurance?</h2>
+
+        <p>
+          Sometimes, and it depends on the cause. Policies generally treat a
+          sudden accidental event differently from gradual wear and long-term
+          water intrusion. Stucco failure is more often the second kind, which
+          is the honest reason a lot of these claims go nowhere.
+        </p>
+
+        <p>
+          <strong>
+            I can&rsquo;t tell you what your policy covers, and you should be
+            wary of any contractor who says they can.
+          </strong>
+          Read the policy, call your carrier, and ask them directly. What I can
+          do is document what we find, which is what you would need either way.
+        </p>
+      </div>
+    </section>
+
+    {/* FAQ */}
+    <section class="section band" id="faq">
+      <div class="wrap">
+        <h2>Questions people ask</h2>
+
+        <div class="faq">
+          {faqs.map((f) => (
+            <div class="qa">
+              <h3>{f.q}</h3>
+              <p>{f.a}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* WHERE WE WORK */}
+    <section class="section" id="where">
+      <div class="wrap">
+        <h2>Where we work</h2>
+        <p>
+          Daytona Beach and the surrounding Volusia County area. If
+          you&rsquo;re in Daytona Beach itself, there&rsquo;s more detail on
+          what we see on houses here:
+        </p>
+        <ul class="links">
+          <li>
+            <a href="/stucco-repair-daytona-beach/">
+              Stucco repair in Daytona Beach
+            </a>
+            &mdash; what we see most on houses here.
+          </li>
+
+        </ul>
+      </div>
+    </section>
+
+    {/* CONTACT */}
+    <section class="section" id="contact-form">
+      <div class="wrap">
+        <ContactCta />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+</Layout>
+
+<style>
+  .hero {
+    padding-block: clamp(3rem, 9vw, 6rem);
+    background: linear-gradient(180deg, var(--paper-warm), var(--paper));
+    border-bottom: 1px solid var(--rule);
+  }
+  .hero h1 { max-width: 18ch; }
+  .hero-lede {
+    font-size: clamp(1.0625rem, 2.2vw, 1.25rem);
+    color: var(--ink-soft);
+    max-width: 42ch;
+    margin-top: 1.25rem;
+  }
+  .hero-actions { margin-top: 2rem; }
+
+  .band { background: var(--paper-warm); border-block: 1px solid var(--rule); }
+  .band-lede { max-width: 42ch; color: var(--ink-soft); }
+
+  .signals {
+    margin: 0 0 1.5rem;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.625rem;
+    max-width: 36rem;
+  }
+  .signals li { padding-left: 1.75rem; position: relative; }
+  .signals li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 2px;
+    background: var(--flag);
+  }
+
+  .steps {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+  .steps li { display: flex; gap: 1rem; align-items: flex-start; }
+  .steps p { margin: 0; max-width: 46ch; color: var(--ink-soft); }
+  .num {
+    flex: none;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-size: 0.9375rem;
+    font-weight: 650;
+  }
+
+  .caveat {
+    margin-top: 2rem;
+    padding-left: 1rem;
+    border-left: 3px solid var(--sand);
+    color: var(--ink-faint);
+    font-size: 0.9375rem;
+    max-width: 46ch;
+  }
+
+  .sub { margin-top: 2.5rem; }
+
+  .deliverable {
+    margin: 1.25rem 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.625rem;
+    max-width: 36rem;
+  }
+  .deliverable li { padding-left: 1.75rem; position: relative; }
+  .deliverable li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .note { font-size: 0.9375rem; color: var(--ink-faint); max-width: 46ch; }
+
+  .proof {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    margin-top: 2rem;
+  }
+  .proof img { width: 100%; border-radius: 10px; display: block; }
+
+  .services {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    margin-top: 2rem;
+  }
+  .service {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .service h3 { margin-bottom: 0.5rem; }
+  .service p { margin: 0; font-size: 0.9375rem; color: var(--ink-soft); }
+
+  .table-scroll {
+    overflow-x: auto;
+    margin: 2rem 0 1.5rem;
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    background: var(--paper);
+  }
+
+  table { border-collapse: collapse; width: 100%; min-width: 30rem; }
+
+  caption {
+    caption-side: top;
+    text-align: left;
+    padding: 1rem 1.25rem 0;
+    font-size: 0.8125rem;
+    color: var(--ink-faint);
+  }
+
+  thead th {
+    text-align: left;
+    font-size: 0.75rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 650;
+    padding: 1rem 1.25rem 0.75rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  tbody th {
+    text-align: left;
+    font-weight: 600;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+
+  tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+
+  .row-note {
+    display: block;
+    font-weight: 400;
+    font-size: 0.875rem;
+    color: var(--ink-faint);
+    margin-top: 0.25rem;
+    max-width: 34ch;
+  }
+
+  td.figure {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    font-weight: 650;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .disclaimer {
+    padding-left: 1rem;
+    border-left: 3px solid var(--flag);
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+    max-width: 48ch;
+  }
+
+  .drivers {
+    list-style: none;
+    counter-reset: driver;
+    margin: 2rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+    max-width: 44rem;
+  }
+  .drivers li { counter-increment: driver; padding-left: 3rem; position: relative; }
+  .drivers li::before {
+    content: counter(driver);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-size: 0.9375rem;
+    font-weight: 650;
+  }
+  .drivers h3 { margin-bottom: 0.375rem; }
+  .drivers p { margin: 0; color: var(--ink-soft); max-width: 46ch; }
+
+  .omissions {
+    margin: 1.5rem 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.625rem;
+    max-width: 38rem;
+  }
+  .omissions li { padding-left: 1.75rem; position: relative; }
+  .omissions li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 2px;
+    background: var(--flag);
+  }
+
+  .prices {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    margin: 2rem 0;
+  }
+  .price-card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .price-card.featured { border-color: var(--accent); border-width: 1.5px; }
+  .price-label {
+    margin: 0;
+    font-size: 0.75rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 650;
+  }
+  .price-figure {
+    margin: 0.5rem 0 0.75rem;
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    font-weight: 680;
+    letter-spacing: -0.03em;
+  }
+  .price-body { margin: 0; font-size: 0.9375rem; color: var(--ink-soft); }
+
+  .separation {
+    background: var(--paper);
+    border-left: 3px solid var(--flag);
+    border-radius: 0 10px 10px 0;
+    padding: 1.5rem;
+    max-width: 46rem;
+    margin-bottom: 1.5rem;
+  }
+  .separation h3 { margin-bottom: 0.75rem; }
+  .separation p:last-child { margin-bottom: 0; }
+
+  .links {
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 1rem;
+    max-width: 40rem;
+  }
+  .links li { color: var(--ink-soft); }
+  .links a { font-weight: 600; }
+
+  .faq { display: grid; gap: 1.75rem; margin-top: 2rem; max-width: 44rem; }
+  .qa h3 { margin-bottom: 0.5rem; }
+  .qa p { margin: 0; color: var(--ink-soft); max-width: 46ch; }
+</style>

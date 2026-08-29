@@ -1,0 +1,729 @@
+---
+/**
+ * /blog/why-stucco-cracks-come-back/ — informational resource article.
+ *
+ * PAGE TYPE: Blog / educational resource. NOT a service page. Per client
+ * direction 2026-08-28 this lives under /blog/, superseding the
+ * /problems/why-stucco-cracks-come-back/ URL in the original brief and the
+ * keyword plan's earlier "no blog" architecture rule. Both were updated.
+ * Do NOT also create a /problems/ version of this URL.
+ *
+ * Target: `why do stucco cracks keep coming back`,
+ * `stucco crack came back after repair`, `repaired stucco cracked again`,
+ * `stucco repair keeps failing`, `patched stucco crack reappeared`.
+ *
+ * Brief: campaigns/content-plan/why-stucco-cracks-come-back.md
+ *
+ * ------------------------------------------------------------------
+ * OUTSTANDING FACTS — sections the brief calls for that are NOT built
+ * here, because the underlying facts are unverified. Do not stub them.
+ *
+ *   1. [OPEN-WALL PHOTO SET] — the brief's "what it looks like when we
+ *      open a wall" section is omitted entirely. It is the single
+ *      strongest proof asset for this article and should be added the
+ *      moment real photos exist. `openWallPhotos` is null in site.ts.
+ *   2. [CUSTOMER QUOTES] — no testimonial about a prior failed repair.
+ *      No quote, paraphrase, or composite is invented.
+ *   3. [N JOBS] — the brief wants "in N jobs we found a hidden source."
+ *      No such count is claimed. Frequency language below stays
+ *      qualitative and general ("most of the time"), never numeric.
+ *
+ * The mechanism argument stands on generally-true building science and
+ * on the Stucco Moisture Check, which IS verified in site.ts. Nothing
+ * here asserts a company track record.
+ * ------------------------------------------------------------------
+ */
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import { business, moistureCheck } from '../../config/site';
+
+const title = 'Why Your Stucco Crack Came Back | Daytona Beach Stucco Company';
+const description =
+  'Most stucco repairs fail because nobody found the water first. What is actually behind a returning crack, how to tell if yours is cosmetic, and what to ask the next contractor.';
+
+const published = '2026-08-28';
+
+/** Reader-facing date. Kept in one place so the two renderings can't drift. */
+const publishedLabel = new Date(`${published}T12:00:00Z`).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
+
+/**
+ * No `site` is configured in astro.config.mjs and no production domain has
+ * been supplied, so no absolute canonical is emitted — inventing a hostname
+ * would be a false fact. Set `site` in astro.config.mjs and this resolves to
+ * an absolute URL automatically.
+ */
+const canonical = Astro.site
+  ? new URL('/blog/why-stucco-cracks-come-back/', Astro.site).toString()
+  : '/blog/why-stucco-cracks-come-back/';
+
+/**
+ * Article schema. `author`/`publisher` carry only the business name, which is
+ * verified. No image is emitted — there is no real photo asset yet, and
+ * pointing this at a stock or placeholder file would push a false fact.
+ */
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Your Stucco Crack Came Back. Here’s Why.',
+  description,
+  datePublished: published,
+  dateModified: published,
+  author: { '@type': 'Organization', name: business.name },
+  publisher: { '@type': 'Organization', name: business.name },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+  about: [
+    { '@type': 'Thing', name: 'Stucco repair' },
+    { '@type': 'Thing', name: 'Moisture intrusion' },
+  ],
+};
+
+/**
+ * FAQ schema, drawn from the live PAA set captured in the brief. Answers are
+ * abbreviated versions of what the article body actually says — never a claim
+ * the page doesn't make.
+ */
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Why does my stucco keep cracking after repair?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'A crack that returns in the same line usually means the cause was never removed. The most common causes are ongoing movement at a spot with no control joint, water entering above the crack, deteriorated lath or sheathing behind the stucco, and a patch applied over material that was still wet. Filling the surface does not address any of them.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can you just patch a stucco crack?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Sometimes, yes. If the wall behind it is dry and sound and the crack is not moving, a patch is a reasonable repair. The problem is that patching is also the default answer when nobody checked, and on a wet wall it seals the moisture in.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How do I know if water is behind my stucco?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Common signs are staining or streaking below a crack, bubbling or peeling paint, a chalky white deposit called efflorescence, areas that sound hollow when tapped, soft spots, and a musty smell inside along the same wall. None of these is conclusive from the outside, which is why moisture testing exists.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do stucco cracks mean foundation problems?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Usually not. Most stucco cracking is surface movement, thermal expansion, or normal settling. Wide diagonal or stair-step cracking that keeps growing, especially with doors and windows going out of square, is worth having evaluated for a structural cause.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Should I repair or replace my stucco?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'It depends on how much of the wall is actually compromised, not on how much of it looks bad. Isolated damage over sound material is a repair. Widespread deterioration of the lath or sheathing across a wall is where replacing the section stops being the expensive option and starts being the cheaper one.',
+      },
+    },
+  ],
+};
+
+/** The four mechanisms. Kept as data so the list markup stays consistent. */
+const causes = [
+  {
+    n: '01',
+    title: 'The wall is moving and there is nowhere for it to move',
+    body: 'Stucco is a rigid skin over a building that expands, contracts, and settles. Control joints are the deliberate breaks that give that movement somewhere to go. When a joint is missing, spaced too far apart, or stopped short of a corner, the wall still moves — it just picks its own place to crack. Fill that line and it will crack there again, because you changed the surface and not the movement.',
+  },
+  {
+    n: '02',
+    title: 'Water is getting in above the crack',
+    body: 'This is the one that matters most, and it is the one most often missed. Water rarely enters at the crack you are looking at. It gets in higher up — a window head, a roofline, a failed sealant joint, a hose bib penetration, a spot where the weep screed at the base of the wall is buried — then travels down behind the stucco and shows itself lower. Repair the visible crack and the entry point is still open.',
+  },
+  {
+    n: '03',
+    title: 'What is behind the stucco has already failed',
+    body: 'Stucco is not the wall. It is a finish built on lath — the metal or wire mesh fastened to the sheathing — over a weather-resistive barrier. When water sits against that assembly long enough, the lath corrodes, the fasteners let go, and the sheathing softens. At that point the stucco has nothing sound to hold onto. A patch bonded to failing material fails with it.',
+  },
+  {
+    n: '04',
+    title: 'It was patched while it was still wet',
+    body: 'Stucco and the material behind it have to be dry before the wall gets closed. A repair over a wet substrate traps the moisture, and now it cannot dry outward either. This is the version of a failed repair that comes back fastest, and it is entirely avoidable — it only requires that somebody check before mixing.',
+  },
+];
+
+/** The honest carve-out. Load-bearing per the brief; do not soften. */
+const probablyFine = [
+  'Hairline cracking, thinner than the edge of a credit card, that has not changed',
+  'Fine map-pattern or spiderweb cracking spread evenly across a field of wall',
+  'A short crack with no staining, no bubbling paint, and no soft or hollow sound',
+  'Cracking that appeared once after the wall was new and has stayed exactly the same since',
+];
+
+const worthLookingAt = [
+  'A crack that came back after somebody already repaired it',
+  'Cracking that is getting longer or wider over time',
+  'Staining, streaking, or bubbling and peeling paint anywhere near the crack',
+  'A chalky white deposit on the surface — efflorescence, which is mineral left behind by water moving through the wall',
+  'Areas that sound hollow when tapped or feel soft under hand pressure',
+  'Stair-step or diagonal cracking running out from the corner of a window or door',
+  'A musty smell inside the house along the same wall',
+];
+
+/** Questions the reader can take to any contractor, including us. */
+const questionsToAsk = [
+  {
+    q: '“Where is the water getting in?”',
+    a: 'If the answer is that there is no water, ask how that was determined. “It looks dry” is an observation of the outside of the wall, not an answer about the inside of it.',
+  },
+  {
+    q: '“What is behind the stucco right here?”',
+    a: 'Anyone quoting a repair should be able to say what condition they expect the lath and sheathing to be in, and what happens to the price if they open it and find worse.',
+  },
+  {
+    q: '“Is this crack moving?”',
+    a: 'A crack at a control joint, a crack from settling, and a crack over failed material are three different problems. They are not fixed the same way.',
+  },
+  {
+    q: '“What does the quote assume, and what changes it?”',
+    a: 'A number with no stated assumptions is not really a number. The honest version of a repair quote says what it covers and where it could grow.',
+  },
+  {
+    q: '“Why did the last repair fail?”',
+    a: 'This is the whole question. If nobody can answer it, the next repair is being done under exactly the same conditions as the one that already did not work.',
+  },
+];
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <SiteHeader current="/blog/why-stucco-cracks-come-back/" />
+
+  <main>
+    {/* HERO */}
+    <article>
+      <header class="hero">
+        <div class="wrap narrow">
+          <nav class="crumbs" aria-label="Breadcrumb">
+            <a href="/">Home</a>
+            <span aria-hidden="true">/</span>
+            <span>Resources</span>
+          </nav>
+
+          <h1>Your stucco crack came back. Here&rsquo;s why.</h1>
+
+          <p class="hero-lede">
+            You paid somebody to fix it. It looked right for a season, maybe
+            two. Now it&rsquo;s open again, in the same line it was before.
+            That&rsquo;s not bad luck, and it usually isn&rsquo;t bad filler.
+          </p>
+
+          <p class="byline">
+            <time datetime={published}>{publishedLabel}</time>
+            <span aria-hidden="true"> &middot; </span>
+            <span>About an 8 minute read</span>
+          </p>
+        </div>
+      </header>
+
+      {/* THE CORE IDEA */}
+      <section class="section">
+        <div class="wrap narrow">
+          <p>
+            Here&rsquo;s what&rsquo;s actually happening. A crack in stucco is
+            almost never the problem itself. It&rsquo;s the place where the
+            problem became visible.
+          </p>
+
+          <p>
+            <strong>
+              The crack isn&rsquo;t the damage. It&rsquo;s the evidence.
+            </strong>
+            So when a repair addresses the crack and nothing else, it removes
+            the evidence and leaves the cause in place. The wall keeps doing
+            what it was already doing, and a season later it tells you again in
+            the same spot.
+          </p>
+
+          <p>
+            That is the single most common reason stucco repairs fail around
+            here, and almost nobody says it out loud. This article is what
+            I&rsquo;d tell you standing in your driveway looking at the wall.
+          </p>
+        </div>
+      </section>
+
+      {/* THE FOUR CAUSES */}
+      <section class="section band" id="four-causes">
+        <div class="wrap narrow">
+          <h2>What&rsquo;s actually behind a crack that keeps returning</h2>
+
+          <p class="band-lede">
+            In practice it comes down to four things. Sometimes one of them,
+            often two together.
+          </p>
+
+          <ol class="causes">
+            {causes.map((c) => (
+              <li>
+                <span class="cause-n" aria-hidden="true">{c.n}</span>
+                <div>
+                  <h3>{c.title}</h3>
+                  <p>{c.body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+
+          <p>
+            Notice that filling and painting the crack does nothing about any
+            of the four. It addresses the appearance of the wall. All four
+            causes live behind it.
+          </p>
+        </div>
+      </section>
+
+      {/* WHY PATCHING A WET WALL FAILS */}
+      <section class="section">
+        <div class="wrap narrow">
+          <h2>Why patching alone almost always fails on a wet wall</h2>
+
+          <p>
+            Stucco is somewhat breathable by design. A wall assembly that gets
+            damp is supposed to be able to dry — outward through the
+            stucco, or down and out at the weep screed along the base of the
+            wall.
+          </p>
+
+          <p>
+            When you patch a crack on a wall that still has water in it, you do
+            two things at once. You close the path moisture was using to get
+            out, and you leave open whatever path it was using to get in. The
+            wall now takes on water and can&rsquo;t shed it.
+          </p>
+
+          <p>
+            <strong>
+              That&rsquo;s why the second repair often fails faster than the
+              first.
+            </strong>
+            The conditions behind the wall are worse than they were the first
+            time around, and the repair sealed them in.
+          </p>
+
+          <p>
+            Salt air makes this less forgiving on this coast. Corrosion at the
+            lath and at the fasteners is what turns a damp wall into a wall
+            with nothing to hold the stucco. A west-facing wall a few blocks off
+            the water takes a beating that the same house in Deltona never
+            would.
+          </p>
+        </div>
+      </section>
+
+      {/* THE HONEST CARVE-OUT */}
+      <section class="section band" id="probably-fine">
+        <div class="wrap narrow">
+          <h2>Some cracks really are cosmetic. Here&rsquo;s how to tell.</h2>
+
+          <p class="band-lede">
+            This matters as much as the rest of it. Stucco cracks. It&rsquo;s
+            Florida — the ground moves, walls expand in the heat, and
+            stucco shows it. Plenty of what people call me about needs nothing
+            done at all.
+          </p>
+
+          <div class="cols">
+            <div class="col">
+              <h3>Usually nothing to do</h3>
+              <ul class="ticks">
+                {probablyFine.map((item) => <li>{item}</li>)}
+              </ul>
+              <p class="col-note">
+                If that&rsquo;s what you have, you probably don&rsquo;t need me
+                yet. Keep an eye on it and check again after hurricane season.
+              </p>
+            </div>
+
+            <div class="col">
+              <h3>Worth a closer look</h3>
+              <ul class="flags">
+                {worthLookingAt.map((item) => <li>{item}</li>)}
+              </ul>
+              <p class="col-note">
+                Any one of these on its own isn&rsquo;t a verdict. Two or three
+                together usually means something is going on behind the
+                surface.
+              </p>
+            </div>
+          </div>
+
+          <p>
+            The honest answer is that you can&rsquo;t always tell from the
+            outside, and neither can I. That&rsquo;s the entire reason testing
+            exists — not to sell you something, but because the wall
+            doesn&rsquo;t volunteer what&rsquo;s behind it.
+          </p>
+        </div>
+      </section>
+
+      {/* HOW YOU FIND THE SOURCE */}
+      <section class="section" id="finding-the-source">
+        <div class="wrap narrow">
+          <h2>How do you find the source before closing the wall?</h2>
+
+          <p>
+            You look, you test, and you scan when it helps. That&rsquo;s what
+            the <strong>{moistureCheck.name}</strong> is — a separate,
+            paid evaluation that answers the question the crack can&rsquo;t.
+          </p>
+
+          <ol class="steps">
+            {moistureCheck.steps.map((step) => (
+              <li>
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </li>
+            ))}
+          </ol>
+
+          <p class="what-you-get-lede"><strong>What you get back:</strong></p>
+          <ul class="ticks">
+            {moistureCheck.deliverable.map((item) => <li>{item}</li>)}
+          </ul>
+
+          <p class="price-line">
+            The {moistureCheck.name} runs{' '}
+            <strong>
+              ${moistureCheck.priceLow}&ndash;${moistureCheck.priceHigh}
+            </strong>
+            , {moistureCheck.priceNote}. It&rsquo;s a paid service, separate
+            from repair work, and it isn&rsquo;t credited toward a repair. Quotes
+            for the repair itself are free.
+          </p>
+
+          <p>
+            I&rsquo;m telling you the price of the diagnosis up front for the
+            same reason I&rsquo;d tell you the price of the repair. You should
+            know what a thing costs before you agree to it. And it&rsquo;s
+            findings either way — if the readings come back dry, that is a
+            real answer and it means your repair is the simpler kind.
+          </p>
+
+          <p class="jump">
+            If you already know the wall is wet and you want the repair side of
+            this, that&rsquo;s covered on the{' '}
+            <a href="/stucco-repair/">stucco repair page</a>, including{' '}
+            <a href="/stucco-repair/#pricing">
+              what repairs actually cost around here
+            </a>
+            .
+          </p>
+        </div>
+      </section>
+
+      {/* REPAIR VS REPLACE */}
+      <section class="section band">
+        <div class="wrap narrow">
+          <h2>Does a returning crack mean I need the whole wall redone?</h2>
+
+          <p class="band-lede">Usually no. Occasionally yes. It depends on one thing.</p>
+
+          <p>
+            Not how bad the wall looks — how much of the material behind it
+            is still sound. Stucco can look rough across a whole elevation while
+            the lath and sheathing underneath are fine, and it can look nearly
+            perfect over a section that has completely failed.
+          </p>
+
+          <p>
+            Isolated damage over sound material is a repair, full stop. Where
+            it changes is when deterioration runs across a wall — at that
+            point cutting out and rebuilding the section stops being the
+            expensive option, because the alternative is repairing it in pieces
+            every couple of years.
+          </p>
+
+          <p>
+            <strong>
+              You don&rsquo;t need a full re-stucco nearly as often as you&rsquo;d
+              think.
+            </strong>
+            Most of the time the answer is a defined section of wall, fixed
+            properly, once.
+          </p>
+        </div>
+      </section>
+
+      {/* WHAT TO ASK */}
+      <section class="section" id="what-to-ask">
+        <div class="wrap narrow">
+          <h2>What to ask the next contractor who quotes you</h2>
+
+          <p>
+            Take these to anybody — me included. The answers tell you more
+            than the price does.
+          </p>
+
+          <dl class="asks">
+            {questionsToAsk.map((item) => (
+              <div class="ask">
+                <dt>{item.q}</dt>
+                <dd>{item.a}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <p>
+            A contractor who can answer these is not necessarily the cheapest
+            quote you&rsquo;ll get. But the cheapest quote on a wall nobody
+            tested is how most people end up paying for the same crack twice.
+          </p>
+        </div>
+      </section>
+
+      {/* LOCAL BRIDGE */}
+      <section class="section band">
+        <div class="wrap narrow">
+          <h2>If you&rsquo;re in Volusia County</h2>
+
+          <p class="band-lede">
+            Everything above applies to stucco anywhere. What&rsquo;s different
+            here is the exposure — salt air, wind-driven rain, and a
+            hurricane season that finds every unsealed joint on the building.
+          </p>
+
+          <p>
+            We work across Daytona Beach and the surrounding area. If you want
+            the local version of this, with what it costs and how the work
+            runs, start at{' '}
+            <a href="/stucco-repair-daytona-beach/">
+              stucco repair in Daytona Beach
+            </a>
+            .
+          </p>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section class="section">
+        <div class="wrap narrow">
+          <ContactCta heading="Have someone look before you patch it again" />
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <SiteFooter />
+</Layout>
+
+<style>
+  .hero {
+    padding-block: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 3vw, 2rem);
+    background: var(--paper-warm);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* Article measure: narrower than the site default for long-form reading. */
+  .narrow { max-width: 44rem; }
+
+  .crumbs {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--ink-faint);
+    margin-bottom: 1rem;
+  }
+
+  .crumbs a { color: var(--ink-faint); }
+  .crumbs a:hover { color: var(--accent); }
+
+  .hero-lede {
+    font-size: clamp(1.0625rem, 2.2vw, 1.25rem);
+    color: var(--ink-soft);
+    max-width: 36rem;
+    margin-top: 1rem;
+  }
+
+  .byline {
+    font-size: 0.8125rem;
+    color: var(--ink-faint);
+    margin: 1.25rem 0 0;
+  }
+
+  .band {
+    background: var(--paper-warm);
+    border-block: 1px solid var(--rule);
+  }
+
+  .band-lede {
+    font-size: 1.0625rem;
+    color: var(--ink-soft);
+  }
+
+  /* --- The four causes --- */
+  .causes {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0;
+    display: grid;
+    gap: 1.75rem;
+  }
+
+  .causes > li {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .cause-n {
+    font-variant-numeric: tabular-nums;
+    font-size: 0.8125rem;
+    font-weight: 650;
+    color: var(--flag);
+    padding-top: 0.3rem;
+    flex: none;
+  }
+
+  .causes h3 { margin-bottom: 0.375rem; }
+  .causes p { margin-bottom: 0; }
+
+  /* --- Two-column cosmetic vs. worth-checking --- */
+  .cols {
+    display: grid;
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+
+  @media (min-width: 46rem) {
+    .cols { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+  }
+
+  .col h3 { margin-bottom: 0.875rem; }
+
+  .col-note {
+    font-size: 0.9375rem;
+    color: var(--ink-faint);
+    margin-top: 0.875rem;
+    margin-bottom: 0;
+  }
+
+  .ticks,
+  .flags {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.625rem;
+  }
+
+  .ticks > li,
+  .flags > li {
+    position: relative;
+    padding-left: 1.5rem;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .ticks > li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .flags > li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.45rem;
+    width: 0.55rem;
+    height: 0.55rem;
+    background: var(--flag);
+    transform: rotate(45deg);
+  }
+
+  /* --- Moisture check steps --- */
+  .steps {
+    counter-reset: step;
+    list-style: none;
+    padding: 0;
+    margin: 1.75rem 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .steps > li {
+    position: relative;
+    padding-left: 2.75rem;
+    counter-increment: step;
+  }
+
+  .steps > li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1.875rem;
+    height: 1.875rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 650;
+  }
+
+  .steps h3 { margin-bottom: 0.25rem; }
+  .steps p { margin-bottom: 0; }
+
+  .what-you-get-lede { margin-bottom: 0.75rem; }
+
+  .price-line {
+    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
+    background: var(--sand);
+    border-radius: 0.5rem;
+    max-width: none;
+  }
+
+  .jump {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  /* --- Questions to ask --- */
+  .asks {
+    margin: 1.75rem 0;
+    display: grid;
+    gap: 1.375rem;
+  }
+
+  .ask dt {
+    font-weight: 650;
+    margin-bottom: 0.3125rem;
+  }
+
+  .ask dd {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+    max-width: var(--measure);
+  }
+</style>

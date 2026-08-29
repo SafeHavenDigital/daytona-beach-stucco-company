@@ -1,0 +1,525 @@
+---
+/**
+ * /stucco-repair-daytona-beach/ — flagship geo money page (Pillar 4).
+ * Also the template for the remaining 9 location pages.
+ *
+ * Target: `stucco repair daytona beach`, `stucco contractor daytona beach`,
+ * `stucco repair near me`, `stucco repair volusia county`.
+ *
+ * ------------------------------------------------------------------
+ * OUTSTANDING FACTS — this page is intentionally missing three blocks
+ * the brief calls for, because the underlying facts are unverified:
+ *
+ *   1. [NEIGHBORHOODS WORKED] — the brief's differentiating section.
+ *      The copy below describes conditions that are generally true of
+ *      Daytona Beach housing stock and exposure. It names NO specific
+ *      neighborhood as one we have worked in. When real neighborhoods
+ *      are supplied, add them here — that is what makes this page
+ *      genuinely local rather than templated.
+ *   2. [PHOTOS WITH LOCATION NOTED] — the "recent work" section is
+ *      omitted entirely rather than stubbed. It renders automatically
+ *      once `openWallPhotos` (or a located photo set) is populated.
+ *   3. [LICENSE #] / [INSURANCE CARRIER] / [PHONE] / [HOURS] /
+ *      [REVIEW COUNT] / [RATING] — omitted. No aggregateRating schema
+ *      is emitted, and no call affordance renders while phone is null.
+ *
+ * REUSE RULE (brand brief): do not clone this page for another city
+ * without genuinely different local substance. Three real city pages
+ * beat ten templated ones.
+ * ------------------------------------------------------------------
+ */
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import {
+  business,
+  moistureCheck,
+  phone,
+  serviceArea,
+  openWallPhotos,
+  whatMovesThePrice,
+} from '../../config/site';
+
+const title = 'Stucco Repair in Daytona Beach, FL | Daytona Beach Stucco Company';
+const description =
+  'Stucco repair, crack repair, and water damage work in Daytona Beach. We find out why it cracked before we close the wall. Free repair estimates.';
+
+const city = 'Daytona Beach';
+
+/**
+ * LocalBusiness + Service. Only verified fields are emitted. `address`,
+ * `telephone`, `openingHours`, and `aggregateRating` stay out of the payload
+ * until the client supplies real values — publishing a placeholder here would
+ * push a false fact to Google.
+ */
+const schema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'HomeAndConstructionBusiness',
+  name: business.name,
+  description,
+  foundingDate: String(business.founded),
+  makesOffer: {
+    '@type': 'Offer',
+    itemOffered: {
+      '@type': 'Service',
+      name: 'Stucco Repair',
+      serviceType: 'Stucco repair',
+      areaServed: { '@type': 'City', name: `${city}, FL` },
+    },
+  },
+};
+if (phone) schema.telephone = phone;
+schema.areaServed = serviceArea ?? { '@type': 'City', name: `${city}, FL` };
+
+const faqs = [
+  {
+    q: `How much does stucco repair cost in ${city}?`,
+    a: 'Repair work is priced per job, because the number depends on how much of the wall has to come off and what condition the material behind it is in. Researched market ranges for this area run from about $250 for minor crack repair to $8,000 and up for a full re-stucco. The estimate is free, so the way to get a real number is to have me look at it.',
+  },
+  {
+    q: 'How long does stucco last in Florida?',
+    a: 'A properly built stucco wall lasts decades here. What shortens it is water getting in behind it and staying there. That is why cracks near windows, rooflines, and anywhere water runs are worth taking more seriously than cracks in the open field of a wall.',
+  },
+  {
+    q: 'Do I need a licensed contractor for stucco repair?',
+    a: 'For anything beyond a cosmetic patch, yes. We are licensed and insured.',
+  },
+  {
+    q: 'How long does stucco repair take?',
+    a: 'A limited section repair is usually a short job. A full elevation takes longer, and stucco needs time to cure between coats, so weather moves the schedule. I will give you a timeline with the estimate rather than after you have committed.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <SiteHeader current="/stucco-repair-daytona-beach/" />
+
+  <main>
+    {/* HERO */}
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">{city}, Florida</p>
+        <h1>Stucco Repair in {city}</h1>
+        <p class="hero-lede">
+          Cracks, patching, water damage, and re-stucco on {city} houses. We
+          check what&rsquo;s behind the wall before we close it up, so
+          you&rsquo;re not paying for the same crack twice.
+        </p>
+
+        <div class="hero-actions">
+          <ContactCta variant="inline" heading="" />
+        </div>
+      </div>
+    </section>
+
+    {/* WHAT WE DO HERE */}
+    <section class="section" id="what-we-do">
+      <div class="wrap">
+        <h2>What we do here</h2>
+
+        <ul class="services">
+          <li>Crack repair &mdash; hairline, stair-step, and diagonal</li>
+          <li>Patching and section repair, cut back to sound material</li>
+          <li>Water damage repair, including the lath and sheathing behind it</li>
+          <li>Re-stucco and replacement when patching isn&rsquo;t honest anymore</li>
+          <li>Texture matching &mdash; knockdown, lace, dash, sand, smooth</li>
+          <li>New stucco installation on additions and new construction</li>
+        </ul>
+
+        <p>
+          There&rsquo;s a fuller breakdown of each of these on the
+          {' '}<a href="/stucco-repair/">stucco repair page</a>{'.'}
+        </p>
+      </div>
+    </section>
+
+    {/*
+      WHAT WE SEE ON DAYTONA HOUSES.
+      This section is written from conditions that are generally true of
+      Daytona Beach exposure and housing stock. It deliberately names no
+      specific neighborhood as one we have worked in, because the real
+      neighborhood list is unverified. Add real ones here when supplied —
+      that is what separates this page from a competitor's.
+      JSX comment, not an HTML comment: it must not ship to the browser.
+    */}
+    <section class="section band" id="what-we-see">
+      <div class="wrap">
+        <h2>What we see most on {city} houses</h2>
+
+        <p class="band-lede">
+          Wind-driven rain does most of the damage here, and it doesn&rsquo;t
+          arrive straight down. It comes in sideways off the Atlantic and finds
+          whatever seam is open.
+        </p>
+
+        <p>
+          <strong>So the failures cluster in predictable places.</strong> Around
+          window and door openings, where the corner of the frame is the weak
+          point and cracks run out from it at an angle. Along rooflines and
+          under any spot where water is being shed onto a wall instead of away
+          from it. At control joints &mdash; the intentional grooves cut into
+          stucco so it can expand and contract &mdash; where the sealant has
+          dried out and split.
+        </p>
+
+        <p>
+          The pattern that gets ignored longest is a west or south-facing wall
+          that gets sun all afternoon and a hard rain twice a week in summer.
+          It expands, contracts, and opens hairlines faster than the shaded
+          side of the same house. Owners assume both sides age the same way.
+          They don&rsquo;t.
+        </p>
+
+        <p>
+          The other one worth naming: a house that has already been repaired
+          once. A patch that was floated over a wet wall is the most common
+          thing I get called back to look at.
+          <strong>
+            If your crack came back, the first repair fixed the wrong thing.
+          </strong>
+        </p>
+      </div>
+    </section>
+
+    {/* WE LOOK BEFORE WE PATCH */}
+    <section class="section" id="moisture-check">
+      <div class="wrap">
+        <p class="eyebrow">A paid diagnostic service</p>
+        <h2>We look before we patch</h2>
+
+        <p>
+          You can&rsquo;t tell from the outside whether there&rsquo;s water
+          behind a wall. That&rsquo;s the whole reason repairs in this town
+          fail. When the signs point to moisture rather than ordinary settling,
+          the honest next step is to find out before anyone starts cutting.
+          We wrote up the full explanation of{' '}
+          <a href="/blog/why-stucco-cracks-come-back/">
+            why stucco cracks come back
+          </a>{' '}
+          if you want the detail.
+        </p>
+
+        <p>
+          That&rsquo;s the {moistureCheck.name} &mdash; a separate, paid
+          diagnostic service:
+        </p>
+
+        <ol class="steps">
+          {moistureCheck.steps.map((step, i) => (
+            <li>
+              <span class="num">{i + 1}</span>
+              <div>
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        <p class="caveat">
+          Thermal imaging points us toward areas worth testing &mdash; it
+          doesn&rsquo;t prove moisture on its own, and it isn&rsquo;t needed on
+          every wall. The meters are what confirm what&rsquo;s actually there.
+        </p>
+
+        <h3 class="sub">What you get</h3>
+
+        <ul class="deliverable">
+          {moistureCheck.deliverable.map((item) => <li>{item}</li>)}
+        </ul>
+
+        <p class="note">
+          This is our own assessment of your stucco as the contractor who
+          performs the work. It isn&rsquo;t a home inspection, and it
+          isn&rsquo;t an independent inspection report.
+        </p>
+
+        <p>
+          <strong>
+            Plenty of what I look at is cosmetic, and I&rsquo;ll say so.
+          </strong>
+          Hairline cracking that&rsquo;s stable and dry usually needs nothing.
+          Send a photo before you spend anything.
+        </p>
+      </div>
+    </section>
+
+    {/* PRICING */}
+    <section class="section band" id="pricing">
+      <div class="wrap">
+        <h2>What it costs</h2>
+
+        <div class="prices">
+          <div class="price-card">
+            <p class="price-label">Repair estimate</p>
+            <p class="price-figure">Free</p>
+            <p class="price-body">
+              If you know what you need done, I&rsquo;ll come look at it and
+              give you a number for the work. No charge for that.
+            </p>
+          </div>
+
+          <div class="price-card featured">
+            <p class="price-label">{moistureCheck.name}</p>
+            <p class="price-figure">
+              ${moistureCheck.priceLow}&ndash;${moistureCheck.priceHigh}
+            </p>
+            <p class="price-body">
+              {whatMovesThePrice
+                ? whatMovesThePrice
+                : `A paid diagnostic service, priced ${moistureCheck.priceNote}.`}
+            </p>
+          </div>
+        </div>
+
+        <p>
+          Repair work itself is quoted per job.
+          {' '}<a href="/stucco-repair/#pricing">What stucco repair costs in
+          this area</a> lays out the ranges and what moves them.
+        </p>
+
+        <div class="separation">
+          <h3>Two different things, said plainly</h3>
+          <p>
+            The estimate is free. The {moistureCheck.name} is not &mdash;
+            it&rsquo;s ${moistureCheck.priceLow}&ndash;${moistureCheck.priceHigh},
+            paid on its own.
+            <strong>
+              It isn&rsquo;t credited toward repair work if you hire us.
+            </strong>
+            Repair work is quoted and paid separately.
+          </p>
+          <p>
+            Because that fee isn&rsquo;t tied to winning your repair job, I get
+            paid the same whether the answer is &ldquo;there&rsquo;s water in
+            this wall&rdquo; or &ldquo;this is cosmetic, leave it alone.&rdquo;
+            <strong>
+              Nobody here has a reason to find you an expensive problem.
+            </strong>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* Recent work section renders only when located photos exist.
+        Omitted entirely rather than stubbed — see header note. */}
+    {openWallPhotos && (
+      <section class="section" id="recent-work">
+        <div class="wrap">
+          <h2>Recent work in {city}</h2>
+          <div class="proof">
+            {openWallPhotos.map((src) => (
+              <img
+                src={src}
+                alt={`Stucco repair work in ${city}, Florida`}
+                loading="lazy"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {/* FAQ */}
+    <section class="section" id="faq">
+      <div class="wrap">
+        <h2>Questions people in {city} ask</h2>
+
+        <div class="faq">
+          {faqs.map((f) => (
+            <div class="qa">
+              <h3>{f.q}</h3>
+              <p>{f.a}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* LICENSING */}
+    <section class="section band" id="licensing">
+      <div class="wrap">
+        <h2>Licensing and insurance</h2>
+        <p>
+          {business.name} is licensed and insured, and has been working in
+          {' '}{city} and Volusia County since {business.founded}.
+        </p>
+        <p class="note">
+          Every stucco contractor in this market says they&rsquo;re licensed and
+          insured, so treat it as the box that has to be ticked rather than a
+          reason to hire anyone. The reason to hire us is that we find out
+          why the wall failed first.
+        </p>
+      </div>
+    </section>
+
+    {/* CONTACT */}
+    <section class="section" id="contact-form">
+      <div class="wrap">
+        <ContactCta heading={`Tell me what you're looking at in ${city}`} />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+</Layout>
+
+<style>
+  .hero {
+    padding-block: clamp(3rem, 9vw, 6rem);
+    background: linear-gradient(180deg, var(--paper-warm), var(--paper));
+    border-bottom: 1px solid var(--rule);
+  }
+  .hero h1 { max-width: 18ch; }
+  .hero-lede {
+    font-size: clamp(1.0625rem, 2.2vw, 1.25rem);
+    color: var(--ink-soft);
+    max-width: 42ch;
+    margin-top: 1.25rem;
+  }
+  .hero-actions { margin-top: 2rem; }
+
+  .band { background: var(--paper-warm); border-block: 1px solid var(--rule); }
+  .band-lede { max-width: 42ch; color: var(--ink-soft); }
+
+  .services {
+    margin: 0 0 1.5rem;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.625rem;
+    max-width: 38rem;
+  }
+  .services li { padding-left: 1.75rem; position: relative; }
+  .services li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .steps {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+  .steps li { display: flex; gap: 1rem; align-items: flex-start; }
+  .steps p { margin: 0; max-width: 46ch; color: var(--ink-soft); }
+  .num {
+    flex: none;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-size: 0.9375rem;
+    font-weight: 650;
+  }
+
+  .caveat {
+    margin-top: 2rem;
+    padding-left: 1rem;
+    border-left: 3px solid var(--sand);
+    color: var(--ink-faint);
+    font-size: 0.9375rem;
+    max-width: 46ch;
+  }
+
+  .sub { margin-top: 2.5rem; }
+
+  .deliverable {
+    margin: 1.25rem 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.625rem;
+    max-width: 36rem;
+  }
+  .deliverable li { padding-left: 1.75rem; position: relative; }
+  .deliverable li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .note { font-size: 0.9375rem; color: var(--ink-faint); max-width: 46ch; }
+
+  .proof {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    margin-top: 2rem;
+  }
+  .proof img { width: 100%; border-radius: 10px; display: block; }
+
+  .prices {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    margin: 2rem 0;
+    max-width: 46rem;
+  }
+  .price-card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .price-card.featured { border-color: var(--accent); border-width: 1.5px; }
+  .price-label {
+    margin: 0;
+    font-size: 0.75rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 650;
+  }
+  .price-figure {
+    margin: 0.5rem 0 0.75rem;
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    font-weight: 680;
+    letter-spacing: -0.03em;
+  }
+  .price-body { margin: 0; font-size: 0.9375rem; color: var(--ink-soft); }
+
+  .separation {
+    background: var(--paper);
+    border-left: 3px solid var(--flag);
+    border-radius: 0 10px 10px 0;
+    padding: 1.5rem;
+    max-width: 46rem;
+  }
+  .separation h3 { margin-bottom: 0.75rem; }
+  .separation p:last-child { margin-bottom: 0; }
+
+  .faq { display: grid; gap: 1.75rem; margin-top: 2rem; max-width: 44rem; }
+  .qa h3 { margin-bottom: 0.5rem; }
+  .qa p { margin: 0; color: var(--ink-soft); max-width: 46ch; }
+</style>

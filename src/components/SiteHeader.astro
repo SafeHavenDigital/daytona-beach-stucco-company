@@ -1,0 +1,88 @@
+---
+/**
+ * Shared masthead. The homepage previously inlined this markup; it now lives
+ * here so every page carries the same header and nav.
+ *
+ * PHONE: null in src/config/site.ts until the client supplies it. While null,
+ * no call affordance renders at all. Do not hardcode a number here.
+ */
+import { business, phone } from '../config/site';
+
+interface Props {
+  /** Current path, used to mark the active nav item. */
+  current?: string;
+}
+
+const { current = '' } = Astro.props;
+
+const nav = [
+  { href: '/stucco-repair/', label: 'Stucco repair & costs' },
+  { href: '/stucco-repair-daytona-beach/', label: 'Daytona Beach' },
+  { href: '/blog/why-stucco-cracks-come-back/', label: 'Why cracks come back' },
+  { href: '/contact/', label: 'Contact' },
+];
+---
+
+<header class="masthead">
+  <div class="wrap bar">
+    <a class="mark" href="/">{business.name}</a>
+
+    <nav aria-label="Main">
+      {nav.map((item) => (
+        <a
+          href={item.href}
+          aria-current={current === item.href ? 'page' : undefined}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+
+    {phone && (
+      <a class="mast-call" href={`tel:${phone.replace(/[^0-9+]/g, '')}`}>{phone}</a>
+    )}
+  </div>
+</header>
+
+<style>
+  .masthead { border-bottom: 1px solid var(--rule); }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    min-height: 4rem;
+    padding-block: 0.75rem;
+  }
+
+  .mark {
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-decoration: none;
+    margin-right: auto;
+  }
+
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+  }
+
+  nav a {
+    font-size: 0.9375rem;
+    font-weight: 550;
+    text-decoration: none;
+    color: var(--ink-soft);
+  }
+
+  nav a:hover { color: var(--accent); }
+
+  nav a[aria-current='page'] {
+    color: var(--accent);
+    font-weight: 650;
+  }
+
+  .mast-call { font-weight: 600; text-decoration: none; }
+</style>

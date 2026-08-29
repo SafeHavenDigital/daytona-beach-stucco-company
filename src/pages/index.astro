@@ -1,0 +1,388 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import ContactCta from '../components/ContactCta.astro';
+import {
+  business,
+  moistureCheck,
+  phone,
+  serviceArea,
+  openWallPhotos,
+  whatMovesThePrice,
+} from '../config/site';
+
+const title = 'Stucco Repair in Daytona Beach | Daytona Beach Stucco Company';
+const description =
+  'Stucco repair in Daytona Beach and Volusia County. We check for moisture behind the wall before we close it up, so the crack does not come back. Free repair estimates.';
+
+/**
+ * LocalBusiness schema. Fields are added only when verified — `telephone`,
+ * `areaServed`, and review data stay out of the payload entirely until the
+ * client supplies them. Emitting a placeholder here would publish a false
+ * fact to Google, which is worse than omitting it.
+ */
+const schema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'HomeAndConstructionBusiness',
+  name: business.name,
+  description,
+  foundingDate: String(business.founded),
+  makesOffer: {
+    '@type': 'Offer',
+    itemOffered: {
+      '@type': 'Service',
+      name: moistureCheck.name,
+      description:
+        'A paid diagnostic service. Visual examination for signs of possible water intrusion, moisture meter testing for possible hidden moisture behind the stucco, and thermal imaging when appropriate.',
+    },
+    priceSpecification: {
+      '@type': 'PriceSpecification',
+      minPrice: moistureCheck.priceLow,
+      maxPrice: moistureCheck.priceHigh,
+      priceCurrency: 'USD',
+    },
+  },
+};
+if (phone) schema.telephone = phone;
+if (serviceArea) schema.areaServed = serviceArea;
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+  <SiteHeader current="/" />
+
+  <main>
+    {/* HERO */}
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">Daytona Beach &amp; Volusia County</p>
+        <h1>The crack is the symptom.<br />We find what&rsquo;s behind it.</h1>
+        <p class="hero-lede">
+          Most stucco repairs fail because nobody looked behind the wall. We
+          check for moisture first, then repair what&rsquo;s actually wrong &mdash;
+          so you&rsquo;re not paying for the same crack twice.
+        </p>
+
+        <div class="hero-actions">
+          <ContactCta variant="inline" heading="" />
+        </div>
+      </div>
+    </section>
+
+    {/* THE PROBLEM */}
+    <section class="section" id="why-it-comes-back">
+      <div class="wrap">
+        <h2>Your crack came back. Here&rsquo;s what usually happened.</h2>
+
+        <p>
+          Someone filled it, sanded it, painted over it, and it looked fine for
+          a season. Then it opened again in the same place.
+        </p>
+
+        <p>
+          <strong>
+            That&rsquo;s because the crack was never the problem. It was the
+            evidence.
+          </strong>
+          When water gets behind stucco, it doesn&rsquo;t dry out on its own. It
+          sits against the lath and the sheathing and keeps working. Patch the
+          surface and you&rsquo;ve sealed the water in with it.
+        </p>
+
+        <p>
+          Not every crack means water. Hairline cracking is normal in Florida
+          &mdash; the ground moves, the wall expands in the heat, and stucco
+          shows it. <strong>Some of what I look at is cosmetic, and I&rsquo;ll
+          tell you when it is.</strong> But you can&rsquo;t tell the difference
+          from the outside, which is the whole reason the first repair failed.
+        </p>
+      </div>
+    </section>
+
+    {/* THE MOISTURE CHECK */}
+    <section class="section band" id="moisture-check">
+      <div class="wrap">
+        <p class="eyebrow">A paid diagnostic service</p>
+        <h2>The {moistureCheck.name}</h2>
+
+        <p class="band-lede">
+          Before anyone quotes you a repair, it&rsquo;s worth knowing whether
+          there&rsquo;s moisture behind the wall. That&rsquo;s a separate piece
+          of work, and it&rsquo;s what the {moistureCheck.name} is.
+        </p>
+
+        <ol class="steps">
+          {moistureCheck.steps.map((step, i) => (
+            <li>
+              <span class="num">{i + 1}</span>
+              <div>
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        <p class="caveat">
+          Thermal imaging points us toward areas worth testing &mdash; it
+          doesn&rsquo;t prove moisture on its own, and it isn&rsquo;t needed on
+          every wall. The meters are what confirm what&rsquo;s actually there.
+        </p>
+      </div>
+    </section>
+
+    {/* WHAT YOU GET */}
+    <section class="section" id="what-you-get">
+      <div class="wrap">
+        <h2>What you get when it&rsquo;s done</h2>
+
+        <p>
+          The {moistureCheck.name} is a service that stands on its own. You get
+          the findings whether or not you ever hire us for the repair.
+        </p>
+
+        <ul class="deliverable">
+          {moistureCheck.deliverable.map((item) => <li>{item}</li>)}
+        </ul>
+
+        <p class="note">
+          This is our own assessment of your stucco as the contractor who
+          performs the work. It isn&rsquo;t a home inspection, and it isn&rsquo;t
+          an independent inspection report.
+        </p>
+
+        {openWallPhotos && (
+          <div class="proof">
+            {openWallPhotos.map((src) => <img src={src} alt="Damaged substrate behind stucco that looked sound from the outside" loading="lazy" />)}
+          </div>
+        )}
+      </div>
+    </section>
+
+    {/* PRICING */}
+    <section class="section band" id="pricing">
+      <div class="wrap">
+        <h2>What it costs</h2>
+
+        <div class="prices">
+          <div class="price-card">
+            <p class="price-label">Repair estimate</p>
+            <p class="price-figure">Free</p>
+            <p class="price-body">
+              If you know what you need done, I&rsquo;ll come look at it and give
+              you a number for the work. No charge for that.
+            </p>
+          </div>
+
+          <div class="price-card featured">
+            <p class="price-label">{moistureCheck.name}</p>
+            <p class="price-figure">
+              ${moistureCheck.priceLow}&ndash;${moistureCheck.priceHigh}
+            </p>
+            <p class="price-body">
+              {whatMovesThePrice
+                ? whatMovesThePrice
+                : `A paid diagnostic service, priced ${moistureCheck.priceNote}.`}
+            </p>
+          </div>
+        </div>
+
+        <div class="separation">
+          <h3>These are two different things, and I&rsquo;ll be plain about it</h3>
+          <p>
+            The estimate is free. The {moistureCheck.name} is not &mdash; it&rsquo;s
+            ${moistureCheck.priceLow}&ndash;${moistureCheck.priceHigh}, paid on its
+            own. <strong>It isn&rsquo;t credited toward repair work if you hire
+            us.</strong> If we do the repair, that&rsquo;s quoted and paid
+            separately.
+          </p>
+          <p>
+            I charge for it for a reason. Because the fee isn&rsquo;t tied to
+            winning your repair job, I get paid the same whether the answer is
+            &ldquo;there&rsquo;s water in this wall&rdquo; or &ldquo;this is
+            cosmetic, leave it alone.&rdquo;
+            <strong>
+              Nobody here has a reason to find you an expensive problem.
+            </strong>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* WHERE TO GO NEXT */}
+    <section class="section" id="pages">
+      <div class="wrap">
+        <h2>More on the work</h2>
+        <ul class="links">
+          <li>
+            <a href="/stucco-repair/">Stucco repair</a> &mdash; cracks,
+            patching, water damage, re-stucco, and texture matching, how we
+            decide which one you actually need, and what it costs.
+          </li>
+          <li>
+            <a href="/stucco-repair-daytona-beach/">
+              Stucco repair in Daytona Beach
+            </a>
+            &mdash; the failures we see most on houses here, and why they
+            cluster where they do.
+          </li>
+          <li>
+            <a href="/stucco-repair/#pricing">What stucco repair costs</a>
+            &mdash; real ranges for Volusia County, what moves the number, and
+            why three quotes came back three different prices.
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    {/* CONTACT */}
+    <section class="section" id="contact-form">
+      <div class="wrap">
+        <ContactCta />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+</Layout>
+
+<style>
+  .hero {
+    padding-block: clamp(3rem, 9vw, 6rem);
+    background:
+      linear-gradient(180deg, var(--paper-warm), var(--paper));
+    border-bottom: 1px solid var(--rule);
+  }
+  .hero h1 { max-width: 20ch; }
+  .hero-lede {
+    font-size: clamp(1.0625rem, 2.2vw, 1.25rem);
+    color: var(--ink-soft);
+    max-width: 40ch;
+    margin-top: 1.25rem;
+  }
+  .hero-actions { margin-top: 2rem; }
+
+  .band { background: var(--paper-warm); border-block: 1px solid var(--rule); }
+  .band-lede { max-width: 42ch; color: var(--ink-soft); }
+
+  .steps {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+  .steps li { display: flex; gap: 1rem; align-items: flex-start; }
+  .steps p { margin: 0; max-width: 46ch; color: var(--ink-soft); }
+  .num {
+    flex: none;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-size: 0.9375rem;
+    font-weight: 650;
+  }
+
+  .caveat {
+    margin-top: 2rem;
+    padding-left: 1rem;
+    border-left: 3px solid var(--sand);
+    color: var(--ink-faint);
+    font-size: 0.9375rem;
+    max-width: 46ch;
+  }
+
+  .deliverable {
+    margin: 1.5rem 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.625rem;
+    max-width: 36rem;
+  }
+  .deliverable li {
+    padding-left: 1.75rem;
+    position: relative;
+  }
+  .deliverable li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .links {
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 1rem;
+    max-width: 40rem;
+  }
+  .links li { color: var(--ink-soft); }
+  .links a { font-weight: 600; }
+
+  .note {
+    font-size: 0.9375rem;
+    color: var(--ink-faint);
+    max-width: 44ch;
+  }
+
+  .proof {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    margin-top: 2rem;
+  }
+  .proof img { width: 100%; border-radius: 10px; display: block; }
+
+  .prices {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    margin: 2rem 0;
+    max-width: 46rem;
+  }
+  .price-card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .price-card.featured { border-color: var(--accent); border-width: 1.5px; }
+  .price-label {
+    margin: 0;
+    font-size: 0.75rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 650;
+  }
+  .price-figure {
+    margin: 0.5rem 0 0.75rem;
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    font-weight: 680;
+    letter-spacing: -0.03em;
+  }
+  .price-body { margin: 0; font-size: 0.9375rem; color: var(--ink-soft); }
+
+  .separation {
+    background: var(--paper);
+    border-left: 3px solid var(--flag);
+    border-radius: 0 10px 10px 0;
+    padding: 1.5rem;
+    max-width: 46rem;
+  }
+  .separation h3 { margin-bottom: 0.75rem; }
+  .separation p:last-child { margin-bottom: 0; }
+</style>

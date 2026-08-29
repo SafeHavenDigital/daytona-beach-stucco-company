@@ -1,0 +1,842 @@
+---
+/**
+ * /contact/ — conversion infrastructure (Wave 1).
+ *
+ * Per brand/keyword-plan.md this page TARGETS NO KEYWORD. Its only job is to
+ * convert. It is deliberately not optimized for "stucco repair daytona beach"
+ * or any commercial term; those belong to the money pages that link here.
+ *
+ * ------------------------------------------------------------------
+ * PHONE: `phone` in src/config/site.ts is null and MUST stay null until the
+ * client supplies a real number. No call affordance renders anywhere on this
+ * page, and no `telephone` field is emitted in schema. Do not add a
+ * placeholder, a "call us" line, or a formatted stand-in. Setting `phone` to
+ * the real string is the only change required — the call row below, the
+ * masthead link, and the ContactPoint all light up automatically.
+ *
+ * FORM DESTINATION: submissions go to `email` (verified 2026-08-28) via
+ * Resend, through this site's own endpoint at src/pages/api/contact.ts. The
+ * form posts in the background and reports success or failure inline. The
+ * Resend key lives only in RESEND_API_KEY on the server and is never sent to
+ * the browser. Setting `formEndpoint` back to null reverts this page to the
+ * original mailto: composer with no other change.
+ *
+ * OMITTED — facts not verified, so the blocks are absent rather than stubbed:
+ *   [PHONE] · [HOURS] · [BUSINESS ADDRESS] · [RESPONSE TIME] · [LICENSE #]
+ *   [SERVICE AREA] municipalities · [REVIEW COUNT] / [RATING]
+ * ------------------------------------------------------------------
+ */
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import {
+  business,
+  email,
+  phone,
+  formEndpoint,
+  serviceArea,
+  licenseNumber,
+  moistureCheck,
+} from '../../config/site';
+
+const title = `Contact | ${business.name}`;
+const description =
+  'Send a photo of the wall and get a straight answer about what you are looking at. Stucco repair in Daytona Beach and Volusia County. Repair estimates are free.';
+
+/**
+ * ContactPage + the business. Only verified fields are emitted — no
+ * telephone, no address, no openingHours, no aggregateRating.
+ */
+const contactPoint: Record<string, unknown> = {
+  '@type': 'ContactPoint',
+  contactType: 'Customer Service',
+  availableLanguage: 'English',
+};
+if (email) contactPoint.email = email;
+if (phone) contactPoint.telephone = phone;
+
+const schema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: title,
+  description,
+  mainEntity: {
+    '@type': 'HomeAndConstructionBusiness',
+    name: business.name,
+    description:
+      'Stucco repair, crack repair, and water damage repair in Daytona Beach and Volusia County, Florida.',
+    foundingDate: String(business.founded),
+    ...(email ? { email } : {}),
+    ...(phone ? { telephone: phone } : {}),
+    areaServed: serviceArea ?? { '@type': 'City', name: 'Daytona Beach, FL' },
+    contactPoint,
+  },
+};
+
+/** The three things a useful photo message contains. */
+const sendChecklist = [
+  {
+    title: 'A wide shot of the wall',
+    body: 'Far enough back that I can see where the crack sits on the house — near a window, under a roofline, at a corner. Location tells me more than the crack itself does.',
+  },
+  {
+    title: 'A close-up of the worst spot',
+    body: 'Close enough to see the width. Putting a coin or a key next to it helps more than you would think, because photos lose scale.',
+  },
+  {
+    title: 'What you have noticed',
+    body: 'How long it has been there, whether it is getting longer, and whether anything inside the house has stained, bubbled, or gone soft. That is often the part that changes the answer.',
+  },
+];
+
+/** Distress states named out loud — voice profile, conversion behaviors. */
+const situations = [
+  'Closing in a few weeks and the inspector flagged the stucco.',
+  'A 4-point inspection came back with stucco on it and the insurer wants it handled.',
+  'An HOA letter showed up with a date on it.',
+  'A crack you patched a year or two ago is back in the same place.',
+  'Stains, bubbling paint, or a soft spot that sounds hollow when you knock.',
+  'A storm came through and you want to know whether the wall took damage.',
+];
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+  <SiteHeader current="/contact/" />
+
+  <main>
+    {/* ---------------------------------------------------------------- */}
+    {/* HERO — the ask is a photo, not a booking. Voice: lower the first ask. */}
+    {/* ---------------------------------------------------------------- */}
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">Contact</p>
+        <h1>Send a photo of the wall</h1>
+        <p class="hero-lede">
+          I&rsquo;ll tell you straight what you&rsquo;re looking at. If
+          it&rsquo;s cosmetic, I&rsquo;ll say so and you can stop thinking
+          about it. If there&rsquo;s water behind it, you&rsquo;ll know that
+          too, and what it takes to fix it.
+        </p>
+
+        <div class="reach">
+          {/*
+            Renders only when a real number exists. While `phone` is null
+            there is no call row at all — by design.
+          */}
+          {phone && (
+            <p class="reach-line">
+              <span class="reach-label">Phone</span>
+              <a href={`tel:${phone.replace(/[^0-9+]/g, '')}`}>{phone}</a>
+            </p>
+          )}
+
+          {email && (
+            <p class="reach-line">
+              <span class="reach-label">Email</span>
+              <a href={`mailto:${email}`}>{email}</a>
+            </p>
+          )}
+
+          <p class="reach-line">
+            <span class="reach-label">Area</span>
+            <span>Daytona Beach and Volusia County</span>
+          </p>
+        </div>
+
+        {!phone && (
+          <p class="note">
+            The phone line isn&rsquo;t published yet. Email and the form below
+            both reach me directly, and a photo gets you a better answer than a
+            phone call would anyway.
+          </p>
+        )}
+      </div>
+    </section>
+
+    {/* ---------------------------------------------------------------- */}
+    {/* THE FORM — the anchor every ContactCta on the site points at.     */}
+    {/* ---------------------------------------------------------------- */}
+    <section class="section form-section" id="contact-form">
+      <div class="wrap grid">
+        <div class="form-col">
+          <h2>Tell me what you&rsquo;re looking at</h2>
+          <p>
+            Fill this in and it comes straight to me. Nothing here goes to a
+            call center and nobody is going to show up in your driveway
+            unannounced.
+          </p>
+
+          {/*
+            `formEndpoint` points at /api/contact, which sends via Resend. The
+            script at the bottom of this file intercepts submit and posts JSON
+            in the background, then renders the status region below the button.
+            The action/method attributes stay correct so that a submission
+            still reaches the endpoint if that script never runs.
+          */}
+          <form
+            class="contact-form"
+            id="contact-form-el"
+            method={formEndpoint ? 'POST' : 'GET'}
+            action={formEndpoint ?? `mailto:${email}`}
+            enctype={formEndpoint ? 'multipart/form-data' : 'text/plain'}
+            novalidate={formEndpoint ? true : undefined}
+          >
+            {/*
+              Honeypot. Hidden from people and from assistive tech; bots fill
+              it in and the endpoint silently discards those submissions.
+            */}
+            <div class="hp" aria-hidden="true">
+              <label for="company">Company</label>
+              <input type="text" id="company" name="company" tabindex="-1" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="name">Your name</label>
+              <input type="text" id="name" name="name" autocomplete="name" required />
+            </div>
+
+            <div class="field">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" autocomplete="email" required />
+            </div>
+
+            <div class="field">
+              <label for="tel">
+                Phone <span class="optional">(optional)</span>
+              </label>
+              <input type="tel" id="tel" name="phone" autocomplete="tel" />
+            </div>
+
+            <div class="field">
+              <label for="address">
+                Property location <span class="optional">(city or neighborhood)</span>
+              </label>
+              <input type="text" id="address" name="location" />
+            </div>
+
+            <div class="field">
+              <label for="situation">What&rsquo;s going on</label>
+              <select id="situation" name="situation">
+                <option value="">Pick the closest one</option>
+                <option>Cracking I want looked at</option>
+                <option>Stains, bubbling paint, or a soft spot</option>
+                <option>A crack that was repaired before and came back</option>
+                <option>Failed or flagged inspection</option>
+                <option>Selling, and it needs to be fixed before closing</option>
+                <option>HOA or insurance letter with a deadline</option>
+                <option>Storm damage</option>
+                <option>New stucco or a full re-stucco</option>
+                <option>Something else</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="message">Details</label>
+              <textarea
+                id="message"
+                name="message"
+                rows="5"
+                placeholder="How long it&rsquo;s been there, whether it&rsquo;s spreading, and anything you&rsquo;ve noticed inside."
+              ></textarea>
+            </div>
+
+            {/*
+              NO FILE INPUT — deliberate, same reasoning as the original
+              mailto: version: never show a control that silently drops the
+              file. /api/contact posts JSON and does not forward attachments,
+              so photos are requested by email reply instead. The lead arrives
+              with Reply-To set to the visitor, so replying to ask for photos
+              is one click. Adding upload here means handling multipart, size
+              limits, and object storage — a real change, not a flag flip.
+            */}
+            <p class="hint standalone">
+              Send this first and reply to my email with the photos attached
+              &mdash; that thread comes straight back to me. If you&rsquo;d
+              rather lead with the pictures, email{' '}
+              {email && <a href={`mailto:${email}`}>{email}</a>} directly.
+            </p>
+
+            <button type="submit" class="btn primary" data-submit>Send it over</button>
+
+            {/*
+              Status region. `role="status"` so screen readers announce the
+              result without the focus moving. Stays empty until a submit
+              resolves, so nothing renders on first paint.
+            */}
+            <p class="form-status" data-status role="status" aria-live="polite" hidden></p>
+
+            <p class="hint">
+              Repair estimates are free. The {moistureCheck.name} is a separate
+              paid service and I&rsquo;ll tell you the cost before you agree to
+              anything.
+            </p>
+          </form>
+        </div>
+
+        {/* ------------------------------------------------------------ */}
+        {/* SIDEBAR — what makes a photo useful, and ruling work out.     */}
+        {/* ------------------------------------------------------------ */}
+        <aside class="side">
+          <h2 class="side-h">What to send</h2>
+          <ol class="checklist">
+            {sendChecklist.map((item) => (
+              <li>
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+              </li>
+            ))}
+          </ol>
+
+          {/*
+            RULE THINGS OUT — voice profile requires at least one place per
+            page where work is ruled unnecessary.
+          */}
+          <div class="ruleout">
+            <h3>You might not need me</h3>
+            <p>
+              If the crack is thinner than the edge of a credit card, it
+              hasn&rsquo;t moved in a year, and there&rsquo;s no staining
+              anywhere near it, that&rsquo;s usually the wall doing what stucco
+              does in Florida. Send the photo anyway and I&rsquo;ll tell you
+              that for free rather than sell you a repair you don&rsquo;t need.
+            </p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    {/* ---------------------------------------------------------------- */}
+    {/* SITUATIONS — name the distress state out loud.                    */}
+    {/* ---------------------------------------------------------------- */}
+    <section class="section situations">
+      <div class="wrap">
+        <h2>Reasons people usually get in touch</h2>
+        <p class="lede">
+          If one of these is you, say so in the message. Knowing the deadline
+          changes what I recommend and how fast I need to move.
+        </p>
+        <ul class="sit-list">
+          {situations.map((s) => <li>{s}</li>)}
+        </ul>
+      </div>
+    </section>
+
+    {/* ---------------------------------------------------------------- */}
+    {/* WHAT HAPPENS NEXT — removes the fear of the sales visit.          */}
+    {/* ---------------------------------------------------------------- */}
+    <section class="section next">
+      <div class="wrap">
+        <h2>What happens after you send it</h2>
+        <div class="steps">
+          <div class="step">
+            <p class="step-n">1</p>
+            <h3>I look at the photos</h3>
+            <p>
+              You get a real answer about what the wall is likely doing, not a
+              form reply asking to schedule a consultation.
+            </p>
+          </div>
+          <div class="step">
+            <p class="step-n">2</p>
+            <h3>I tell you what it needs</h3>
+            <p>
+              Sometimes that&rsquo;s nothing. Sometimes it&rsquo;s a repair I
+              can price from the photos. Sometimes the honest answer is that I
+              can&rsquo;t tell from a picture and the wall needs testing.
+            </p>
+          </div>
+          <div class="step">
+            <p class="step-n">3</p>
+            <h3>We book the visit if it needs one</h3>
+            <p>
+              Repair estimates are free. If the wall needs a{' '}
+              <a href="/stucco-repair/">{moistureCheck.name}</a>, that&rsquo;s
+              a separate paid service at ${moistureCheck.priceLow}&ndash;$
+              {moistureCheck.priceHigh} {moistureCheck.priceNote}, quoted
+              before you commit.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* ---------------------------------------------------------------- */}
+    {/* INTERNAL LINKS — architecture rule: contact routes back to the    */}
+    {/* money pages rather than dead-ending.                              */}
+    {/* ---------------------------------------------------------------- */}
+    <section class="section elsewhere">
+      <div class="wrap">
+        <h2>While you&rsquo;re here</h2>
+        <ul class="link-list">
+          <li>
+            <a href="/stucco-repair/">Stucco repair</a> — what the work
+            involves, and what it costs.
+          </li>
+          <li>
+            <a href="/stucco-repair/#pricing">What stucco repair costs</a> —
+            researched market ranges for this area, by job type.
+          </li>
+          <li>
+            <a href="/stucco-repair-daytona-beach/">
+              Stucco repair in Daytona Beach
+            </a>{' '}
+            — how the local housing stock and salt exposure play into it.
+          </li>
+          <li>
+            <a href="/blog/why-stucco-cracks-come-back/">
+              Why stucco cracks come back
+            </a>{' '}
+            — worth reading if you&rsquo;ve had this repaired before.
+          </li>
+        </ul>
+
+        <p class="credentials">
+          Licensed and insured{licenseNumber ? ` — License ${licenseNumber}` : ''}.
+          Founded {business.founded}.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+</Layout>
+
+<style>
+  .hero {
+    background: var(--paper-warm);
+    border-bottom: 1px solid var(--rule);
+    padding-block: clamp(2.5rem, 7vw, 4.5rem);
+  }
+
+  .hero-lede {
+    font-size: clamp(1.0625rem, 2.2vw, 1.25rem);
+    color: var(--ink-soft);
+    max-width: 38rem;
+  }
+
+  .reach {
+    margin-top: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .reach-line {
+    margin: 0;
+    max-width: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.875rem;
+    align-items: baseline;
+  }
+
+  .reach-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    font-weight: 650;
+    color: var(--ink-faint);
+    min-width: 3.5rem;
+  }
+
+  .note {
+    margin-top: 1.5rem;
+    font-size: 0.9375rem;
+    color: var(--ink-faint);
+    max-width: 34rem;
+  }
+
+  /* ---- form ---- */
+
+  .grid {
+    display: grid;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  @media (min-width: 56rem) {
+    .grid { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
+  }
+
+  .contact-form { margin-top: 1.75rem; max-width: 34rem; }
+
+  .field { margin-bottom: 1.125rem; }
+
+  label {
+    display: block;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    margin-bottom: 0.375rem;
+  }
+
+  .optional { font-weight: 450; color: var(--ink-faint); }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    font: inherit;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1.5px solid var(--rule);
+    border-radius: 8px;
+    padding: 0.6875rem 0.8125rem;
+    min-height: 3rem;
+  }
+
+  textarea { min-height: 7rem; resize: vertical; }
+
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0.75rem 1.75rem;
+    border: 0;
+    border-radius: 8px;
+    font: inherit;
+    font-weight: 650;
+    font-size: 1.0625rem;
+    cursor: pointer;
+    transition: transform 0.12s ease;
+  }
+
+  .btn:active { transform: translateY(1px); }
+
+  .btn.primary { background: var(--accent); color: #fff; }
+
+  .btn[aria-busy='true'] { opacity: 0.72; cursor: progress; }
+
+  /* Honeypot: off-canvas rather than display:none, which some bots skip. */
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  /* ---- submit status ---- */
+
+  .form-status {
+    margin-top: 1rem;
+    padding: 0.875rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--rule);
+    background: var(--paper-warm);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    max-width: 34rem;
+  }
+
+  .form-status[data-state='success'] {
+    border-color: var(--accent);
+    background: #eef4f5;
+    color: var(--accent-deep);
+    font-weight: 550;
+  }
+
+  .form-status[data-state='error'] {
+    border-color: #b4453a;
+    background: #fdf2f0;
+    color: #8a2f26;
+  }
+
+  /* Per-field validation message from the server. */
+  .field-error {
+    display: block;
+    margin-top: 0.375rem;
+    font-size: 0.875rem;
+    color: #8a2f26;
+    font-weight: 500;
+  }
+
+  .field[data-invalid] input,
+  .field[data-invalid] select,
+  .field[data-invalid] textarea {
+    border-color: #b4453a;
+  }
+
+  .hint {
+    font-size: 0.875rem;
+    color: var(--ink-faint);
+    margin: 0.625rem 0 0;
+    max-width: 34rem;
+  }
+
+  .hint.standalone { margin-bottom: 1.25rem; }
+
+  /* ---- sidebar ---- */
+
+  .side {
+    background: var(--paper-warm);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    padding: clamp(1.375rem, 3.5vw, 1.875rem);
+  }
+
+  .side-h { font-size: clamp(1.25rem, 3vw, 1.5rem); }
+
+  .checklist {
+    list-style: none;
+    counter-reset: step;
+    margin: 1.25rem 0 0;
+    padding: 0;
+  }
+
+  .checklist li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 2.25rem;
+    margin-bottom: 1.375rem;
+  }
+
+  .checklist li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0.0625rem;
+    width: 1.625rem;
+    height: 1.625rem;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+  }
+
+  .checklist h3 { font-size: 1rem; margin-bottom: 0.25rem; }
+
+  .checklist p {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
+  }
+
+  .ruleout {
+    margin-top: 0.5rem;
+    padding-top: 1.375rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .ruleout h3 { font-size: 1rem; }
+
+  .ruleout p {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
+  }
+
+  /* ---- situations ---- */
+
+  .situations { background: var(--paper-warm); }
+
+  .situations .lede { color: var(--ink-soft); }
+
+  .sit-list {
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  }
+
+  .sit-list li {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--flag);
+    border-radius: 8px;
+    padding: 0.875rem 1rem;
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
+  }
+
+  /* ---- next steps ---- */
+
+  .steps {
+    margin-top: 1.75rem;
+    display: grid;
+    gap: 1.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  }
+
+  .step-n {
+    margin: 0 0 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--accent);
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--accent);
+    display: grid;
+    place-items: center;
+  }
+
+  .step h3 { font-size: 1.0625rem; }
+
+  .step p { color: var(--ink-soft); font-size: 0.9375rem; margin: 0; }
+
+  /* ---- elsewhere ---- */
+
+  .elsewhere { border-top: 1px solid var(--rule); }
+
+  .link-list {
+    margin: 1.25rem 0 0;
+    padding: 0 0 0 1.125rem;
+    max-width: 38rem;
+  }
+
+  .link-list li {
+    margin-bottom: 0.625rem;
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+  }
+
+  .credentials {
+    margin-top: 1.75rem;
+    font-size: 0.9375rem;
+    color: var(--ink-faint);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn { transition: none; }
+  }
+</style>
+
+{/*
+  Progressive enhancement for the contact form.
+
+  Posts the fields to /api/contact as JSON and renders the result inline, so
+  the visitor stays on the page. No secret is involved on this side — the
+  Resend key lives only in the endpoint's server environment. If this script
+  fails to load, the form still submits natively to the same endpoint.
+*/}
+<script>
+  const form = document.getElementById('contact-form-el') as HTMLFormElement | null;
+
+  if (form) {
+    const status = form.querySelector<HTMLElement>('[data-status]');
+    const button = form.querySelector<HTMLButtonElement>('[data-submit]');
+    const defaultLabel = button?.textContent ?? 'Send it over';
+
+    /** Paints the status region. Passing null clears and hides it. */
+    const setStatus = (state: 'success' | 'error' | null, message?: string) => {
+      if (!status) return;
+      if (!state) {
+        status.hidden = true;
+        status.removeAttribute('data-state');
+        status.textContent = '';
+        return;
+      }
+      status.hidden = false;
+      status.dataset.state = state;
+      status.textContent = message ?? '';
+    };
+
+    /** Removes any field-level errors from the previous attempt. */
+    const clearFieldErrors = () => {
+      form.querySelectorAll('.field-error').forEach((el) => el.remove());
+      form.querySelectorAll('[data-invalid]').forEach((el) => {
+        el.removeAttribute('data-invalid');
+        el.querySelector('input, select, textarea')?.removeAttribute('aria-invalid');
+      });
+    };
+
+    /** Renders server-side validation messages next to their inputs. */
+    const showFieldErrors = (errors: Record<string, string>) => {
+      for (const [name, message] of Object.entries(errors)) {
+        const control = form.elements.namedItem(name);
+        if (!(control instanceof HTMLElement)) continue;
+        const field = control.closest('.field');
+        if (!field) continue;
+        field.setAttribute('data-invalid', '');
+        control.setAttribute('aria-invalid', 'true');
+        const note = document.createElement('span');
+        note.className = 'field-error';
+        note.textContent = message;
+        field.appendChild(note);
+      }
+      // Move the visitor to the first thing they need to fix.
+      form
+        .querySelector<HTMLElement>('[data-invalid] input, [data-invalid] select, [data-invalid] textarea')
+        ?.focus();
+    };
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearFieldErrors();
+      setStatus(null);
+
+      // Let the browser's own constraint validation run first.
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      if (button) {
+        button.disabled = true;
+        button.setAttribute('aria-busy', 'true');
+        button.textContent = 'Sending…';
+      }
+
+      try {
+        const payload = Object.fromEntries(new FormData(form).entries());
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        // A non-JSON body means something upstream failed; handle it as an error
+        // rather than throwing an unhandled parse exception.
+        const result = await response.json().catch(() => null);
+
+        if (response.ok && result?.ok) {
+          form.reset();
+          setStatus(
+            'success',
+            'Got it — your message is on its way to me. I read these myself and will reply to the email address you gave. If you have photos of the wall, reply to that email with them attached.',
+          );
+          status?.focus?.();
+          return;
+        }
+
+        if (result?.errors) showFieldErrors(result.errors);
+        setStatus(
+          'error',
+          result?.error ??
+            'That did not go through. Please try again, or email daytonabeachstucco@gmail.com directly.',
+        );
+      } catch {
+        // Network-level failure: the request never completed.
+        setStatus(
+          'error',
+          'That did not send — it looks like the connection dropped. Please try again, or email daytonabeachstucco@gmail.com directly.',
+        );
+      } finally {
+        if (button) {
+          button.disabled = false;
+          button.removeAttribute('aria-busy');
+          button.textContent = defaultLabel;
+        }
+      }
+    });
+  }
+</script>

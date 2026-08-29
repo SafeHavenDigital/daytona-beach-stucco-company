@@ -1,0 +1,143 @@
+---
+/**
+ * The single conversion point.
+ *
+ * PHONE HANDLING: `phone` in src/config/site.ts is null until the client
+ * supplies the real number. While null, this renders the email/photo path and
+ * NO call affordance at all — no tel: link, no "call us", no stand-in digits.
+ * Setting `phone` to the real string is the only change needed; the call
+ * button, the tel: link, and the LocalBusiness telephone field all light up
+ * automatically. Do not hardcode a number anywhere else.
+ */
+import { phone, email, moistureCheck } from '../config/site';
+
+interface Props {
+  variant?: 'panel' | 'inline';
+  heading?: string;
+}
+
+const { variant = 'panel', heading = 'Tell me what you’re looking at' } = Astro.props;
+
+/**
+ * The contact form lives at /contact/#contact-form. On the contact page
+ * itself that resolves to a same-page anchor; everywhere else it navigates.
+ * Astro.url.pathname is compared with a trailing slash tolerated.
+ */
+const onContactPage = Astro.url.pathname.replace(/\/?$/, '/') === '/contact/';
+const formHref = onContactPage ? '#contact-form' : '/contact/#contact-form';
+---
+
+<div class:list={['cta', variant]}>
+  <h2>{heading}</h2>
+
+  <p class="lede">
+    Send a photo of the wall and I&rsquo;ll tell you straight what you&rsquo;re
+    looking at. If it&rsquo;s cosmetic, I&rsquo;ll say so. If it needs a{' '}
+    {moistureCheck.name}, I&rsquo;ll tell you that too, and what it costs before
+    you commit to anything.
+  </p>
+
+  <div class="actions">
+    {phone && (
+      <a class="btn primary" href={`tel:${phone.replace(/[^0-9+]/g, '')}`}>
+        Call {phone}
+      </a>
+    )}
+
+    <a class="btn secondary" href={formHref}>Send a photo</a>
+
+    {email && (
+      <a class="btn quiet" href={`mailto:${email}`}>Or email {email}</a>
+    )}
+  </div>
+
+  {/*
+    BUILD NOTE — rendered only while `phone === null` in src/config/site.ts.
+    Supply the real number there and this notice disappears along with it.
+    Kept as a JSX comment so it does not ship as an HTML comment.
+  */}
+  {!phone && (
+    <p class="pending">
+      The phone line isn&rsquo;t published yet. The form and the email above
+      both reach me directly.
+    </p>
+  )}
+</div>
+
+<style>
+  .cta { color: inherit; }
+
+  .cta.panel {
+    background: var(--accent);
+    color: #fff;
+    border-radius: 14px;
+    padding: clamp(1.75rem, 5vw, 2.75rem);
+  }
+
+  .cta.panel :global(h2) { color: #fff; }
+
+  .lede {
+    color: color-mix(in srgb, currentColor 82%, transparent);
+    max-width: 38rem;
+  }
+
+  .cta.inline .lede { color: var(--ink-soft); }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1.0625rem;
+    text-decoration: none;
+    transition: transform 0.12s ease, background-color 0.12s ease;
+  }
+
+  .btn:active { transform: translateY(1px); }
+
+  .panel .primary { background: #fff; color: var(--accent-deep); }
+  .panel .secondary {
+    background: transparent;
+    color: #fff;
+    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, #fff 55%, transparent);
+  }
+
+  .inline .primary { background: var(--accent); color: #fff; }
+  .inline .secondary {
+    background: transparent;
+    color: var(--accent);
+    box-shadow: inset 0 0 0 1.5px var(--rule);
+  }
+
+  .btn.quiet {
+    padding-inline: 0.25rem;
+    text-decoration: underline;
+    font-weight: 550;
+    font-size: 0.9375rem;
+  }
+
+  .panel .quiet { color: color-mix(in srgb, #fff 88%, transparent); }
+  .inline .quiet { color: var(--ink-soft); }
+
+  .pending {
+    margin: 1.25rem 0 0;
+    font-size: 0.9375rem;
+    color: color-mix(in srgb, currentColor 72%, transparent);
+  }
+
+  .cta.inline .pending { color: var(--ink-faint); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn { transition: none; }
+  }
+</style>
