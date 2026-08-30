@@ -1,0 +1,576 @@
+---
+/**
+ * /stucco-crack-triage/ — The Stucco Triage Guide.
+ *
+ * Source of truth: campaigns/stucco-triage-guide/lead-magnet.md (approved by
+ * the client 2026-08-30, unmodified). This page is a faithful publication of
+ * that approved copy. Do not rewrite the triage logic here — edit the campaign
+ * file first, then mirror it.
+ *
+ * Target: `hairline cracks in stucco when to worry`, `stucco crack types`,
+ * `when to worry about stucco cracks`, `is my stucco crack serious`.
+ * Intent: informational / top-of-funnel triage. The reader does not yet know
+ * what is wrong. Per brand/audience.md they arrive UNDIAGNOSED — that is the
+ * defining trait of this page's visitor.
+ *
+ * ------------------------------------------------------------------
+ * DESIGN INVARIANT — do not "optimize" this away (client instruction
+ * 2026-08-30, logged in brand/learnings.md):
+ * Three of the four patterns tell the reader to buy nothing, and PATTERN 3
+ * ROUTES THE READER AWAY from the Stucco Moisture Check toward a structural
+ * engineer. That is deliberate. If a wall is moving because of what is under
+ * it, moisture testing answers the wrong question. A guide where every path
+ * led to the paid service would read as a funnel, and the Pattern 4
+ * recommendation would stop being credible. Keep it.
+ *
+ * OFFER SEPARATION (brand/positioning.md): repair estimates are free; the
+ * Stucco Moisture Check is a separate paid $300-$500 service; the fee is
+ * never credited toward repair work; it is NOT a home inspection and NOT an
+ * independent third-party report.
+ *
+ * CANNIBALIZATION CONTROL: the full Moisture Check process, deliverables, and
+ * reading bands live ONLY on /stucco-moisture-testing/. This page carries a
+ * short bridge plus a link. Do not expand it here.
+ *
+ * OMITTED — blocked on missing prerequisites, absent rather than stubbed:
+ *   - [WALL RECORD OPT-IN] The approved magnet is a hybrid: guide ungated,
+ *     Wall Record + 90-day reminder email-gated. THERE IS NO ESP
+ *     (.env has only RESEND_API_KEY, which is transactional-only). Publishing
+ *     an opt-in that cannot deliver would be a promise the site cannot keep,
+ *     so the entire gated block is omitted rather than stubbed. The copy is
+ *     preserved verbatim in campaigns/stucco-triage-guide/lead-magnet.md and
+ *     the delivery emails in campaigns/stucco-triage-guide/emails/. When an
+ *     ESP exists, restore the block from the campaign file.
+ *   - [CRACK ILLUSTRATIONS] No real project photography exists. Per client
+ *     instruction, AI imagery may never be presented as real customer work.
+ *     Patterns are identified by measurable criteria instead, which is how
+ *     the approved guide was written — visuals were never load-bearing.
+ * ------------------------------------------------------------------
+ */
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import { business, moistureCheck, serviceArea } from '../../config/site';
+
+const title =
+  'Stucco Cracks: When to Worry | A Daytona Beach Homeowner’s Triage Guide';
+const description =
+  'Four stucco crack patterns and what each one actually means. Most are not emergencies. Here is how to tell which one you have, and which one needs attention now.';
+
+const usd = (n: number) => '$' + n.toLocaleString('en-US');
+
+interface Pattern {
+  readonly n: number;
+  readonly name: string;
+  readonly looks: string;
+  readonly means: string;
+  readonly verdict: string;
+  readonly tone: 'watch' | 'watch' | 'look' | 'act';
+  readonly detail: readonly string[];
+}
+
+/** Faithful to the approved campaign copy. Verdicts must not be softened. */
+const patterns: readonly Pattern[] = [
+  {
+    n: 1,
+    name: 'Fine surface cracking, spread over an area',
+    looks:
+      'A web or map of very fine lines across a section of wall. Individual lines are hairline — thinner than a credit card edge. They do not run in one clear direction; they spread.',
+    means:
+      'Shrinkage in the stucco itself as it cured, or the surface aging. This is the most common thing homeowners call about and the least likely to indicate a structural problem.',
+    verdict: 'Watch it',
+    tone: 'watch',
+    detail: [
+      'This does not need emergency attention. It is worth keeping an eye on, worth addressing eventually for appearance and to keep water out of the surface, and not worth losing a weekend over.',
+      '<strong>What would change the verdict:</strong> if any individual line in the web widens past a credit card edge, or if staining appears along it, read Pattern 3 and Pattern 4 again.',
+    ],
+  },
+  {
+    n: 2,
+    name: 'A single straight crack from a window or door corner',
+    looks:
+      'One crack, running diagonally out and up — or out and down — from the corner of an opening. Often at roughly 45 degrees.',
+    means:
+      'Stress concentration. Corners of openings are where a wall is weakest, and normal building movement — settling, thermal expansion, wind load — shows up there first. Extremely common, and by itself not proof of anything serious.',
+    verdict: 'Watch it, but measure it — and measure it again',
+    tone: 'watch',
+    detail: [
+      'This one is about <em>change over time</em>, not the crack itself. A stable corner crack that has looked the same for four years is a very different thing from one that has doubled since spring.',
+      '<strong>Why this pattern gets extra attention:</strong> window and door corners are also where water most commonly gets in, because that is where flashing and sealant do the hard work. The crack may be harmless. The junction it sits on is the highest-risk detail on the wall. If this crack comes with anything in Pattern 4, treat Pattern 4 as the answer.',
+    ],
+  },
+  {
+    n: 3,
+    name: 'A wide, long, or stepped crack',
+    looks:
+      'Any of these — wider than a dime edge; running more than a few feet in a continuous line; stepping in a staircase pattern; the two sides no longer flush, so you can feel a lip with your fingertip; or the same crack appearing in the same place inside the house.',
+    means:
+      'Movement larger than surface shrinkage. This can mean foundation or framing movement, and it is the category most likely to be about the structure rather than the finish.',
+    verdict: 'Get it looked at',
+    tone: 'look',
+    detail: [
+      'Not a five-alarm emergency in most cases, but this is past the point where a homeowner can reasonably assess it alone, and past the point where patching the visible line accomplishes anything.',
+      '<strong>Important, and it points away from us:</strong> if the underlying cause is structural movement, moisture testing is not the right first call. This may need a structural engineer. A good contractor will tell you that rather than sell you something.',
+    ],
+  },
+  {
+    n: 4,
+    name: 'Cracking with staining, softness, or bubbling',
+    looks:
+      'Any crack — including a hairline one — with dark streaking or a tide-line stain; paint bubbling, blistering or peeling nearby; a patch that sounds hollow when tapped or gives under firm thumb pressure; efflorescence, the white chalky crystalline deposit; a musty smell inside against that same wall; or any of these below a window, along a roofline, or near a hose bib or downspout.',
+    means:
+      'Water has gotten in, or is getting in. The crack may be the entry point, or it may be a symptom of what the water has already done to what is behind it.',
+    verdict: 'Act on this one',
+    tone: 'act',
+    detail: [
+      'This is the pattern to take seriously, and it is the one where the width of the crack matters least. <strong>A hairline crack with a stain under it is a more urgent finding than a wide, clean, dry crack.</strong>',
+      'Stucco is a reservoir cladding. It is expected to get wet and then dry out. The system fails when water gets in and <em>cannot leave</em> — and by the time that shows on the outside, it has typically been going on for a while. The damage is not the crack. The damage is what the water has been doing to the lath, the sheathing, and the framing behind it.',
+    ],
+  },
+];
+
+const doNow = [
+  {
+    title: 'Photograph it with something for scale',
+    body: 'Put a coin or a tape measure next to the crack and take the photo straight on, not at an angle. Note where on the house it is.',
+  },
+  {
+    title: 'Write down the width at the widest point, and the date',
+    body: 'This single number is the most useful thing you will have in six months. A crack that has not moved is a fundamentally different problem from one that has.',
+  },
+  {
+    title: 'Check the ground below it after the next hard rain',
+    body: 'Look for where water actually goes — splashback, a downspout dumping against the wall, a dripping hose bib, grade sloping toward the house. A surprising number of stucco moisture problems are a drainage problem wearing a stucco costume, and that is the cheapest possible fix.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'When should I worry about a crack in stucco?',
+    a: 'Width and company. Fine hairline cracking spread across an area is usually surface shrinkage and is rarely urgent. A crack wider than a dime edge, one that steps in a staircase pattern, or one where the two sides are no longer flush suggests movement worth having looked at. The most urgent case is not about width at all: any crack accompanied by staining, bubbling paint, a soft or hollow-sounding spot, or white chalky efflorescence suggests water is involved, and a hairline crack with a stain under it matters more than a wide dry one.',
+  },
+  {
+    q: 'Are hairline cracks in stucco normal?',
+    a: 'Generally yes. Fine cracking that spreads in a web across a section of wall is usually shrinkage from curing or from the surface aging, and it is the most common thing homeowners ask about. It is worth keeping an eye on and worth addressing eventually to keep water out of the surface, but it is not normally an emergency on its own.',
+  },
+  {
+    q: 'How wide does a stucco crack have to be to matter?',
+    a: 'A useful field reference: a standard credit card is about 0.76 mm thick and a US dime is about 1.35 mm. If a credit card edge slides in, you are above roughly 0.8 mm. If a dime edge fits, you are above roughly 1.3 mm and into the range worth having assessed. Width alone is not the whole answer though — staining or softness alongside a narrow crack outranks width every time.',
+  },
+  {
+    q: 'Why does my stucco crack at the window corners?',
+    a: 'Corners of openings are the weakest points in a wall, so normal building movement — settling, thermal expansion, wind load — concentrates there and shows up first as a diagonal crack running out from the corner. On its own it is extremely common and not proof of a problem. It matters because window and door corners are also where water most often gets in, since that is where flashing and sealant do the work.',
+  },
+  {
+    q: 'Can I tell if there is water behind my stucco by looking at it?',
+    a: 'No, and that is the honest limit of any guide including this one. A wall can look completely sound from the yard and have wet sheathing behind it, and alarming-looking staining can turn out to be a surface issue. Both happen. The only way to know is to measure the moisture in that wall with a meter, at locations where the readings mean something.',
+  },
+  {
+    q: 'Should I just patch the crack myself?',
+    a: 'If it is fine surface cracking with no staining and no soft spots, sealing the surface is reasonable maintenance. The case where patching causes harm is when there is already water in the wall: the patch seals the symptom, the moisture stays in, and the crack tends to return — often bigger, because the months in between are months the water kept working on the lath and sheathing behind it.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const articleSchema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Stucco Cracks: When to Worry',
+  description,
+  author: { '@type': 'Organization', name: business.name },
+  publisher: { '@type': 'Organization', name: business.name },
+  datePublished: '2026-08-30',
+};
+if (serviceArea) articleSchema.about = serviceArea;
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <SiteHeader current="/stucco-crack-triage/" />
+
+  <main>
+    {/* HERO */}
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">A homeowner&rsquo;s guide</p>
+        <h1>What your stucco crack is actually telling you</h1>
+        <p class="hero-lede">
+          You noticed a crack. Now you are standing in your yard trying to work
+          out whether you are looking at something cosmetic or something
+          expensive.
+        </p>
+      </div>
+    </section>
+
+    {/* INTRO */}
+    <section class="section">
+      <div class="wrap narrow">
+        <p>
+          That is a hard question to answer from where you are standing, and the
+          internet is not much help &mdash; most of what you will find is either
+          a maintenance checklist written for walls that are fine, or a
+          contractor telling you to call immediately.
+        </p>
+
+        <p class="lede">So here is the honest version.</p>
+
+        <p>
+          Most stucco cracks in Volusia County are not emergencies. A good number
+          of them genuinely do not need anything done this year. Some do. The
+          difference is usually readable from the outside, if you know what you
+          are looking at &mdash; and this guide is how you read it.
+        </p>
+
+        <p>
+          There is also a category this guide cannot resolve, and we will be
+          straight about which one that is when we get there.
+        </p>
+
+        <p class="note">
+          <strong>What you need:</strong> a tape measure or ruler with millimetre
+          or 1/16-inch markings, and about ten minutes.
+        </p>
+      </div>
+    </section>
+
+    {/* MEASUREMENT */}
+    <section class="section alt">
+      <div class="wrap narrow">
+        <h2>First: the one measurement that matters most</h2>
+
+        <p>
+          Before anything else, measure the width of the crack at its widest
+          point. Width is the single most useful number you can collect, because
+          it separates the two broad categories of stucco cracking more reliably
+          than length, location, or how alarming it looks.
+        </p>
+
+        <div class="ref">
+          <p>A useful reference point:</p>
+          <ul>
+            <li>
+              A standard <strong>credit card</strong> is about
+              <strong>0.76&nbsp;mm</strong> thick
+            </li>
+            <li>
+              A <strong>US dime</strong> is about <strong>1.35&nbsp;mm</strong>
+            </li>
+          </ul>
+          <p class="fine">
+            If you can slide a credit card edge into the crack, you are above
+            roughly 0.8&nbsp;mm. If a dime edge fits, you are above roughly
+            1.3&nbsp;mm.
+          </p>
+        </div>
+
+        <p>
+          Write the number down. You will want it later, and you will want it
+          far more in six months.
+        </p>
+      </div>
+    </section>
+
+    {/* PATTERNS */}
+    <section class="section">
+      <div class="wrap">
+        <h2>The four things you are looking at</h2>
+        <p class="lede narrow-p">
+          Nearly every stucco crack a homeowner notices falls into one of four
+          patterns. Find yours below.
+        </p>
+
+        <div class="patterns">
+          {patterns.map((p) => (
+            <article class:list={['pattern', p.tone]}>
+              <header>
+                <p class="pnum">Pattern {p.n}</p>
+                <h3>{p.name}</h3>
+                <p class:list={['verdict', p.tone]}>{p.verdict}</p>
+              </header>
+
+              <dl>
+                <dt>What it looks like</dt>
+                <dd set:html={p.looks} />
+                <dt>What it usually means</dt>
+                <dd set:html={p.means} />
+              </dl>
+
+              {p.detail.map((d) => <p class="pdetail" set:html={d} />)}
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* THE LIMIT */}
+    <section class="section limit">
+      <div class="wrap narrow">
+        <h2>The honest limit of this guide</h2>
+
+        <p>
+          Here is what a guide cannot do, and it matters more than anything
+          above.
+        </p>
+
+        <p class="lede">
+          Everything in Pattern 4 is an outside symptom of an inside problem
+          &mdash; and the outside is not where the answer is.
+        </p>
+
+        <p>
+          You can have significant moisture behind a wall that looks completely
+          fine from the yard. You can also have alarming-looking staining that
+          turns out to be a surface issue and nothing more. Both happen. Neither
+          can be sorted out by looking harder.
+        </p>
+
+        <p>
+          The only way to know whether there is water in a wall is to measure the
+          moisture in that wall. That means a meter against the wall, in the
+          specific areas where the readings will mean something.
+        </p>
+
+        <p class="note">
+          That is a real limit, not a sales setup. If you have Pattern 1 or
+          Pattern 2 with no staining, you do not need anyone to measure anything
+          right now. Genuinely. Take the photo, write down the width, look again
+          in six months.
+        </p>
+      </div>
+    </section>
+
+    {/* DO NOW */}
+    <section class="section alt">
+      <div class="wrap narrow">
+        <h2>Do these three things right now</h2>
+        <p>
+          Whatever pattern you landed on, these take ten minutes and are worth
+          doing today.
+        </p>
+
+        <ol class="steps">
+          {doNow.map((s, i) => (
+            <li>
+              <span class="num">{i + 1}</span>
+              <div>
+                <h3>{s.title}</h3>
+                <p>{s.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    {/* BRIDGE — Pattern 4 only */}
+    <section class="section">
+      <div class="wrap narrow">
+        <h2>If you landed on Pattern 4</h2>
+
+        <p>
+          If you have staining, softness, bubbling paint, or efflorescence along
+          a crack, the next step is measuring the moisture in that wall &mdash;
+          not patching the line.
+        </p>
+
+        <p>
+          That is what our <strong>{moistureCheck.name}</strong> is: a paid
+          diagnostic service, <strong>
+            {usd(moistureCheck.priceLow)}&ndash;{usd(moistureCheck.priceHigh)}
+          </strong>, {moistureCheck.priceNote}. A visual examination of the wall,
+          then moisture readings taken with pin-type probe or pinless meters,
+          with thermal imaging where appropriate to identify areas worth testing
+          more closely.
+        </p>
+
+        <p class="note">
+          Two things worth being clear about. The {moistureCheck.name} is a
+          <strong> separate paid service</strong>, not part of a free estimate
+          &mdash; our repair estimates are free, as they are with most
+          contractors, and the Check fee is not credited toward repair work. It
+          is also <strong>not a home inspection</strong> and not an independent
+          third-party report; in Florida, home inspectors are a separately
+          licensed profession. This is a stucco contractor&rsquo;s moisture
+          assessment of your walls.
+        </p>
+
+        <p>
+          <a class="deep" href="/stucco-moisture-testing/">
+            What the {moistureCheck.name} involves, what the readings mean, and
+            what it costs &rarr;
+          </a>
+        </p>
+
+        <p class="why">
+          <strong>Why we do it this way:</strong> the ordinary way to quote
+          stucco repair is to look at the wall and price the patch. If the wall
+          is wet behind the finish, that patch seals the water in, and the crack
+          comes back. We would rather find out first.
+        </p>
+      </div>
+    </section>
+
+    {/* FAQ */}
+    <section class="section alt">
+      <div class="wrap narrow">
+        <h2>Common questions</h2>
+        <div class="faqs">
+          {faqs.map((f) => (
+            <details>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <ContactCta />
+      </div>
+    </section>
+
+    <p class="disclaimer wrap">
+      This guide is general information about reading stucco cracks, not an
+      assessment of your specific wall. No guide can substitute for measuring
+      the actual moisture in your actual wall.
+    </p>
+  </main>
+
+  <SiteFooter />
+</Layout>
+
+<style>
+  .wrap { width: min(72rem, 92vw); margin-inline: auto; }
+  .narrow { width: min(46rem, 92vw); }
+  .narrow-p { max-width: 46rem; }
+
+  .hero { padding-block: 3.5rem 2rem; }
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    color: var(--muted, #666);
+    margin: 0 0 0.75rem;
+  }
+  h1 { font-size: clamp(1.9rem, 4.5vw, 2.9rem); line-height: 1.15; margin: 0 0 1rem; max-width: 20ch; }
+  .hero-lede { font-size: 1.2rem; line-height: 1.6; max-width: 46rem; margin: 0; }
+
+  .section { padding-block: 2.5rem; }
+  .section.alt { background: var(--alt, #f7f6f4); }
+  h2 { font-size: clamp(1.35rem, 2.6vw, 1.8rem); margin: 0 0 1rem; }
+  p { line-height: 1.7; }
+  .lede { font-size: 1.1rem; font-weight: 500; }
+  .note {
+    border-left: 3px solid var(--rule, #ddd);
+    padding-left: 1rem;
+    color: var(--muted, #555);
+  }
+  .fine { font-size: 0.95rem; color: var(--muted, #555); }
+
+  .ref {
+    background: var(--alt2, #fff);
+    border: 1px solid var(--rule, #ddd);
+    border-radius: 0.5rem;
+    padding: 1rem 1.25rem;
+    margin-block: 1.25rem;
+  }
+  .ref ul { margin: 0.5rem 0; padding-left: 1.1rem; }
+  .ref li { line-height: 1.7; }
+
+  .patterns { display: grid; gap: 1.25rem; margin-top: 1.5rem; }
+  @media (min-width: 56rem) {
+    .patterns { grid-template-columns: 1fr 1fr; }
+  }
+  .pattern {
+    border: 1px solid var(--rule, #ddd);
+    border-left-width: 4px;
+    border-radius: 0.5rem;
+    padding: 1.25rem 1.4rem;
+    background: var(--alt2, #fff);
+  }
+  .pattern.watch { border-left-color: #7a9a7e; }
+  .pattern.look  { border-left-color: #c08a3e; }
+  .pattern.act   { border-left-color: #b4543a; }
+
+  .pnum {
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-size: 0.75rem;
+    color: var(--muted, #666);
+    margin: 0 0 0.35rem;
+  }
+  .pattern h3 { margin: 0 0 0.6rem; font-size: 1.1rem; line-height: 1.3; }
+
+  .verdict {
+    display: inline-block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    margin: 0 0 0.9rem;
+  }
+  .verdict.watch { background: #e8f0e9; color: #33562f; }
+  .verdict.look  { background: #f8eeda; color: #6d4715; }
+  .verdict.act   { background: #f8e4de; color: #7d2f1c; }
+
+  .pattern dl { margin: 0 0 0.75rem; }
+  .pattern dt {
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted, #666);
+    margin-top: 0.6rem;
+  }
+  .pattern dd { margin: 0.25rem 0 0; line-height: 1.65; }
+  .pdetail { font-size: 0.97rem; margin: 0.75rem 0 0; }
+
+  .limit { border-block: 1px solid var(--rule, #ddd); }
+
+  .steps { list-style: none; padding: 0; margin: 1.25rem 0 0; display: grid; gap: 1rem; }
+  .steps li { display: flex; gap: 0.9rem; align-items: flex-start; }
+  .steps .num {
+    flex: none;
+    width: 1.9rem; height: 1.9rem;
+    border-radius: 50%;
+    background: var(--ink, #222); color: #fff;
+    display: grid; place-items: center;
+    font-size: 0.9rem; font-weight: 600;
+  }
+  .steps h3 { margin: 0 0 0.2rem; font-size: 1rem; }
+  .steps p { margin: 0; }
+
+  .deep { font-weight: 600; }
+  .why { border-left: 3px solid var(--rule, #ddd); padding-left: 1rem; }
+
+  .faqs { display: grid; gap: 0.5rem; }
+  details {
+    border: 1px solid var(--rule, #ddd);
+    border-radius: 0.4rem;
+    padding: 0.85rem 1rem;
+    background: var(--alt2, #fff);
+  }
+  summary { font-weight: 600; cursor: pointer; line-height: 1.5; }
+  details p { margin: 0.7rem 0 0; }
+
+  .disclaimer {
+    font-size: 0.9rem;
+    color: var(--muted, #666);
+    font-style: italic;
+    padding-block: 1.5rem 2.5rem;
+  }
+</style>

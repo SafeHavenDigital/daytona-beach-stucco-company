@@ -4,7 +4,38 @@ Append-only. What worked, what didn't, what we learned about the audience.
 
 ## What Works
 
+
+- [2026-08-30] [/email-sequences] 8-part welcome sequence approved as-is, no edits. Angle: "Find the
+  Water First." Tone: calm authority, zero exclamation points, no manufactured urgency. Subject line
+  style chosen: plain//descriptive over curiosity-gap. **Client explicitly affirmed two structural
+  choices** — (1) the stretched cadence (days 0/2/4/7/11/14/18 + day 90) over the skill's default
+  0/2/4/6/8/10/12, and (2) Email 6's full disclosure block. Both should be treated as defaults for
+  this brand going forward, not one-off decisions.
+- [2026-08-30] [/email-sequences] **Disclosure outperforms polish as a persuasion strategy for this
+  brand.** Client affirmed keeping copy that volunteers the fee is NOT credited toward repair, that
+  the service is NOT a home inspection, and that waiting is the correct call for most readers.
+  Confirms the positioning note that hedged, limiting language reads as expertise in a Stage 3
+  low-trust market. **Do not sand these into absolutes in any future asset.**
+- [2026-08-30] [/lead-magnet] Triage framing beat maintenance framing in concept selection. Every
+  competitor asset found (national and local) is a *maintenance* checklist for walls that are fine;
+  nobody serves the "is this serious?" moment. Client selected the triage concept and confirmed the
+  bridge felt natural. **Pattern 3 routing readers AWAY from the paid service (toward a structural
+  engineer) was explicitly preserved by client instruction** — treat as a design invariant, not an
+  optimization target.
+
 ## What Doesn't Work
+
+
+- [2026-08-30] [/email-sequences] **Resend is not an ESP and cannot run marketing sequences.**
+  Transactional-only: no lists, broadcasts, automation, scheduled sends, or unsubscribe handling.
+  Attempting marketing mail through it would risk CAN-SPAM exposure and damage the sending-domain
+  reputation the contact form depends on — breaking transactional delivery too. Do not re-litigate
+  this in future sessions; the gap is logged in assets.md.
+- [2026-08-30] [/email-sequences] Subject-line variants implying specific customer cases
+  ("Same crack, same spot, 14 months later"; "Two walls that looked identical") were written but
+  flagged DO-NOT-USE. **No customer stories or case data exist.** Written copy that implies
+  provenance is the easiest place for fabrication to enter this project — same failure mode as
+  placeholder license numbers. Hold until the owner supplies documented cases.
 
 ## Audience Insights
 
@@ -270,3 +301,22 @@ Append-only. What worked, what didn't, what we learned about the audience.
 - `/seo-content` is complete for this piece and the article is `status: published`. The Astro build
   is not a Skills V2 step — no v2.0 skill owns implementation — so the workflow resumes at
   `/content-atomizer`, whose dependency (a real published URL) is now satisfied for the first time.
+
+
+- [2026-08-30] [/lead-magnet] **The defining audience trait is that they arrive undiagnosed**
+  (owner-confirmed). They cannot brief the job, so a low patch bid and a correct full-scope bid look
+  like the same product at intake. This is the mechanical reason a paid diagnostic is coherent
+  rather than odd, and it should anchor every asset for this brand.
+- [2026-08-30] [/lead-magnet] Audience splits structurally into TWO buyers, not five variations:
+  individual/emotional/fear-of-being-burned (homeowner, beachside owner, realtor-with-a-clock) and
+  committee/unemotional/deadline-and-liability (condo/HOA, property manager, commercial). Per
+  positioning.md these are "completely different" buyers. A single asset is unlikely to serve both.
+  Business audience remains all five by client instruction; this is an asset-design constraint only.
+- [2026-08-30] **OPEN GAP — Q4 unverified.** What makes a caller say "this is exactly what I needed"
+  is still unknown. Every hook and subject line written to date is a labeled hypothesis. The 24
+  subject-line variants in the welcome sequence exist precisely because this is unverified. Closing
+  this gap is the single highest-value input the owner can supply.
+- [2026-08-30] **OPEN GAP — Q2 unverified.** What prospects already tried, and what share are on
+  their SECOND repair, is unknown. The starred "pay for it twice" positioning assumes returning
+  cracks are common among actual callers — well-supported as a market claim, unconfirmed as a caller
+  pattern. Email 04-value-story asks readers directly; replies are the collection mechanism.
