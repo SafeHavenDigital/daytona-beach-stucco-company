@@ -392,15 +392,9 @@ const questionsToAsk = [
             {moistureCheck.steps.map((step) => (
               <li>
                 <h3>{step.title}</h3>
-                <p>{step.body}</p>
               </li>
             ))}
           </ol>
-
-          <p class="what-you-get-lede"><strong>What you get back:</strong></p>
-          <ul class="ticks">
-            {moistureCheck.deliverable.map((item) => <li>{item}</li>)}
-          </ul>
 
           <p class="price-line">
             The {moistureCheck.name} runs{' '}
@@ -421,6 +415,9 @@ const questionsToAsk = [
           </p>
 
           <p class="jump">
+            The full process, what the readings mean, and what testing costs
+            are on the{' '}
+            <a href="/stucco-moisture-testing/">stucco moisture testing page</a>.
             If you already know the wall is wet and you want the repair side of
             this, that&rsquo;s covered on the{' '}
             <a href="/stucco-repair/">stucco repair page</a>, including{' '}

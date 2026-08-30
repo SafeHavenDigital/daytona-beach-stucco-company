@@ -40,7 +40,6 @@ import {
   moistureCheck,
   phone,
   serviceArea,
-  openWallPhotos,
   repairPriceRanges,
   repairPerSquareFoot,
   pricingDisclaimer,
@@ -377,41 +376,23 @@ const services = [
               <span class="num">{i + 1}</span>
               <div>
                 <h3>{step.title}</h3>
-                <p>{step.body}</p>
               </div>
             </li>
           ))}
         </ol>
 
-        <p class="caveat">
-          Thermal imaging points us toward areas worth testing &mdash; it
-          doesn&rsquo;t prove moisture on its own, and it isn&rsquo;t needed on
-          every wall. The meters are what confirm what&rsquo;s actually there.
+        <p>
+          It costs {usd(moistureCheck.priceLow)}&ndash;{usd(moistureCheck.priceHigh)},
+          {' '}{moistureCheck.priceNote}, and is <strong>not</strong> included
+          in the free repair estimate.
         </p>
 
-        <h3 class="sub">What you get</h3>
-
-        <ul class="deliverable">
-          {moistureCheck.deliverable.map((item) => <li>{item}</li>)}
-        </ul>
-
-        <p class="note">
-          This is our own assessment of your stucco as the contractor who
-          performs the work. It isn&rsquo;t a home inspection, and it
-          isn&rsquo;t an independent inspection report.
+        <p>
+          <a href="/stucco-moisture-testing/">
+            The full process, what the readings mean, and what it costs
+          </a>
         </p>
 
-        {openWallPhotos && (
-          <div class="proof">
-            {openWallPhotos.map((src) => (
-              <img
-                src={src}
-                alt="Damaged substrate behind stucco that looked sound from the outside"
-                loading="lazy"
-              />
-            ))}
-          </div>
-        )}
       </div>
     </section>
 

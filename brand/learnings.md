@@ -199,3 +199,74 @@ Append-only. What worked, what didn't, what we learned about the audience.
   was never caught. Method that earned the rating: present the full diff and hold at the
   confirmation checkpoint rather than writing on the first approval — the owner declined the first
   diff, added a constraint, and the second diff was the one that shipped.
+
+### 2026-08-30 — Thermal imaging gate cleared (from /seo-content, Expand mode)
+
+**What Works**
+- **An unresolved fact gate made the copy hedge about the wrong thing.** The brief carried
+  ⚠️ "confirm the camera is owned before headlining thermal imaging," so the draft wrote step 3
+  in the config's conditional voice ("may also be used when appropriate") and opened the FAQ
+  answer with a flat "No." Both were correct under uncertainty. But the conditional reads to a
+  buyer as hedging about whether the tool *exists*, not about when it is appropriate — the page
+  was quietly declining to claim a capability the company actually has.
+- **Owner confirmation (2026-08-30): the camera is owned and used.** Used when appropriate to
+  identify suspicious areas for further testing; does not by itself confirm moisture.
+- **The fix claims the tool and keeps the honesty move.** Prior learnings noted that competitors
+  advertise thermal imaging as proof and that stating its limit is the ownable trust position.
+  The draft was only executing the second half. Now the page says both: we own it, we use it to
+  decide where the probes go, and it still isn't proof. **Stating a limit is only a credibility
+  move if you visibly hold the tool — a caveat from someone who might not own the equipment
+  reads as an excuse rather than as candor.**
+
+**What Doesn't Work**
+- **A cleared gate leaves stale copies behind.** The ⚠️ lived in three places: the brief's
+  verified-facts block, the article body, and the assets.md row for the brief. Resolving it in
+  the article alone would have left two records still instructing a future run to re-confirm
+  something already confirmed. Gates need clearing everywhere they were written, not just where
+  they were acted on.
+
+**Process note**
+- Iteration Detection correctly diverted this run out of Full Creation Mode. The file existed
+  with a same-day `serp_snapshot_date`, so Refresh had a zero-day diff and nothing to report;
+  Expand was the only option with real work attached. **Recording for future runs: when
+  `serp_snapshot_date` equals today, Refresh is a no-op and the useful question is whether new
+  *business facts* have arrived — which is what actually happened here.**
+
+### 2026-08-30 — /stucco-moisture-testing/ built; cannibalization resolved
+
+**What Works**
+- **The de-dup was smaller than the record claimed, because Phase 10 had already done half of it.**
+  The standing note said the full `moistureCheck` block rendered on three pages. Verified against
+  the codebase: the geo page was deleted (301 in astro.config.mjs), and the homepage was *already*
+  a summary with a link out. Only `/stucco-repair/#moisture-check` was a true full duplicate.
+  **A cannibalization note written before an architecture migration describes the pre-migration
+  site. Re-grep before acting on it.**
+- **The grep found a fourth copy the brief's manifest never listed.**
+  `/blog/why-stucco-cracks-come-back/` rendered steps + deliverables + price. It was not in the
+  brief's "Links FROM" list because that list was written from the keyword plan, not from the
+  code. **The manifest is a starting point; `grep -rn` on the shared config export is the
+  authority on where content actually renders.**
+- **Reducing to step TITLES kept the summaries useful.** Both reduced sections still map
+  `moistureCheck.steps` but render only `step.title`, dropping `step.body`. The reader still sees
+  look / test / scan; the explanatory prose exists once. Shared-config content can be partially
+  reduced rather than deleted.
+- **A build-time TODO comment paid off.** The homepage carried a comment predicting this exact
+  step and naming what to repoint when the page existed. It was accurate and made the change
+  mechanical. Worth repeating: when shipping a deliberate interim state, write down the condition
+  that ends it.
+
+**What Doesn't Work**
+- **The config's own wording had gone stale.** `moistureCheck.steps[2].body` still read "Thermal
+  imaging may also be used when appropriate" after the owner confirmed the camera is owned. Because
+  three pages render that string from `site.ts`, editing the article alone would have left the
+  conditional phrasing live sitewide. **When a fact is confirmed, the shared config is the first
+  place to change, not the last.**
+- **Open-wall photos were sitting on the wrong page.** The `openWallPhotos` block was on
+  `/stucco-repair/` in the section that just got reduced to a summary. Photos of damaged substrate
+  are evidence for the diagnostic argument, so they moved with the full content. Still null in
+  `site.ts` — the highest-value asset the client could supply, and it now has one clear home.
+
+**Process note**
+- `/seo-content` is complete for this piece and the article is `status: published`. The Astro build
+  is not a Skills V2 step — no v2.0 skill owns implementation — so the workflow resumes at
+  `/content-atomizer`, whose dependency (a real published URL) is now satisfied for the first time.

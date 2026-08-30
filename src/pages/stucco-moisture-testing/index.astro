@@ -1,0 +1,528 @@
+---
+/**
+ * /stucco-moisture-testing/ — the site's single authoritative page for the
+ * Stucco Moisture Check (keyword-plan brief: stucco-moisture-testing,
+ * priority DO FIRST).
+ *
+ * Target: `stucco moisture testing`, `stucco moisture check`,
+ * `moisture behind stucco`, `stucco moisture inspection`,
+ * `stucco probe testing`, `thermal imaging stucco`.
+ * Intent: commercial-investigational. NOT repair intent — the buyer wants the
+ * problem identified before committing to a repair. Do not turn this into a
+ * repair page.
+ *
+ * ------------------------------------------------------------------
+ * CANNIBALIZATION CONTROL — hard constraint (brief, 2026-08-29).
+ * The full process, the deliverables, the reading bands, and the testing
+ * detail live ONLY here. Every other page carries a short summary plus a link
+ * to this URL. Reduced on 2026-08-30: /stucco-repair/#moisture-check and
+ * /blog/why-stucco-cracks-come-back/ both previously rendered the full
+ * moistureCheck.steps + .deliverable block. Do not re-expand them.
+ *
+ * OFFER SEPARATION (brand/positioning.md): repair estimates are free; this is
+ * a separate paid $300-$500 service; it is never credited toward repair work.
+ *
+ * THERMAL IMAGING: the camera is owned and used (owner-confirmed 2026-08-30).
+ * It identifies areas worth testing. It does NOT confirm moisture on its own —
+ * the meters do. Stating that limit while holding the camera is the trust
+ * position; competitors advertise thermal imaging as proof. Keep both halves.
+ *
+ * READING BANDS are published third-party industry conventions, NOT a code
+ * standard and NOT this company's thresholds. Never reframe them as ours.
+ *
+ * OMITTED — blocked on unsupplied facts, absent rather than stubbed:
+ *   - [OPEN-WALL PHOTO SET] renders only when openWallPhotos is populated
+ * ------------------------------------------------------------------
+ */
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import {
+  business,
+  moistureCheck,
+  serviceArea,
+  openWallPhotos,
+} from '../../config/site';
+
+const title =
+  'Stucco Moisture Testing in Daytona Beach | What It Is, What It Costs';
+const description =
+  'Stucco moisture testing finds water behind the wall before you pay to close it up. What we test, what the readings mean, and what it costs in Daytona Beach.';
+
+const usd = (n: number) => '$' + n.toLocaleString('en-US');
+
+/** Published third-party conventions. Not a code standard, not our numbers. */
+const readingBands = [
+  { range: '~8–15%', meaning: 'Ordinary range for an exterior wall' },
+  {
+    range: '~16–19%',
+    meaning: 'Elevated — worth acting on before damage develops',
+  },
+  {
+    range: '20%+',
+    meaning: 'Excessive; damage likely, if not now then over time',
+  },
+  { range: '25%+', meaning: 'Critical' },
+];
+
+const worthTesting = [
+  'There are <strong>stains</strong> on the wall, or on the inside of that same wall',
+  'Paint is <strong>bubbling or peeling</strong> in a patch rather than across the whole elevation',
+  'A spot sounds <strong>hollow</strong> or gives slightly under hand pressure',
+  'A crack <strong>keeps coming back</strong> after it has been repaired',
+  'Cracks radiate from <strong>window or door corners</strong>, especially with staining below',
+  'An <strong>inspection flagged</strong> the stucco, or you are selling and want to know before a buyer’s inspector does',
+  'A repair quote seems high and you want to know whether the scope is real',
+];
+
+const outcomes = [
+  {
+    title: 'Localized and recent',
+    body: 'Water is getting in at a specific detail — a window head, a failed sealant joint, a crack that opened up. Fix the entry point, repair the affected section, done. This is the common one and it is the cheapest outcome.',
+  },
+  {
+    title: 'Localized but old',
+    body: 'Water has been sitting long enough that the lath and sheathing behind the stucco need attention too. Closing that up without addressing it is exactly how the same repair comes back. Bigger job, and the reason testing before you buy a patch is worth the money.',
+  },
+  {
+    title: 'Widespread',
+    body: 'Enough of the wall assembly has failed that patching it is throwing money at it. That is a re-stucco conversation, not a repair conversation.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'How do I know if there is water behind my stucco?',
+    a: 'From the outside, usually you cannot. Stains, bubbling paint, soft or hollow-sounding spots, and cracks that keep returning are all reasons to suspect it — but none of them prove it, and a wall can look fine from the street with wet sheathing behind it. Testing is what tells you.',
+  },
+  {
+    q: 'Does moisture testing damage the stucco?',
+    a: 'Probe testing leaves small holes, roughly 3/16" to 1/4", placed in inconspicuous spots such as under windows. They are sealed afterward. Pinless scanning leaves nothing behind at all, but it is less definitive on stucco because the embedded wire lath interferes with the reading.',
+  },
+  {
+    q: 'Can you find water behind stucco without opening the wall?',
+    a: 'Yes — that is the point of testing. Meters and probes read moisture through small sealed holes rather than removing sections of the wall. Opening the wall is what you do after you know where to open it.',
+  },
+  {
+    q: 'What moisture reading is too high?',
+    a: 'Roughly 8 to 15 percent is an ordinary range for exterior walls, 16 to 19 percent is elevated, and 20 percent or above is excessive with damage likely over time. Those are published industry conventions rather than a code standard, and a reading gets interpreted alongside where it was taken and what the wall is made of.',
+  },
+  {
+    q: 'Does thermal imaging prove there is moisture behind stucco?',
+    a: 'No, and we own one. A thermal camera shows temperature differences, and moisture is only one cause of those. We use it to identify suspicious areas worth testing further — that is real work, and it is how we decide where the probes go. It just is not proof on its own. The meters confirm moisture.',
+  },
+  {
+    q: 'Is this the same as a home inspection?',
+    a: 'No. It is our own assessment of your stucco, as the contractor who does the work. It is not a home inspection and it is not an independent inspection report. If you need an independent report — for a lender, or a legal matter — you want a licensed inspector, not us.',
+  },
+  {
+    q: 'Is the estimate free?',
+    a:
+      'The repair estimate is free. The ' +
+      moistureCheck.name +
+      ' is not — it is ' +
+      usd(moistureCheck.priceLow) +
+      '–' +
+      usd(moistureCheck.priceHigh) +
+      ', paid on its own. Those are two separate things and we keep them separate on purpose.',
+  },
+];
+
+const serviceSchema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: moistureCheck.name,
+  serviceType: 'Stucco moisture testing',
+  description:
+    'A paid diagnostic service. Visual examination for signs of possible water intrusion, moisture meter testing for possible hidden moisture behind the stucco, and thermal imaging when appropriate to identify areas worth testing further.',
+  provider: { '@type': 'LocalBusiness', name: business.name },
+  offers: {
+    '@type': 'Offer',
+    priceSpecification: {
+      '@type': 'PriceSpecification',
+      minPrice: moistureCheck.priceLow,
+      maxPrice: moistureCheck.priceHigh,
+      priceCurrency: 'USD',
+    },
+  },
+};
+if (serviceArea) serviceSchema.areaServed = serviceArea;
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <SiteHeader current="/stucco-moisture-testing/" />
+
+  <main>
+    {/* HERO */}
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">A paid diagnostic service</p>
+        <h1>
+          Stucco moisture testing: finding the water before you pay to close
+          the wall
+        </h1>
+        <p class="hero-lede">
+          If your stucco is stained, soft, bubbling, or cracking in the same
+          place it cracked last time, the question worth answering isn&rsquo;t
+          what it will cost to patch. It&rsquo;s whether there&rsquo;s water
+          behind the wall.
+        </p>
+
+        <div class="hero-actions">
+          <ContactCta variant="inline" heading="" />
+        </div>
+      </div>
+    </section>
+
+    {/* WHAT IT IS */}
+    <section class="section">
+      <div class="wrap">
+        <p class="lede">
+          You can&rsquo;t tell from the outside. That&rsquo;s the whole problem.
+          A wall can look sound from the street and have wet sheathing behind
+          it, and a patch over that is a repair you pay for twice. Moisture
+          testing answers that question before anyone starts cutting.
+        </p>
+
+        <h2>What the {moistureCheck.name} is</h2>
+
+        <p>
+          It&rsquo;s a paid diagnostic service &mdash;{' '}
+          <strong>
+            {usd(moistureCheck.priceLow)}&ndash;{usd(moistureCheck.priceHigh)},
+            {' '}{moistureCheck.priceNote}
+          </strong>. Three steps:
+        </p>
+
+        <ol class="steps">
+          {moistureCheck.steps.map((step, i) => (
+            <li>
+              <span class="num">{i + 1}</span>
+              <div>
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        <p class="caveat">
+          That third step needs a caveat most people selling it won&rsquo;t give
+          you, and we&rsquo;ll give it while holding the camera:{' '}
+          <strong>thermal imaging doesn&rsquo;t prove moisture.</strong> A
+          thermal camera shows temperature differences. Moisture is one thing
+          that causes them. Shade, insulation gaps, and a wall that&rsquo;s been
+          in the sun all afternoon cause them too. The camera points us toward
+          areas worth testing. The meters confirm what&rsquo;s actually there.
+        </p>
+
+        <p>
+          There&rsquo;s a second limitation worth knowing, because it affects
+          how we test. Stucco has wire lath embedded in it, and that metal
+          interferes with a pinless meter&rsquo;s field. It&rsquo;s why probe
+          readings &mdash; small holes, real numbers &mdash; are what settle the
+          question on a stucco wall, and why anyone who tells you they scanned
+          your house with a camera and found moisture is telling you less than
+          they&rsquo;re implying.
+        </p>
+
+        <h3 class="sub">What you get</h3>
+
+        <ul class="deliverable">
+          {moistureCheck.deliverable.map((item) => <li>{item}</li>)}
+        </ul>
+
+        <p>You get the findings whether or not you hire us for the repair.</p>
+
+        <p class="note">
+          This is our own assessment of your stucco as the contractor who
+          performs the work. It isn&rsquo;t a home inspection, and it isn&rsquo;t
+          an independent inspection report.
+        </p>
+
+        {openWallPhotos && (
+          <div class="proof">
+            {openWallPhotos.map((src) => (
+              <img
+                src={src}
+                alt="Damaged substrate behind stucco that looked sound from the outside"
+                loading="lazy"
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+
+    {/* WHEN IT IS WORTH IT */}
+    <section class="section band" id="when-worth-it">
+      <div class="wrap">
+        <h2>When it&rsquo;s worth paying for</h2>
+
+        <p class="band-lede">
+          Most of the time, cracking in a Daytona Beach wall is cosmetic.
+          Hairline stuff, settling, the ordinary movement of a house on the
+          coast. <strong>You don&rsquo;t need a moisture check for a hairline
+          crack in an otherwise dry wall.</strong> Save your money.
+        </p>
+
+        <p>It&rsquo;s worth testing when:</p>
+
+        <ul class="signals">
+          {worthTesting.map((item) => <li set:html={item} />)}
+        </ul>
+
+        <p>
+          That last one is the honest reason a lot of people call. Three
+          contractors gave three numbers and one of them wants to open the wall.
+          Testing tells you which one was right.
+        </p>
+      </div>
+    </section>
+
+    {/* THE NUMBERS */}
+    <section class="section" id="readings">
+      <div class="wrap">
+        <h2>What the numbers mean</h2>
+
+        <p>
+          Moisture meters give a percentage. What counts as high isn&rsquo;t a
+          code number, but there are widely published conventions, and industry
+          sources land in roughly the same place:
+        </p>
+
+        <div class="table-scroll">
+          <table class="readings">
+            <caption>
+              Published third-party inspection and restoration conventions.
+              These are not a code standard and not our own thresholds.
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Reading</th>
+                <th scope="col">What it generally indicates</th>
+              </tr>
+            </thead>
+            <tbody>
+              {readingBands.map((b) => (
+                <tr>
+                  <th scope="row">{b.range}</th>
+                  <td>{b.meaning}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          Those bands come from third-party inspection and restoration sources,
+          not from us, and they&rsquo;re a guide rather than a verdict. A single
+          number doesn&rsquo;t decide anything on its own. Where the reading was
+          taken matters, what the wall is built from matters, and what the
+          weather did last week matters. A 19% under a window that leaked in a
+          storm three days ago means something different from a steady 19% on a
+          shaded north wall in a dry month.
+        </p>
+
+        <p>
+          What we do with them is tell you straight: here&rsquo;s what we read,
+          here&rsquo;s where, here&rsquo;s what we think it means, here&rsquo;s
+          what we&rsquo;d do about it.
+        </p>
+      </div>
+    </section>
+
+    {/* IF WE FIND WATER */}
+    <section class="section band" id="if-we-find-water">
+      <div class="wrap">
+        <h2>What happens if we find water</h2>
+
+        <p class="band-lede">
+          Then you have a real decision instead of a guess, and the finding
+          usually falls into one of three shapes.
+        </p>
+
+        <div class="outcomes">
+          {outcomes.map((o) => (
+            <div class="outcome">
+              <h3>{o.title}</h3>
+              <p>{o.body}</p>
+            </div>
+          ))}
+        </div>
+
+        <p>
+          We&rsquo;ll tell you which one you have. If it&rsquo;s the first,
+          we&rsquo;ll say so, even though the third one is the bigger invoice.
+        </p>
+
+        <p>
+          Where the finding points to repair work, that&rsquo;s a separate
+          quote: see{' '}
+          <a href="/stucco-repair/">stucco repair and what it costs</a>. The
+          mechanism behind a crack that keeps returning is covered in{' '}
+          <a href="/blog/why-stucco-cracks-come-back/">
+            why stucco cracks come back
+          </a>.
+        </p>
+      </div>
+    </section>
+
+    {/* FAQ */}
+    <section class="section" id="faq">
+      <div class="wrap">
+        <h2>Frequently asked questions</h2>
+
+        <dl class="faq">
+          {faqs.map((f) => (
+            <div class="qa">
+              <dt>{f.q}</dt>
+              <dd>{f.a}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+
+    <ContactCta />
+  </main>
+
+  <SiteFooter />
+</Layout>
+
+<style>
+  .hero {
+    padding-block: clamp(3rem, 9vw, 6rem);
+    background: linear-gradient(180deg, var(--paper-warm), var(--paper));
+    border-bottom: 1px solid var(--rule);
+  }
+  .hero h1 { max-width: 20ch; }
+  .hero-lede {
+    font-size: clamp(1.0625rem, 2.2vw, 1.25rem);
+    color: var(--ink-soft);
+    max-width: 46ch;
+    margin-top: 1.25rem;
+  }
+  .hero-actions { margin-top: 2rem; }
+
+  .band { background: var(--paper-warm); border-block: 1px solid var(--rule); }
+  .band-lede { max-width: 46ch; color: var(--ink-soft); }
+  .lede { max-width: 46ch; color: var(--ink-soft); }
+
+  .steps {
+    margin: 1.5rem 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 1.25rem;
+    max-width: 44rem;
+  }
+  .steps li { display: flex; gap: 1rem; align-items: flex-start; }
+  .steps .num {
+    flex: none;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--flag);
+    color: var(--paper);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .steps h3 { margin: 0 0 0.25rem; font-size: 1rem; }
+  .steps p { margin: 0; color: var(--ink-soft); }
+
+  .caveat {
+    border-left: 3px solid var(--flag);
+    padding-left: 1rem;
+    max-width: 46ch;
+  }
+
+  .sub { margin-top: 2rem; }
+
+  .deliverable {
+    margin: 0 0 1.5rem;
+    padding-left: 1.25rem;
+    display: grid;
+    gap: 0.375rem;
+    max-width: 36rem;
+  }
+
+  .note { color: var(--ink-soft); font-size: 0.9375rem; max-width: 46ch; }
+
+  .signals {
+    margin: 0 0 1.5rem;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.625rem;
+    max-width: 40rem;
+  }
+  .signals li { padding-left: 1.75rem; position: relative; }
+  .signals li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 2px;
+    background: var(--flag);
+  }
+
+  .table-scroll { overflow-x: auto; margin: 1.5rem 0; }
+  .readings { border-collapse: collapse; width: 100%; max-width: 44rem; }
+  .readings caption {
+    caption-side: bottom;
+    margin-top: 0.75rem;
+    text-align: left;
+    color: var(--ink-soft);
+    font-size: 0.875rem;
+    max-width: 52ch;
+  }
+  .readings th, .readings td {
+    text-align: left;
+    padding: 0.625rem 1rem 0.625rem 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  .readings thead th { font-size: 0.875rem; color: var(--ink-soft); }
+  .readings tbody th { white-space: nowrap; }
+
+  .outcomes {
+    display: grid;
+    gap: 1.25rem;
+    margin: 1.5rem 0;
+    max-width: 44rem;
+  }
+  .outcome h3 { margin: 0 0 0.375rem; font-size: 1rem; }
+  .outcome p { margin: 0; color: var(--ink-soft); }
+
+  .faq { margin: 1.5rem 0 0; max-width: 44rem; }
+  .qa + .qa { margin-top: 1.5rem; }
+  .faq dt { font-weight: 600; margin-bottom: 0.375rem; }
+  .faq dd { margin: 0; color: var(--ink-soft); }
+
+  .proof {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  .proof img { width: 100%; height: auto; border-radius: 4px; }
+</style>

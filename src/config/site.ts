@@ -76,7 +76,7 @@ export const moistureCheck = {
     },
     {
       title: 'We scan when it helps',
-      body: 'Thermal imaging may also be used when appropriate, to identify suspicious areas for further testing.',
+      body: 'We own a thermal camera and use it when the wall calls for it, to identify suspicious areas worth testing further. It does not confirm moisture on its own.',
     },
   ],
   deliverable: [
