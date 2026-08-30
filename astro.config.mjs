@@ -9,6 +9,25 @@ export default defineConfig({
   // src/pages/api/contact.ts — which needs a server to hold the Resend key.
   // That route opts in with `export const prerender = false`.
   output: 'static',
+
+  // DEPLOY TARGET: Cloudflare WORKERS, not Cloudflare Pages.
+  //
+  // @astrojs/cloudflare v14 removed Pages support. The build is Workers-shaped
+  // and `dist` is not a publishable web root:
+  //
+  //   dist/server/entry.mjs   the Worker — serves /api/contact AND, via the
+  //                           ASSETS binding, every static page
+  //   dist/client/            those static assets; an INPUT to the Worker,
+  //                           not a site root
+  //
+  // A Pages project pointed at `dist` serves `client/` as a subdirectory and
+  // 404s every route. Pointed at `dist/client` it appears fixed but drops the
+  // Worker, so the contact form POSTs into a 404 — a silent failure on the
+  // site's only conversion point, which is worse than the visible one.
+  //
+  // Deploy with `npm run deploy`. Worker name and compatibility date come from
+  // the root wrangler.jsonc; see that file for the RESEND_API_KEY secret
+  // requirement.
   adapter: cloudflare(),
 
   redirects: {

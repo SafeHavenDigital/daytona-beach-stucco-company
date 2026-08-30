@@ -1,0 +1,65 @@
+{
+  // ---------------------------------------------------------------------
+  // Cloudflare WORKERS configuration for Daytona Beach Stucco Company.
+  //
+  // WHY THIS FILE EXISTS — read before changing the deploy setup.
+  //
+  // This site MUST deploy to Cloudflare Workers, not Cloudflare Pages.
+  // @astrojs/cloudflare v14 dropped Pages support entirely; the Astro docs
+  // state: "The Astro Cloudflare adapter no longer supports deployment on
+  // Cloudflare Pages. For the best experience and feature support, you should
+  // migrate to Cloudflare Workers."
+  //
+  // The build output is Workers-shaped and is NOT a publishable web root:
+  //
+  //   dist/server/entry.mjs      the Worker (runs /api/contact)
+  //   dist/server/wrangler.json  generated config, merged from THIS file
+  //   dist/client/               static assets, served BY the Worker
+  //                              through the ASSETS binding
+  //
+  // Pointing a Pages project at `dist` serves `client/` as a subdirectory,
+  // which 404s the root and every route. Pointing Pages at `dist/client`
+  // looks like it fixes that, but silently breaks src/pages/api/contact.ts —
+  // the Resend route lives in the Worker, which Pages never runs. The contact
+  // form is the site's only conversion point, so that failure is worse than
+  // the 404 it appears to fix.
+  //
+  // Deploy with:  npm run deploy
+  //
+  // SECRET REQUIRED: RESEND_API_KEY must exist as a Worker secret, not as a
+  // Pages environment variable. Without it the contact form returns an error
+  // at runtime. Set it once per environment:
+  //   npx wrangler secret put RESEND_API_KEY
+  // Never commit the value — see .gitignore and .env.example.
+  // ---------------------------------------------------------------------
+
+  "$schema": "node_modules/wrangler/config-schema.json",
+
+  // The Worker name. Previously auto-derived from the package name
+  // ("astro-temp"), which is a scaffold leftover and not a name that should
+  // appear on a production Worker or a workers.dev subdomain.
+  "name": "daytona-beach-stucco-company",
+
+  // Pin the Workers runtime API date. The adapter generates today's date when
+  // this is absent, which makes builds non-reproducible: two builds on
+  // different days can compile against different runtime semantics. Matches
+  // the date the adapter had already generated, so this pins current
+  // behaviour rather than changing it.
+  "compatibility_date": "2026-08-28",
+
+  // No compatibility_flags are set. The built Worker imports no `node:`
+  // builtins (verified against dist/server/ after a clean build), so
+  // `nodejs_compat` is not required — the Resend SDK uses fetch. If a future
+  // dependency does pull in a Node builtin, the build will fail with an
+  // unresolved `node:*` import; add "nodejs_compat" here at that point rather
+  // than pre-emptively, since the flag changes runtime module resolution.
+
+  // Server-side entry and static assets are supplied by the adapter at build
+  // time (main: entry.mjs, assets.directory: ../client). Do not set them
+  // here — the generated dist/server/wrangler.json is the authority for both,
+  // and hardcoding them would drift from the adapter's output.
+
+  "observability": {
+    "enabled": true
+  }
+}
