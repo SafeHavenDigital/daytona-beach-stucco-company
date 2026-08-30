@@ -4,9 +4,38 @@ import { business } from '../config/site';
 interface Props {
   title: string;
   description: string;
+  /**
+   * Override the canonical path. Only needed when a page should point at a
+   * different URL than its own — none currently do. Consolidated pages are
+   * handled by 301s in astro.config.mjs, not by cross-canonicals, because a
+   * redirect is the stronger and less ambiguous signal.
+   */
+  canonicalPath?: string;
 }
 
-const { title, description } = Astro.props;
+const { title, description, canonicalPath } = Astro.props;
+
+/**
+ * Self-referencing canonical.
+ *
+ * Emitted as a root-relative path rather than an absolute URL because no
+ * production domain has been supplied yet (`astro.config.mjs` has no `site`,
+ * and src/config/site.ts holds no domain). Per the verification rule in
+ * site.ts, inventing one is not an option — a guessed domain in a canonical
+ * would actively misdirect crawlers, which is worse than omitting it.
+ *
+ * Root-relative canonicals are valid and resolve against the served origin, so
+ * this is correct on any domain. When the real domain is supplied, set `site`
+ * in astro.config.mjs and change this to `new URL(path, Astro.site)` to emit
+ * absolute canonicals, which are marginally preferred.
+ *
+ * Trailing slash is normalized to match the built URLs (Astro's default
+ * directory-style output), so the canonical never disagrees with the address
+ * the page is actually served at.
+ */
+const rawPath = canonicalPath ?? Astro.url.pathname;
+const canonical =
+  rawPath === '/' ? '/' : rawPath.endsWith('/') ? rawPath : `${rawPath}/`;
 ---
 
 <!doctype html>
@@ -18,6 +47,7 @@ const { title, description } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
     <meta name="robots" content="index, follow" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />

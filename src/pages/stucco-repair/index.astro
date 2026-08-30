@@ -152,6 +152,23 @@ const faqs = [
     q: 'Should I repair the stucco or replace it?',
     a: 'It depends on how much of the wall is affected and what condition the material behind it is in. Repairing a limited area is usually the right call. Replacement makes sense when the damage is widespread enough that patching would only buy a couple of years. We will tell you which one we think it is.',
   },
+  // Preserved from /stucco-repair-daytona-beach/ in the 2026-08-30
+  // consolidation. Answers an owner PAA cluster (how long will stucco last /
+  // how many years should stucco last) that the keyword plan assigns to
+  // /problems/stucco-repair-vs-replacement/, a page that does not exist yet.
+  // Move it there if that page is ever built.
+  {
+    q: 'How long does stucco last in Florida?',
+    a: 'A properly built stucco wall lasts decades here. What shortens it is water getting in behind it and staying there. That is why cracks near windows, rooflines, and anywhere water runs are worth taking more seriously than cracks in the open field of a wall.',
+  },
+  // Preserved from /stucco-repair-daytona-beach/. This is the closest thing on
+  // the site to [TYPICAL TIMELINE], still an open item in the keyword plan's
+  // CONTENT REQUIREMENTS. Deliberately hedged — cure time and weather are real
+  // constraints and the copy should not promise around them.
+  {
+    q: 'How long does stucco repair take?',
+    a: 'A limited section repair is usually a short job. A full elevation takes longer, and stucco needs time to cure between coats, so weather moves the schedule. I will give you a timeline with the estimate rather than after you have committed.',
+  },
 ];
 
 const faqSchema = {
@@ -283,6 +300,60 @@ const services = [
           </strong>
           Send a photo and I&rsquo;ll say so. That&rsquo;s a cheaper answer
           than a truck in your driveway.
+        </p>
+      </div>
+    </section>
+
+    {/*
+      WHAT WE SEE ON DAYTONA BEACH HOUSES.
+
+      Preserved verbatim from /stucco-repair-daytona-beach/ in the 2026-08-30
+      consolidation (brand/keyword-plan.md Phase 10). This is the section that
+      lets this page carry Daytona Beach geo intent honestly — through real
+      local conditions rather than through a city name in the URL.
+
+      It deliberately names NO specific neighborhood as one we have worked in,
+      because [NEIGHBORHOODS WORKED] is still unverified. Everything here is
+      generally true of Daytona Beach exposure and housing stock. Add real
+      neighborhoods when supplied.
+
+      JSX comment, not an HTML comment: it must not ship to the browser.
+    */}
+    <section class="section" id="what-we-see">
+      <div class="wrap">
+        <h2>What we see most on Daytona Beach houses</h2>
+
+        <p>
+          Wind-driven rain does most of the damage here, and it doesn&rsquo;t
+          arrive straight down. It comes in sideways off the Atlantic and finds
+          whatever seam is open.
+        </p>
+
+        <p>
+          <strong>So the failures cluster in predictable places.</strong> Around
+          window and door openings, where the corner of the frame is the weak
+          point and cracks run out from it at an angle. Along rooflines and
+          under any spot where water is being shed onto a wall instead of away
+          from it. At control joints &mdash; the intentional grooves cut into
+          stucco so it can expand and contract &mdash; where the sealant has
+          dried out and split.
+        </p>
+
+        <p>
+          The pattern that gets ignored longest is a west or south-facing wall
+          that gets sun all afternoon and a hard rain twice a week in summer.
+          It expands, contracts, and opens hairlines faster than the shaded
+          side of the same house. Owners assume both sides age the same way.
+          They don&rsquo;t.
+        </p>
+
+        <p>
+          The other one worth naming: a house that has already been repaired
+          once. A patch that was floated over a wet wall is the most common
+          thing I get called back to look at.
+          <strong>
+            If your crack came back, the first repair fixed the wrong thing.
+          </strong>
         </p>
       </div>
     </section>
@@ -635,23 +706,48 @@ const services = [
     </section>
 
     {/* WHERE WE WORK */}
+    {/*
+      WHERE WE WORK. The link to /stucco-repair-daytona-beach/ was removed in
+      the 2026-08-30 consolidation — that page now 301s here, and its local
+      detail lives in the "What we see most on Daytona Beach houses" section
+      above, so the link would have pointed at a redirect back to this page.
+    */}
     <section class="section" id="where">
       <div class="wrap">
         <h2>Where we work</h2>
         <p>
-          Daytona Beach and the surrounding Volusia County area. If
-          you&rsquo;re in Daytona Beach itself, there&rsquo;s more detail on
-          what we see on houses here:
+          Daytona Beach and the surrounding Volusia County area. What we see on
+          houses here is
+          {' '}<a href="#what-we-see">further up this page</a>{' '}&mdash; the
+          failure patterns are consistent enough across the area to be worth
+          reading before you call anyone.
         </p>
-        <ul class="links">
-          <li>
-            <a href="/stucco-repair-daytona-beach/">
-              Stucco repair in Daytona Beach
-            </a>
-            &mdash; what we see most on houses here.
-          </li>
+      </div>
+    </section>
 
-        </ul>
+    {/*
+      LICENSING. Preserved from /stucco-repair-daytona-beach/ in the
+      2026-08-30 consolidation. The framing matters more than the fact:
+      positioning.md is explicit that "licensed and insured" is table stakes in
+      this market and must never carry a headline. Saying so out loud is itself
+      on-position.
+
+      No license number or carrier renders — those are unverified, and
+      site.ts's rule forbids a placeholder.
+    */}
+    <section class="section band" id="licensing">
+      <div class="wrap">
+        <h2>Licensing and insurance</h2>
+        <p>
+          {business.name} is licensed and insured, and has been working in
+          Daytona Beach and Volusia County since {business.founded}.
+        </p>
+        <p class="note">
+          Every stucco contractor in this market says they&rsquo;re licensed and
+          insured, so treat it as the box that has to be ticked rather than a
+          reason to hire anyone. The reason to hire us is that we find out why
+          the wall failed first.
+        </p>
       </div>
     </section>
 

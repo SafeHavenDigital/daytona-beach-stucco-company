@@ -1,14 +1,22 @@
-# Content Brief: Stucco Repair Daytona Beach (+ Location Page Template)
+# Content Brief: Stucco Repair Daytona Beach — CONSOLIDATED
+
+> **STATUS CHANGE 2026-08-30 — this page is being retired into `/stucco-repair/`.**
+> It is no longer a location page and no longer a template for other city pages. The brief is kept
+> for the record and for the preservation manifest below, which names the content that must survive
+> the consolidation. Do not build from this brief. See `brand/keyword-plan.md` Phase 10.
 
 ## Last Updated
 2026-08-28 by /keyword-research
+2026-08-30 by /keyword-research — Refresh Mode Option ③. Consolidated into `/stucco-repair/` per
+owner architecture rule: a geographic modifier alone does not justify a separate URL.
 
 ## URL
-/stucco-repair-daytona-beach/
-*(Template for all 10 location pages — see Reuse Rules at the bottom.)*
+~~/stucco-repair-daytona-beach/~~ → **301 to `/stucco-repair/`** (2026-08-30)
+*(No longer a template. See Reuse Rules — Retired, and the Preservation Manifest.)*
 
 ## Page Type
-Location money page. Flagship geo. Primary landing target for local pack, Google Business Profile, and paid search.
+~~Location money page. Flagship geo.~~ **Retired.** Local pack, Google Business Profile, and paid
+search now land on `/stucco-repair/`, which carries Daytona Beach geo intent on-page.
 
 ## Target Keyword
 Primary: `stucco repair daytona beach`
@@ -66,21 +74,75 @@ Phone (primary, tap-to-call) + form. Local intent converts on the phone.
 - `[LICENSE #]`, `[INSURANCE CARRIER]`, `[PHONE]`, `[HOURS]`, `[SERVICE AREA]`
 - `[REVIEW COUNT]`, `[RATING]`, `[PLATFORM]` if a review module is used
 
-## REUSE RULES for the other 9 location pages
-Ormond Beach · Port Orange · New Smyrna Beach · Daytona Beach Shores · Palm Coast · Holly Hill · South Daytona · Ponce Inlet · Deltona.
+## REUSE RULES — RETIRED 2026-08-30
 
-1. **The "what we see most here" section must be genuinely different on every page.** Different housing era, different exposure (barrier island vs. inland Deltona is a real material difference), different recurring failure.
-2. **Do not publish a city page without real local substance.** Ten thin duplicated pages actively harm a new domain. Better to ship three real ones than ten templated.
-3. Barrier-island pages (Daytona Beach Shores, Ponce Inlet, New Smyrna) carry the coastal-exposure content — but per positioning.md, must name a specific material or detailing response, not repeat the saturated "salt air is hard on stucco" observation.
-4. Deltona and Palm Coast are inland/Flagler — do **not** run coastal copy on them.
-5. Each page links to only 2 neighbors, not all 9.
+> The original reuse rules made this page the template for nine additional service + city pages
+> (Ormond Beach, Port Orange, New Smyrna Beach, Daytona Beach Shores, Palm Coast, Holly Hill,
+> South Daytona, Ponce Inlet, Deltona). **That template is retired.** None of those pages is
+> approved, and none may be built from this brief.
+
+**Governing owner rule (2026-08-30):**
+
+> A geographic modifier by itself does not justify a separate URL. Do not create multiple versions
+> of the same service page simply by changing the city, such as separate Stucco Repair + city
+> pages, when the underlying service/search intent is substantially the same.
+>
+> A future location page may be considered individually only if the Skills V2 keyword-research
+> protocol validates sufficiently distinct search intent AND there is enough genuine, unique local
+> substance to justify a useful standalone page rather than thin or duplicated content.
+
+Note what the original rules already conceded: *"Do not publish a city page without real local
+substance. Ten thin duplicated pages actively harm a new domain."* The gate existed as advice and
+was never met — `[NEIGHBORHOODS WORKED]` and `[PHOTOS WITH LOCATION NOTED]` were never supplied.
+The owner rule makes it binding.
+
+## PRESERVATION MANIFEST — carry these into /stucco-repair/
+
+Four items on the built page are unique and must survive. Everything else on it duplicates
+`/stucco-repair/` and should be dropped, not merged.
+
+**1. "What we see most on Daytona Beach houses" — the whole section. ★ highest value.**
+Wind-driven rain arriving sideways off the Atlantic rather than straight down; failures clustering
+at window and door corners, along rooflines, and at dried-out control joints; the west/south-facing
+wall that gets afternoon sun plus hard summer rain opening hairlines faster than the shaded side of
+the same house; the already-repaired house as the most common callback. Genuinely local,
+on-positioning, duplicated nowhere. **This is the content that makes `/stucco-repair/` carry Daytona
+Beach geo intent honestly rather than by keyword insertion.** Carry it verbatim; it names no
+unverified neighborhood, so nothing in it is blocked.
+
+**2. FAQ — "How long does stucco last in Florida?"**
+Answers an owner PAA cluster (*how long will stucco last · how many years should stucco last*) that
+Phase 9 assigned to `/problems/stucco-repair-vs-replacement/`, a page that does not exist yet.
+Preserve it on `/stucco-repair/` rather than lose the answer; move it later if that page is built.
+
+**3. FAQ — "How long does stucco repair take?"**
+The nearest thing on the site to `[TYPICAL TIMELINE]`, still an open CONTENT REQUIREMENT. Honest and
+hedged (cure time, weather moves the schedule), so it ships as-is.
+
+**4. The licensing framing.**
+"Every stucco contractor in this market says they're licensed and insured, so treat it as the box
+that has to be ticked rather than a reason to hire anyone." Directly implements the positioning
+note that licensing is table stakes, not a differentiator. The surrounding facts already exist
+elsewhere; it is the framing sentence that is worth keeping.
+
+**Do NOT carry over:** the "What we do here" service list (already on `/stucco-repair/`), the full
+`moistureCheck` block (already a third duplicate, and due to shrink sitewide), the pricing section
+(duplicates `#pricing`), the "cost in Daytona Beach" FAQ (duplicates a `#pricing` FAQ), and the
+"Do I need a licensed contractor" FAQ (duplicate).
 
 ## Title / Meta
 - Title: `Stucco Repair in Daytona Beach, FL`
 - Meta: `Stucco repair, crack repair, and water damage work in Daytona Beach. We find out why it cracked before we close the wall.`
 
 ## Priority
-DO FIRST (build) / LONG PLAY (organic rank) — Wave 1, Weeks 1–2
+**CONSOLIDATED** (2026-08-30). Was: DO FIRST (build) / LONG PLAY (organic rank) — Wave 1, Weeks 1–2.
+Removed from Wave 1. The remaining work is the migration in `brand/keyword-plan.md` Phase 10, not a
+build from this brief.
 
 ## Status
-blocked-on-client-facts
+consolidated-into-/stucco-repair/
+
+The `[NEIGHBORHOODS WORKED]` and `[PHOTOS WITH LOCATION NOTED]` blockers above are now moot for this
+page — they were the unmet condition that failed Pillar 4's proprietary-advantage test. They remain
+live requirements for any future location page, which would need them before it could pass its own
+splitting test.

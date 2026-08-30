@@ -15,9 +15,11 @@ interface Props {
 
 const { current = '' } = Astro.props;
 
+// The 'Daytona Beach' item was removed 2026-08-30: that page now 301s to
+// /stucco-repair/, so the link would have been a redirect to a page already
+// in this nav. Geo intent is carried on /stucco-repair/ itself.
 const nav = [
   { href: '/stucco-repair/', label: 'Stucco repair & costs' },
-  { href: '/stucco-repair-daytona-beach/', label: 'Daytona Beach' },
   { href: '/blog/why-stucco-cracks-come-back/', label: 'Why cracks come back' },
   { href: '/contact/', label: 'Contact' },
 ];

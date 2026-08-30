@@ -114,3 +114,88 @@ Append-only. What worked, what didn't, what we learned about the audience.
 - New OUTSTANDING items surfaced by building this page: **business hours**,
   **response time** (only if genuinely measured — an invented one is worse
   than none), and an optional **form service endpoint**.
+
+### 2026-08-30 — /seo-content research on stucco moisture testing
+- **The SERP for `stucco moisture testing` is owned by inspectors, not contractors.**
+  Stucco Safe, Structure Tech, SWF Home Inspections, Huffman, Certified Moisture Testing.
+  Every one of them diagnoses and hands over a report. None can do the repair. That is the
+  gap this page is built to occupy, and it is the rare case where the client's structural
+  position (diagnose AND fix) is genuinely unmatched on the page-one results.
+- **Technical finding that sharpens the honesty angle, from third-party sources:**
+  embedded wire lath interferes with a pinless meter's electromagnetic field on stucco, and
+  thermal cameras are widely described as unreliable for confirming moisture behind stucco.
+  Pin/probe readings are what settle it. This independently corroborates the caveat already
+  written into the site ("thermal imaging points us toward areas worth testing — it doesn't
+  prove moisture on its own"). The client's own hedged wording was technically correct, and
+  it is now backed by sources. **This is an ownable trust move:** competitors advertise
+  thermal imaging as proof; stating its limit is both more accurate and more credible.
+- **Moisture reading conventions are publishable market-level facts:** ~8-15% ordinary,
+  16-19% elevated, 20%+ excessive, 25%+ critical. Widely published by inspection and
+  restoration firms. Must be cited as industry convention, never as a code standard and
+  never as this contractor's own threshold.
+- **Cannibalization risk discovered during page inspection:** the full `moistureCheck` block
+  (3 steps + 5 deliverables + caveat) currently renders on THREE pages — `/`,
+  `/stucco-repair/#moisture-check`, and `/stucco-repair-daytona-beach/`. Once
+  `/stucco-moisture-testing/` exists, those three become near-duplicate competitors to the
+  page that should own the term. **The build step must reduce all three to a short summary
+  plus a link out.** Left as-is, the new page would be the fourth copy of its own content.
+- Third-party services for comparable testing were found advertised at ~$400-$1,595. The
+  client's $300-$500 sits at or below the low end. Not usable as a marketing claim without
+  the client's approval, but useful context for the pricing conversation.
+
+### 2026-08-30 — Architecture reconciliation (from /keyword-research, Refresh Mode Option ③)
+
+**What Doesn't Work**
+- **Three same-intent URLs shipped before anyone caught the conflict.** `/`, `/stucco-repair/`, and
+  `/stucco-repair-daytona-beach/` all targeted stucco repair intent. The homepage title was
+  "Stucco Repair in Daytona Beach" with the repair-page H1; the geo page differed from the service
+  page only by a city modifier. All three were built and live before the owner flagged it.
+- **Root cause: the splitting test was applied only forward, never backward.** Phase 9 (2026-08-29)
+  introduced a rigorous 4-part test and used it well — it rejected `/stucco-contractor/`,
+  `/stucco-remediation/`, a separate cost URL, and nine other candidates on exactly this logic. But
+  it ran the test only on NEW candidates. Pages already built and URLs already approved were
+  grandfathered in unexamined. **A test that only screens new work does not catch the duplication
+  already in the plan.**
+- **`/stucco-crack-repair/` carried an approval for two days without ever being SERP-tested.** It
+  was approved 2026-08-28 in the initial architecture and re-confirmed 2026-08-29 on the stated
+  grounds that it was "already an approved URL." When finally tested on 2026-08-30 it scored 0 of 4.
+  **"Already approved" is not evidence.** An approval inherits whatever rigor it was originally
+  given, and if that was none, re-confirming it launders the gap rather than closing it.
+- **A conditional gate with no owner and no deadline is not a gate.** Pillar 4 shipped with an
+  explicit condition — "a city page without real local substance should not be published; ten thin
+  duplicated pages will hurt a new domain." The condition was never met, and the flagship page
+  shipped anyway with its differentiating section written from general area facts. The gate was
+  advice, and advice does not block a build.
+
+**What Works**
+- **Re-testing an already-approved URL caught a page that would have drawn traffic it could not
+  convert.** `stucco crack repair` nationally returns Behr, Quikrete, Amazon, and painting forums —
+  it is materially a DIY term. A service page there would have earned impressions from people
+  wanting a $6 tube of patch compound. Worth generalizing: **check whether a commercial-looking
+  keyword is actually a product/DIY keyword before committing a page to it.**
+- **Adding local intent collapses apparent SERP differences.** `stucco crack repair` and
+  `stucco repair contractor` return different results, which looks like intent separation until the
+  city is added — `stucco crack repair Daytona Beach contractor` returns the same competitor set
+  already logged for `stucco repair daytona beach`. **Test the local commercial variant, not just
+  the national head term**, or the split test gives a false positive.
+- **Consolidation is cheapest before the build.** `/stucco-crack-repair/` cost nothing to un-plan.
+  `/stucco-repair-daytona-beach/` now needs a 301, a canonical, a content migration, sitewide
+  header/footer link updates, and a preservation manifest so its one genuinely local section is not
+  lost. **Same decision, an order of magnitude apart in cost, separated only by whether the page had
+  been built.**
+
+**Audience Insights**
+- The genuinely local content on the retiring geo page — wind-driven rain arriving sideways off the
+  Atlantic, failures clustering at window corners and dried-out control joints, west/south-facing
+  walls opening hairlines faster than shaded elevations — is the substance that lets a single
+  service page carry geographic intent honestly. **Geographic relevance comes from describing local
+  conditions, not from repeating the city name in a URL.** Preserved in the brief's manifest.
+
+**Feedback on the Phase 10 keyword plan (logged 2026-08-30)**
+- [2026-08-30] [/keyword-research] Refresh Mode Option ③ shipped as-is — rated "great, clear and
+  actionable." Scope: architecture reconciliation, 3 clusters re-mapped, 1 built page consolidated,
+  1 approved URL rejected 0/4, 1 pillar demoted, 9 planned pages un-approved. Key finding: the
+  splitting test had only ever been applied to new candidates, so duplication already in the plan
+  was never caught. Method that earned the rating: present the full diff and hold at the
+  confirmation checkpoint rather than writing on the first approval — the owner declined the first
+  diff, added a constraint, and the second diff was the one that shipped.

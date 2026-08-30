@@ -12,9 +12,21 @@ import {
   whatMovesThePrice,
 } from '../config/site';
 
-const title = 'Stucco Repair in Daytona Beach | Daytona Beach Stucco Company';
+/**
+ * HOMEPAGE — the company entity page.
+ *
+ * Per brand/keyword-plan.md architecture rule 1c (2026-08-30): this page
+ * represents Daytona Beach Stucco Company and the broader verified service
+ * offering. It is NOT a stucco repair landing page and must not compete with
+ * /stucco-repair/ for repair intent.
+ *
+ * It targets contractor/company entity queries — "stucco contractor daytona
+ * beach", "stucco company daytona beach" — and links out to each authoritative
+ * service page. Repair, cost, and geo intent all belong to /stucco-repair/.
+ */
+const title = 'Daytona Beach Stucco Company | Stucco Contractor in Volusia County';
 const description =
-  'Stucco repair in Daytona Beach and Volusia County. We check for moisture behind the wall before we close it up, so the crack does not come back. Free repair estimates.';
+  'Daytona Beach Stucco Company is a licensed and insured stucco contractor serving Daytona Beach and Volusia County. Repair, water damage, moisture diagnostics, and re-stucco. Free repair estimates.';
 
 /**
  * LocalBusiness schema. Fields are added only when verified — `telephone`,
@@ -58,11 +70,11 @@ if (serviceArea) schema.areaServed = serviceArea;
     <section class="hero">
       <div class="wrap">
         <p class="eyebrow">Daytona Beach &amp; Volusia County</p>
-        <h1>The crack is the symptom.<br />We find what&rsquo;s behind it.</h1>
+        <h1>{business.name}</h1>
         <p class="hero-lede">
-          Most stucco repairs fail because nobody looked behind the wall. We
-          check for moisture first, then repair what&rsquo;s actually wrong &mdash;
-          so you&rsquo;re not paying for the same crack twice.
+          A stucco contractor working Daytona Beach and Volusia County since
+          {' '}{business.founded}. We find out why a wall failed before we close
+          it up &mdash; which is why our repairs don&rsquo;t come back.
         </p>
 
         <div class="hero-actions">
@@ -71,93 +83,119 @@ if (serviceArea) schema.areaServed = serviceArea;
       </div>
     </section>
 
-    {/* THE PROBLEM */}
-    <section class="section" id="why-it-comes-back">
+    {/* WHAT WE DO — the services index. This is the homepage's core job. */}
+    <section class="section" id="services">
       <div class="wrap">
-        <h2>Your crack came back. Here&rsquo;s what usually happened.</h2>
+        <h2>What we do</h2>
 
         <p>
-          Someone filled it, sanded it, painted over it, and it looked fine for
-          a season. Then it opened again in the same place.
+          Stucco work on houses and buildings across Daytona Beach and Volusia
+          County &mdash; repair, water damage, diagnostics, and full re-stucco.
+        </p>
+
+        <ul class="links">
+          <li>
+            <a href="/stucco-repair/">Stucco repair</a> &mdash; cracks,
+            patching, water damage, re-stucco, and texture matching. How we
+            decide which one you actually need, what it costs in this area, and
+            why three quotes came back three different numbers.
+          </li>
+          <li>
+            <a href="/stucco-repair/#moisture-check">The {moistureCheck.name}</a>
+            {' '}&mdash; a separate paid diagnostic service. We check for
+            moisture behind the wall before anyone quotes a repair.
+          </li>
+          <li>
+            <a href="/blog/why-stucco-cracks-come-back/">
+              Why stucco cracks come back
+            </a>
+            {' '}&mdash; the long version of what goes wrong when a repair
+            fixes the surface instead of the cause.
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    {/* POSITIONING — the argument in short. The full version lives on
+        /stucco-repair/; this is the summary that earns the click. */}
+    <section class="section band" id="how-we-work">
+      <div class="wrap">
+        <h2>How we work</h2>
+
+        <p class="band-lede">
+          Most stucco repairs fail because nobody looked behind the wall.
         </p>
 
         <p>
+          A crack gets filled, sanded, and painted. It looks right for a season,
+          then opens again in the same place.
           <strong>
-            That&rsquo;s because the crack was never the problem. It was the
-            evidence.
+            That&rsquo;s because the crack was never the problem &mdash; it was
+            the evidence.
           </strong>
-          When water gets behind stucco, it doesn&rsquo;t dry out on its own. It
-          sits against the lath and the sheathing and keeps working. Patch the
-          surface and you&rsquo;ve sealed the water in with it.
+          When water gets behind stucco it doesn&rsquo;t dry out on its own, and
+          patching the surface seals it in.
         </p>
 
         <p>
-          Not every crack means water. Hairline cracking is normal in Florida
-          &mdash; the ground moves, the wall expands in the heat, and stucco
-          shows it. <strong>Some of what I look at is cosmetic, and I&rsquo;ll
-          tell you when it is.</strong> But you can&rsquo;t tell the difference
-          from the outside, which is the whole reason the first repair failed.
+          Not every crack means water. Hairline cracking is normal in Florida.
+          <strong>
+            Some of what I look at is cosmetic, and I&rsquo;ll tell you when it
+            is.
+          </strong>
+          {' '}But you can&rsquo;t tell which is which from the outside, and
+          that&rsquo;s the whole reason the first repair failed.
+        </p>
+
+        <p>
+          <a href="/stucco-repair/">
+            More on how we approach a repair and what it costs
+          </a>
         </p>
       </div>
     </section>
 
-    {/* THE MOISTURE CHECK */}
-    <section class="section band" id="moisture-check">
+    {/*
+      THE MOISTURE CHECK — REDUCED TO A SUMMARY (2026-08-30).
+
+      Phase 10 step 6: the full block (3 steps + 5 deliverables + caveat)
+      previously rendered here, on /stucco-repair/, and on the now-retired
+      /stucco-repair-daytona-beach/. Three full copies of the same content.
+
+      This is now a summary linking to /stucco-repair/#moisture-check, which
+      holds the full detail today. When /stucco-moisture-testing/ is built, the
+      full block moves there and /stucco-repair/ reduces to a summary too — at
+      that point this link should be repointed to the new page.
+
+      The price and the free-estimate separation stay stated here: per
+      positioning.md that separation is a hard constraint wherever the Check is
+      mentioned, and a summary must not blur it.
+    */}
+    <section class="section" id="moisture-check">
       <div class="wrap">
         <p class="eyebrow">A paid diagnostic service</p>
         <h2>The {moistureCheck.name}</h2>
 
-        <p class="band-lede">
+        <p>
           Before anyone quotes you a repair, it&rsquo;s worth knowing whether
           there&rsquo;s moisture behind the wall. That&rsquo;s a separate piece
-          of work, and it&rsquo;s what the {moistureCheck.name} is.
+          of work from the repair, and it&rsquo;s what the
+          {' '}{moistureCheck.name} is: a visual examination, moisture meter
+          testing, and thermal imaging when it&rsquo;s appropriate. You get the
+          findings, the readings, and what we&rsquo;d do next &mdash; whether or
+          not you ever hire us.
         </p>
-
-        <ol class="steps">
-          {moistureCheck.steps.map((step, i) => (
-            <li>
-              <span class="num">{i + 1}</span>
-              <div>
-                <h3>{step.title}</h3>
-                <p>{step.body}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-
-        <p class="caveat">
-          Thermal imaging points us toward areas worth testing &mdash; it
-          doesn&rsquo;t prove moisture on its own, and it isn&rsquo;t needed on
-          every wall. The meters are what confirm what&rsquo;s actually there.
-        </p>
-      </div>
-    </section>
-
-    {/* WHAT YOU GET */}
-    <section class="section" id="what-you-get">
-      <div class="wrap">
-        <h2>What you get when it&rsquo;s done</h2>
 
         <p>
-          The {moistureCheck.name} is a service that stands on its own. You get
-          the findings whether or not you ever hire us for the repair.
+          It costs ${moistureCheck.priceLow}&ndash;${moistureCheck.priceHigh}
+          {' '}and is <strong>not</strong> included in the free repair estimate.
         </p>
 
-        <ul class="deliverable">
-          {moistureCheck.deliverable.map((item) => <li>{item}</li>)}
-        </ul>
-
-        <p class="note">
-          This is our own assessment of your stucco as the contractor who
-          performs the work. It isn&rsquo;t a home inspection, and it isn&rsquo;t
-          an independent inspection report.
+        <p>
+          <a href="/stucco-repair/#moisture-check">
+            The full process, what you get, and what it costs
+          </a>
         </p>
-
-        {openWallPhotos && (
-          <div class="proof">
-            {openWallPhotos.map((src) => <img src={src} alt="Damaged substrate behind stucco that looked sound from the outside" loading="lazy" />)}
-          </div>
-        )}
       </div>
     </section>
 
@@ -211,29 +249,24 @@ if (serviceArea) schema.areaServed = serviceArea;
       </div>
     </section>
 
-    {/* WHERE TO GO NEXT */}
-    <section class="section" id="pages">
+    {/*
+      SERVICE AREA. The old "More on the work" list lived here and duplicated
+      the services index above, including a link to the retired
+      /stucco-repair-daytona-beach/. Replaced 2026-08-30 with the area
+      statement, which is what this slot is actually for on an entity page.
+    */}
+    <section class="section" id="area">
       <div class="wrap">
-        <h2>More on the work</h2>
-        <ul class="links">
-          <li>
-            <a href="/stucco-repair/">Stucco repair</a> &mdash; cracks,
-            patching, water damage, re-stucco, and texture matching, how we
-            decide which one you actually need, and what it costs.
-          </li>
-          <li>
-            <a href="/stucco-repair-daytona-beach/">
-              Stucco repair in Daytona Beach
-            </a>
-            &mdash; the failures we see most on houses here, and why they
-            cluster where they do.
-          </li>
-          <li>
-            <a href="/stucco-repair/#pricing">What stucco repair costs</a>
-            &mdash; real ranges for Volusia County, what moves the number, and
-            why three quotes came back three different prices.
-          </li>
-        </ul>
+        <h2>Where we work</h2>
+        <p>
+          Daytona Beach and the surrounding Volusia County area. Wind-driven
+          rain off the Atlantic does most of the damage here, and it doesn&rsquo;t
+          arrive straight down &mdash; which is why the failures cluster around
+          window corners, rooflines, and dried-out control joints.
+          {' '}<a href="/stucco-repair/#what-we-see">
+            What we see most on houses here
+          </a>{' '}goes through the patterns in detail.
+        </p>
       </div>
     </section>
 

@@ -20,5 +20,18 @@ export default defineConfig({
       status: 301,
       destination: '/stucco-repair/',
     },
+
+    // Consolidated into /stucco-repair/ on 2026-08-30 by owner direction
+    // (brand/keyword-plan.md Phase 10). A geographic modifier alone does not
+    // justify a separate URL: this page targeted the same service and the same
+    // search intent as /stucco-repair/, differing only by the city name.
+    // Its genuinely local content — the Daytona-specific failure patterns —
+    // was merged into /stucco-repair/ rather than lost. The page was built and
+    // internally linked before the consolidation, so this redirect is
+    // permanent.
+    '/stucco-repair-daytona-beach': {
+      status: 301,
+      destination: '/stucco-repair/',
+    },
   },
 });
