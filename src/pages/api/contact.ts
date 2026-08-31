@@ -5,17 +5,19 @@
  * the server environment at request time and never reaches the client: the
  * browser posts JSON here and gets back nothing but a status and a message.
  *
- * KEY SOURCE — this site deploys to Cloudflare Pages, where the Workers
- * runtime hands bindings to the request rather than exposing `process.env`.
- * `readApiKey` below checks the runtime env first and falls back to
- * process.env / import.meta.env so `astro dev` works from a local .env file.
- * See .env.example for where to put the key.
+ * KEY SOURCE — this site deploys to Cloudflare Workers. The current adapter
+ * no longer populates `Astro.locals.runtime`, so the binding is read from the
+ * `cloudflare:workers` module's `env` object, which is the runtime API for
+ * reaching secrets and bindings. `readApiKey` below checks that first and
+ * falls back to import.meta.env / process.env so `astro dev` works from a
+ * local .env file. See .env.example for where to put the key.
  *
  * DESTINATION — `email` in src/config/site.ts (verified 2026-08-28). The
  * destination is not hardcoded here so the config file stays the single
  * source of truth for verified business facts.
  */
 import type { APIRoute } from 'astro';
+import { env as workerEnv } from 'cloudflare:workers';
 import { Resend } from 'resend';
 import { email as DESTINATION } from '../../config/site';
 
@@ -49,12 +51,15 @@ type FieldName = keyof typeof LIMITS;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /** Reads the Resend key from whichever environment this is running in. */
-function readApiKey(locals: App.Locals): string | undefined {
-  // Cloudflare Workers: bindings arrive on the request context.
-  const runtimeEnv = (locals as { runtime?: { env?: Record<string, unknown> } })
-    ?.runtime?.env;
-  const fromRuntime = runtimeEnv?.RESEND_API_KEY;
-  if (typeof fromRuntime === 'string' && fromRuntime) return fromRuntime;
+function readApiKey(): string | undefined {
+  // Cloudflare Workers (production): secrets and bindings live on the `env`
+  // object exported by `cloudflare:workers`. This is the only source that
+  // matters on the deployed Worker.
+  // `wrangler types` declares RESEND_API_KEY on Env from wrangler.jsonc, so
+  // this is typed. It is still checked at runtime: on a Worker deployed
+  // without the secret set, the binding is simply absent.
+  const fromWorker: unknown = workerEnv?.RESEND_API_KEY;
+  if (typeof fromWorker === 'string' && fromWorker) return fromWorker;
 
   // Local `astro dev`: Astro loads .env into import.meta.env. Server-only, so
   // this value is never inlined into a client bundle.
@@ -103,7 +108,7 @@ function singleLine(value: string): string {
   return value.replace(/[\r\n]+/g, ' ').trim();
 }
 
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST: APIRoute = async ({ request }) => {
   // ---- Parse ------------------------------------------------------------
   let payload: Record<string, unknown>;
   try {
@@ -163,7 +168,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   // These are server misconfigurations, not visitor errors. Log the specific
   // cause for the operator; tell the visitor only that sending failed and
   // give them the fallback address.
-  const apiKey = readApiKey(locals);
+  const apiKey = readApiKey();
   if (!apiKey) {
     console.error('[contact] RESEND_API_KEY is not set in this environment.');
     return json(
@@ -258,7 +263,22 @@ export const POST: APIRoute = async ({ request, locals }) => {
       );
     }
 
-    console.log('[contact] Sent submission', data?.id);
+    // Resend reports success by returning a send id. No id means the send was
+    // not accepted, whatever the absence of `error` suggests — do not tell the
+    // visitor their message went through.
+    if (!data?.id) {
+      console.error('[contact] Resend returned no send id:', data);
+      return json(
+        {
+          ok: false,
+          error:
+            'We could not send that just now. Please email us directly and we will pick it up.',
+        },
+        502,
+      );
+    }
+
+    console.log('[contact] Sent submission', data.id);
     return json({ ok: true }, 200);
   } catch (cause) {
     console.error('[contact] Unexpected failure sending submission:', cause);
