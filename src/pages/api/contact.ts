@@ -125,7 +125,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   // Honeypot: a hidden field real people never fill in. Bots do. Answer 200
   // so the bot sees success and does not retry, but send nothing.
-  if (clean(payload.company)) {
+  if (clean(payload.contact_trap_7f3a)) {
     return json({ ok: true }, 200);
   }
 
