@@ -156,7 +156,13 @@ if (phone) schema.telephone = phone;
 if (serviceArea) schema.areaServed = serviceArea;
 ---
 
-<Layout title={title} description={description}>
+{/*
+  preloadFont: homepage only. The H1 is this page's LCP element and is set
+  in Archivo 800; preloading the one variable file it lives in removes a
+  round trip from the CSS-parse -> font-fetch chain. Not enabled globally -
+  see the prop docs in Layout.astro.
+*/}
+<Layout title={title} description={description} preloadFont preloadHero>
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
   <SiteHeader current="/" />

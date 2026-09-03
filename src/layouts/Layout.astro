@@ -1,8 +1,11 @@
 ---
+/* Load only the Latin subsets actually used by this English-language site. */
 import '@fontsource-variable/archivo';
-import '@fontsource/ibm-plex-sans/400.css';
-import '@fontsource/ibm-plex-sans/500.css';
-import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/ibm-plex-sans/latin-400.css';
+import '@fontsource/ibm-plex-sans/latin-500.css';
+import '@fontsource/ibm-plex-mono/latin-500.css';
+/* Build-resolved URL for the homepage Archivo preload. */
+import archivoLatin from '@fontsource-variable/archivo/files/archivo-latin-wght-normal.woff2?url';
 import { business } from '../config/site';
 
 interface Props {
@@ -21,9 +24,30 @@ interface Props {
    * existing page renders exactly as before.
    */
   noindex?: boolean;
+  /**
+   * Preload the Archivo Latin variable WOFF2 in <head>.
+   *
+   * OPT-IN, and deliberately so. A preload is a promise that the file is
+   * needed immediately; making it global would fire it on all 30 pages
+   * whether or not the above-fold type warrants the bandwidth, and would
+   * compete with each page's own LCP asset. Defaults to false, so every
+   * page that does not ask for it renders exactly as before.
+   *
+   * Set on / only (2026-09-03): the homepage H1 is the LCP element and is
+   * set in Archivo 800, which lives in this one variable file.
+   */
+  preloadFont?: boolean;
+  preloadHero?: boolean;
 }
 
-const { title, description, canonicalPath, noindex = false } = Astro.props;
+const {
+  title,
+  description,
+  canonicalPath,
+  noindex = false,
+  preloadFont = false,
+  preloadHero = false,
+} = Astro.props;
 
 /**
  * Self-referencing canonical, ABSOLUTE.
@@ -67,6 +91,41 @@ const canonical = Astro.site
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
+    {
+      /*
+       * Font preload, opt-in per page.
+       *
+       * `crossorigin` is NOT optional here. Fonts are always fetched in
+       * CORS mode, so a preload without it lands in a separate cache
+       * entry the font loader cannot use - the file gets downloaded
+       * TWICE and the optimisation becomes a regression. Present even
+       * though the font is same-origin.
+       *
+       * Placed before the stylesheet links Astro injects so the fetch
+       * starts in the same discovery pass as the CSS rather than waiting
+       * for it to parse.
+       */
+      preloadFont && (
+        <link
+          rel="preload"
+          href={archivoLatin}
+          as="font"
+          type="font/woff2"
+          crossorigin
+        />
+      )
+    }
+    {
+      preloadHero && (
+        <link
+          rel="preload"
+          href="/images/stucco-home-summer.webp"
+          as="image"
+          type="image/webp"
+          fetchpriority="high"
+        />
+      )
+    }
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>

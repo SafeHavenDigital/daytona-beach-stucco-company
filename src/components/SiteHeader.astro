@@ -108,11 +108,35 @@ const telHref = phone ? `tel:${phone.replace(/[^0-9+]/g, '')}` : null;
 <header class="masthead on-dark">
   <div class="bar">
     <a class="mark" href="/" aria-label={`${business.name} — home`}>
+      {/*
+        WIDTHS ARE DERIVED FROM THE CSS BELOW, NOT FROM THE PAINTED BOX.
+        Set 2026-09-03 after PageSpeed flagged a 1254x1254 / 194 KiB source.
+
+        Without `widths`, <Image> emits the master at its full intrinsic
+        1254px, which is what shipped. The rendered box is NOT the 52x52
+        a viewport audit reports: .site-logo is
+        `width: clamp(10rem, 16vw, 13rem)` with `max-height: 3.25rem` and
+        `object-fit: contain`, so the element is up to 13rem = 208px wide
+        and 52px tall. A square logo letterboxed into that box paints ~52px
+        across, but the IMAGE still has to cover 208 CSS px or it goes soft.
+
+        208 = the clamp ceiling. 416 = the same at 2x for retina, which is
+        most phone traffic. `sizes="208px"` is a fixed descriptor because
+        the element never exceeds the clamp ceiling at any viewport.
+        Do not "optimise" these down to 52 — that is the letterboxed paint
+        width, and using it would visibly blur the mark.
+      */}
       <Image
         class="site-logo"
         src={logo}
         alt={business.name}
         loading="eager"
+        width={208}
+        height={208}
+        widths={[208, 416]}
+        sizes="208px"
+        format="webp"
+        quality={82}
       />
     </a>
 
