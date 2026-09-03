@@ -1,0 +1,19 @@
+# robots.txt — daytonabeachstuccocompany.com
+# Served from public/, so it is copied verbatim to the site root at build.
+
+# Everything on this site is meant to be indexed. The pages that are not
+# — /404/ and /style-reference/ — already carry a `noindex` robots meta
+# tag, which is the correct mechanism: Disallow here would BLOCK the
+# crawl and so prevent the noindex from ever being read, leaving those
+# URLs eligible to appear in results as bare links. Meta noindex and
+# Disallow do not stack; using both is a common way to get the opposite
+# of what was intended. Do not add Disallow lines for them.
+User-agent: *
+Allow: /
+
+# /api/contact is POST-only and returns JSON. It is not linked as a
+# document anywhere and is excluded from the sitemap. Disallowing it
+# costs nothing and keeps crawl budget on pages.
+Disallow: /api/
+
+Sitemap: https://daytonabeachstuccocompany.com/sitemap-index.xml

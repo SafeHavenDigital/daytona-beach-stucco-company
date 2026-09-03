@@ -316,9 +316,19 @@ const faqSchema = {
           sources land in roughly the same place:
         </p>
 
-        <div class="table-scroll">
+        {/*
+          tabindex="0" + role/aria-label added 2026-09-03 - see the price table
+          on /stucco-repair/. A keyboard-only user cannot scroll an overflow
+          container that cannot receive focus (WCAG 2.1.1).
+        */}
+        <div
+          class="table-scroll"
+          tabindex="0"
+          role="region"
+          aria-labelledby="readings-table-caption"
+        >
           <table class="readings">
-            <caption>
+            <caption id="readings-table-caption">
               Published third-party inspection and restoration conventions.
               These are not a code standard and not our own thresholds.
             </caption>

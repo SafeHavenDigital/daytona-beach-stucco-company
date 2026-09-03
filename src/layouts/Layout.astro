@@ -26,33 +26,47 @@ interface Props {
 const { title, description, canonicalPath, noindex = false } = Astro.props;
 
 /**
- * Self-referencing canonical.
+ * Self-referencing canonical, ABSOLUTE.
  *
- * Emitted as a root-relative path rather than an absolute URL because no
- * production domain has been supplied yet (`astro.config.mjs` has no `site`,
- * and src/config/site.ts holds no domain). Per the verification rule in
- * site.ts, inventing one is not an option — a guessed domain in a canonical
- * would actively misdirect crawlers, which is worse than omitting it.
+ * These were root-relative until 2026-09-03, because no production domain had
+ * been supplied and inventing one would have actively misdirected crawlers.
+ * The domain is now confirmed and set as `site` in astro.config.mjs, so this
+ * emits the absolute form the previous comment here called for — which is
+ * what the spec prefers and what removes any ambiguity about scheme or host.
  *
- * Root-relative canonicals are valid and resolve against the served origin, so
- * this is correct on any domain. When the real domain is supplied, set `site`
- * in astro.config.mjs and change this to `new URL(path, Astro.site)` to emit
- * absolute canonicals, which are marginally preferred.
+ * `Astro.site` is guaranteed present now that `site` is configured, but the
+ * fallback keeps the page rendering rather than throwing if it is ever
+ * removed. A relative canonical is degraded, not broken; a build failure on
+ * every page is worse.
  *
- * Trailing slash is normalized to match the built URLs (Astro's default
- * directory-style output), so the canonical never disagrees with the address
- * the page is actually served at.
+ * Trailing slash is normalized to match the built URLs (`trailingSlash:
+ * 'always'`), so the canonical never disagrees with the address the page is
+ * actually served at, and never disagrees with the sitemap entry either.
  */
 const rawPath = canonicalPath ?? Astro.url.pathname;
-const canonical =
+const normalizedPath =
   rawPath === '/' ? '/' : rawPath.endsWith('/') ? rawPath : `${rawPath}/`;
+const canonical = Astro.site
+  ? new URL(normalizedPath, Astro.site).toString()
+  : normalizedPath;
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      viewport-fit=cover added 2026-09-03. Required for env(safe-area-inset-*)
+      to resolve to anything but 0 on notched iOS devices; MobileStickyBar
+      uses it to keep its tap targets clear of the home indicator. Safe on
+      every other device and browser, which ignore the token. Note that with
+      cover, content can reach the physical screen edges - the page's own
+      horizontal padding comes from --gutter on .wrap, which is unaffected.
+    -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
@@ -122,6 +136,26 @@ const canonical =
     --verdict-act: #b4543a;    /* rust — act now  */
     --flag: var(--verdict-look);
 
+    /* TEXT-SAFE counterpart to --flag. Added 2026-09-03.
+     *
+     * --verdict-look (#c08a3e) is tuned as a DECORATIVE amber: it is correct
+     * for the 3px caveat rules, the step bullets and the square dots, which
+     * carry no contrast requirement because they are not text.
+     *
+     * Several pages also used it as a COLOUR FOR SMALL TEXT - the .who era
+     * labels (11px), .verdict pattern labels (13px) and .cause-n numbers
+     * (13px). At 3.02:1 on --paper (#fff) and 2.41:1 on the --paper-warm
+     * (#e7e5e4) grid-cell ground, that fails WCAG AA, which requires 4.5:1
+     * for text below 18.66px. None of those labels qualify for the
+     * large-text exemption.
+     *
+     * This is the same amber darkened until it clears AA on BOTH grounds
+     * (5.93:1 on white, 4.72:1 on --paper-warm). The decorative palette is
+     * deliberately NOT changed - the verdict scale renders exactly as
+     * approved. Use --flag for rules, dots and bars; use --flag-ink whenever
+     * the amber is applied to text. */
+    --flag-ink: #855c18;
+
     /* Type */
     --font-display: 'Archivo Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     --font-body: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -148,7 +182,40 @@ const canonical =
 
   * { box-sizing: border-box; }
 
-  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  /* Media never overflows its container. Added 2026-09-03: there was no
+   * global img reset, so the only thing keeping images in bounds was
+   * SiteImage's own `width: 100%` rule. The raw <img> tags in the
+   * null-gated proof sections (9 pages) each re-declare it locally, and
+   * anything added outside those two paths would have overflowed on
+   * mobile. max-width rather than width so an image smaller than its
+   * container is not stretched; height: auto keeps the aspect ratio when
+   * the width is constrained. */
+  img,
+  svg,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    /* Clear the sticky masthead when jumping to an anchor. Added
+     * 2026-09-03. The header is `position: sticky` at min-height 5rem
+     * (SiteHeader.astro), so without this the browser scrolls the target
+     * to y=0 and the header sits on top of it. That hit the skip link on
+     * every page - #main is the first thing a keyboard or screen-reader
+     * user activates, and it landed underneath the header - plus the one
+     * in-page anchor on /stucco-repair/ (#what-we-see).
+     *
+     * scroll-padding-top on the scroll container is the correct fix
+     * rather than scroll-margin on each target: it covers every anchor,
+     * including ones added later. 5.5rem is the header height plus a
+     * little breathing room. Below 62rem the header is shorter, but it is
+     * still sticky, so the same offset applies and simply leaves slightly
+     * more gap. */
+    scroll-padding-top: 5.5rem;
+  }
 
   body {
     margin: 0;
@@ -622,5 +689,40 @@ const canonical =
 
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
+  }
+
+  /* --- Keyboard focus --------------------------------------------------
+   * Added 2026-09-03. There was no focus style anywhere in the global
+   * layer: only LeadForm and the contact page styled their own fields, and
+   * SiteHeader styled its dropdown items. Every other link and button -
+   * the whole nav, every .btn, every .card-link, the footer, the mobile
+   * sticky bar - fell back to the UA default outline, which is a thin dark
+   * ring. On the --shell dark bands (header, hero, footer, CTA) that ring
+   * is very nearly invisible, so a keyboard user could not tell where they
+   * were. WCAG 2.4.7.
+   *
+   * :focus-visible, not :focus, so the ring appears for keyboard and
+   * programmatic focus but not on mouse click - which is why no existing
+   * mouse interaction changes appearance.
+   *
+   * outline-offset is positive so the ring sits clear of the element's own
+   * 2px border (.btn) and 1px box-shadow seams (.grid-hairline cells)
+   * rather than merging with them. Outline does not affect layout, so
+   * nothing shifts and no existing spacing changes. */
+  :focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* On dark bands the accent orange is too close to the ground to read as
+   * a ring, so the light band ink is used instead. Same geometry. */
+  .on-dark :focus-visible {
+    outline-color: var(--shell-ink);
+  }
+
+  /* The sticky bar's primary button already paints --accent as its own
+   * ground; an accent ring on top of it would disappear. */
+  .s-primary:focus-visible {
+    outline-color: var(--shell-ink);
   }
 </style>

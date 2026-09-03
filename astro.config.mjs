@@ -1,9 +1,28 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
+  // PRODUCTION ORIGIN. Set 2026-09-03.
+  //
+  // Not a guess: this domain is already load-bearing in shipped code — it is
+  // the verified Resend sending domain in src/pages/api/contact.ts, which
+  // sends from leads@daytonabeachstuccocompany.com. Confirming it here is
+  // what turns the root-relative canonicals in Layout.astro into absolute
+  // ones and gives @astrojs/sitemap an origin to write.
+  //
+  // No trailing path. Changing it changes every canonical and every sitemap
+  // entry, so it must match the domain actually served, exactly, including
+  // the https scheme and the www-less host.
+  site: 'https://daytonabeachstuccocompany.com',
+
+  // Astro emits directory-style URLs (/stucco-repair/), so this keeps the
+  // sitemap, the canonicals and the served addresses agreeing on the
+  // trailing slash. Disagreement here is how duplicate-URL problems start.
+  trailingSlash: 'always',
+
   // The site stays static: every page is prerendered at build time exactly as
   // before. The adapter exists for the one on-demand route —
   // src/pages/api/contact.ts — which needs a server to hold the Resend key.
@@ -41,6 +60,55 @@ export default defineConfig({
   // dist/client/_astro/ and the srcset points at files. Setting Astro's
   // top-level `image.service` does NOT work - the adapter overrides it.
   adapter: cloudflare({ imageService: 'compile' }),
+
+  integrations: [
+    sitemap({
+      /**
+       * INDEXABLE PRODUCTION PAGES ONLY.
+       *
+       * The integration's default page set is "every route Astro emitted",
+       * which is wrong here in three separate ways. Each exclusion below is
+       * load-bearing; read the reason before removing one.
+       *
+       * Redirects (/stucco-repair-cost/, /stucco-repair-daytona-beach/) are
+       * NOT filtered here — they are declared in `redirects` above and Astro's
+       * sitemap integration already omits redirect routes. Verified against
+       * the emitted sitemap after the build.
+       */
+      filter: (page) => {
+        // /404/ — an error page. Layout.astro already sends it
+        // `noindex, follow`; a noindex URL inside a sitemap is a direct
+        // contradiction, and Google reports it as one.
+        if (page.includes('/404')) return false;
+
+        // /style-reference/ — internal scaffolding, noindex, unlinked from
+        // any navigation. NOTE: the header comment in that file claims an
+        // "underscore directory keeps it out of the sitemap generator's page
+        // set". That is not true — the directory is src/pages/style-reference/
+        // with no underscore, so it IS a routed, emitted page. This line is
+        // what actually keeps it out.
+        if (page.includes('/style-reference')) return false;
+
+        // /api/* — the contact endpoint. A POST-only JSON route, not a
+        // document. It is `prerender = false` so it should not appear here
+        // anyway; this is belt and braces against that changing.
+        if (page.includes('/api/')) return false;
+
+        return true;
+      },
+
+      // One <urlset>, not an index: this site is ~29 pages against a 50,000
+      // limit. Raising this does nothing until the page count grows by three
+      // orders of magnitude.
+      entryLimit: 45000,
+
+      // No <lastmod>, <changefreq> or <priority>. Google ignores changefreq
+      // and priority outright, and a lastmod stamped with "whenever the build
+      // ran" is actively misleading — every page would claim to have changed
+      // on every deploy, which trains crawlers to distrust the signal. Omitted
+      // deliberately; do not add them without real per-page modification data.
+    }),
+  ],
 
   redirects: {
     // Consolidated into /stucco-repair/ on 2026-08-28 by client direction.

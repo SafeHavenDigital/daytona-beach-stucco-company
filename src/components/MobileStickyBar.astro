@@ -45,7 +45,14 @@ const secondary = telHref
     align-items: center;
     justify-content: center;
     min-height: 3.75rem;
-    padding: 0.5rem 0.75rem;
+    /* The bottom padding carries the home-indicator inset on notched
+     * iPhones. Added 2026-09-03: without it the bar's tap targets sit
+     * underneath the system gesture bar, so the bottom of both buttons is
+     * unreachable on exactly the devices this bar exists for. env()
+     * resolves to 0px everywhere else, so nothing changes on any other
+     * device. Applied to the links, not the container, so the padding is
+     * part of the tap target rather than dead space below it. */
+    padding: 0.5rem 0.75rem calc(0.5rem + env(safe-area-inset-bottom)) 0.75rem;
     font-family: var(--font-display);
     font-size: 1rem;
     font-weight: 700;
@@ -72,7 +79,9 @@ const secondary = telHref
 <style is:global>
   /* Keep the last of the footer clear of the fixed bar. Mirrors the
    * reference, which pads the footer rather than the body. */
-  .footer { padding-bottom: 3.75rem; }
+  /* 3.75rem bar + 1px top border + the home-indicator inset the bar now
+   * pads itself by, so the footer still clears it on notched devices. */
+  .footer { padding-bottom: calc(3.75rem + 1px + env(safe-area-inset-bottom)); }
 
   @media (min-width: 62rem) {
     .footer { padding-bottom: 0; }
