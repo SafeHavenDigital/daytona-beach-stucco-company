@@ -1,0 +1,449 @@
+---
+/**
+ * /problems/water-stains-on-stucco/ — SUPPORTING problem/symptom page.
+ * keyword-plan Wave 4 / Wk 12 item, pulled forward 2026-08-31 because
+ * keyword-plan:598 names this page as a required inbound source for
+ * /stucco-moisture-testing/ ("the second-most-linked URL on the site")
+ * and that link did not exist. Brief:
+ * ./campaigns/content-plan/water-stains-on-stucco.md
+ *
+ * Target: `water stains on stucco`, `brown stains on stucco walls`,
+ * `stucco discoloration`, `rust stains on stucco`, `what causes water
+ * stains on stucco`, `efflorescence stucco`.
+ * Intent: INFORMATIONAL, one step nearer buying than the crack page.
+ *
+ * ------------------------------------------------------------------
+ * THIS IS NOT A SERVICE PAGE. It identifies; /stucco-water-damage-repair/
+ * sells. Per the voice profile the strongest move available here is
+ * "yours is probably a sprinkler" — do not walk it back into a pitch.
+ *
+ * WORD CEILING: 1,000-1,500 rendered words inside <main> (owner
+ * direction, matching the crack page). Measure with the <main>-extraction
+ * method — header and footer chrome adds ~700-790 words.
+ *
+ * LINKING MODEL (keyword-plan:314) — every /problems/ page links UP to
+ * exactly one service money page and ACROSS to /stucco-repair/#pricing.
+ * Up = /stucco-water-damage-repair/. Across = /stucco-repair/#pricing.
+ * Handoffs to /stucco-moisture-testing/, /problems/cracks-in-stucco/
+ * and /eifs-repair/ are the symptom-specific routing this page exists
+ * to do.
+ *
+ * CANNIBALIZATION CONTROL — the tight one. /stucco-water-damage-repair/
+ * already owns, and this page MUST NOT rebuild:
+ *   - the staged sign sequence ("in the order they usually show up")
+ *   - the TAP TEST. Name it and link. Do not restate the steps.
+ *   - the repair method, what opening a wall finds, cost, insurance
+ * That page answers "water is in my wall, what now." This page answers
+ * the question BEFORE it: "is this even water." If this page grows a
+ * repair-method or cost section, that is the cannibalization. Cut and
+ * link.
+ *
+ * EFFLORESCENCE IS THE MOST OVERSTATED ITEM ON COMPETITOR PAGES. It is
+ * evidence water moved through the material at some point. It is NOT
+ * proof of a current leak — the leak may have been fixed years ago.
+ * Say so plainly; that accuracy is the differentiator.
+ *
+ * NOT A HOME INSPECTION: Florida licenses home inspectors separately.
+ *
+ * NO THERMAL-IMAGING CLAIM. It is conditional and a screening aid, and
+ * this page has no reason to raise it. Not mentioned at all.
+ *
+ * NO COATING / SEALER PRODUCT CLAIMS. Coating brands, lines, systems and
+ * manufacturer approvals are UNVERIFIED. No standalone waterproofing
+ * benefit claim either — `standaloneWaterproofing` is verified false.
+ *
+ * NO PRICE RANGE renders here, so `pricingDisclaimer` is deliberately
+ * not imported. Cost lives at /stucco-repair/#pricing.
+ *
+ * OMITTED — blocked, absent rather than stubbed:
+ *   - [STAINED WALL PHOTO SET] — no stain-type photo array exists.
+ *     `openWallPhotos` is null; the proof block is gated on it and
+ *     renders once real photos land. Do NOT substitute stock or AI
+ *     imagery as project documentation.
+ *   - [PHONE] — null. CTA routes to /contact/ via ContactCta.
+ *   - [LICENSE #], [WARRANTY TERM] — null. No credential or guarantee
+ *     module on this page.
+ * ------------------------------------------------------------------
+ *
+ * VISUAL SYSTEM (redesigned 2026-09-02): migrated from this page's own local
+ * hero/band/FAQ CSS onto the shared Orlando interior-page components -
+ * PageHero, SectionHead, FaqList, Breadcrumbs - and the global utilities in
+ * Layout.astro (.section, .slab, .joint, .grid-hairline, .on-dark). COPY,
+ * FACTS, SCHEMA, URLS, HEADING TEXT, ANCHOR IDS AND INTERNAL LINKS ARE
+ * UNCHANGED by that migration; only the markup carrying them moved.
+ * The six-mark field guide, the wash test and the three sorting questions stay exactly as written.
+ * This page keeps its informational register - single-column hero, no aside
+ * CTA - and is NOT homogenized toward the service money pages. Do not re-add
+ * a local hero or band rule here.
+ */
+import LeadForm from '../../../components/LeadForm.astro';
+import Layout from '../../../layouts/Layout.astro';
+import SiteHeader from '../../../components/SiteHeader.astro';
+import SiteFooter from '../../../components/SiteFooter.astro';
+import MobileStickyBar from '../../../components/MobileStickyBar.astro';
+import ContactCta from '../../../components/ContactCta.astro';
+import PageHero from '../../../components/PageHero.astro';
+import SectionHead from '../../../components/SectionHead.astro';
+import FaqList from '../../../components/FaqList.astro';
+import { business, serviceArea, openWallPhotos } from '../../../config/site';
+
+const title =
+  'Water Stains on Stucco: What They Mean | Daytona Beach & Volusia County';
+const description =
+  'How to tell a stain that means water is in your wall from a stain that means a sprinkler. The marks on a stucco wall, sorted by what actually left them.';
+
+/**
+ * Sorted by WHAT LEFT THE MARK, not by how alarming it looks — the
+ * organizing idea of the page. Ordered least to most concerning so the
+ * worried reader meets the likely answer first.
+ */
+const marks = [
+  {
+    name: 'Dark streaking below a ledge, sill, or roofline',
+    verdict: 'Usually dirt',
+    tone: 'calm',
+    body: 'Anything that concentrates runoff sends a dirty rivulet down the same track every storm. The stain is on the surface, it is darkest directly under whatever is shedding the water, and it has a clean streaked shape. This is grime and organic growth, not the wall failing.',
+  },
+  {
+    name: 'A pale crust or ring, often near the bottom of a wall',
+    verdict: 'Sprinkler minerals',
+    tone: 'calm',
+    body: 'Irrigation water carries dissolved minerals. Hit the same patch of wall every morning and it dries into a chalky halo at a very consistent height. If the mark stops at the top of your spray pattern and no wall out of the sprinklers has it, you have found the cause.',
+  },
+  {
+    name: 'A rust-colored streak running from a fixture or fastener',
+    verdict: 'The metal, not the wall',
+    tone: 'calm',
+    body: 'A reddish-orange tail below a railing bracket, light, vent, or nail head. Something ferrous is oxidizing and bleeding down the finish. It stains stucco convincingly and says nothing about moisture in the assembly. Trace it up — the source is at the top of the streak.',
+  },
+  {
+    name: 'A white chalky bloom on the surface',
+    verdict: 'Efflorescence — read carefully',
+    tone: 'watch',
+    body: 'Salts carried to the surface by water moving through the wall, left behind when it evaporated. It proves water travelled through the material. It does not prove water is travelling through it now — the roof leak that caused it may have been fixed years ago. What matters is whether it comes back after you wash it off.',
+  },
+  {
+    name: 'A stain with a soft edge that darkens after rain',
+    verdict: 'Now it is worth attention',
+    tone: 'watch',
+    body: 'Not a streak with a clean track but a patch with a diffuse boundary, often darker for a day or two after weather and fading between. That pattern says the wall is absorbing and releasing water rather than shedding it. Where the top edge of the patch sits usually points at how it is getting in.',
+  },
+  {
+    name: 'Staining with bubbling paint, a hollow spot, or a musty smell inside',
+    verdict: 'Water is in the assembly',
+    tone: 'flag',
+    body: 'Any one of these alongside a stain changes the answer. Paint lifts because moisture is pushing from behind. A drummy patch means the stucco has lost its bond. A musty smell on the inside wall means it has been going on a while. Together the stain is the least of it.',
+  },
+];
+
+/** The actual test — the page's central argument. */
+const tests = [
+  {
+    factor: 'Where it sits',
+    body: 'Stains from the outside start high and run down from something — a sill, a joint, a fixture. Stains from inside the wall spread out from a middle with no obvious source above them. A mark with nothing overhead to explain it is the more interesting one.',
+  },
+  {
+    factor: 'Whether it comes back',
+    body: 'The single most useful test, and it is free. Wash the wall. A surface stain comes off and stays off. A stain that returns after the next rain is being fed, and what is feeding it is the thing to find.',
+  },
+  {
+    factor: 'What else changed',
+    body: 'A stain by itself on an otherwise sound wall is rarely urgent. A stain that arrived with cracking, blistering paint, a hollow-sounding patch, or a smell in the room behind it is not really a staining problem at all.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'What causes water stains on stucco?',
+    a: 'Most often something on the outside: runoff dirt streaking below a ledge, minerals from irrigation spray, or rust bleeding down from a metal fixture. Less often, water moving inside the wall and surfacing — which is the one that matters. The appearance alone will not separate them. Where the stain sits and whether it returns after the wall dries will.',
+  },
+  {
+    q: 'What is the white chalky residue on my stucco?',
+    a: 'Efflorescence — mineral salts carried to the surface by water and left there when it evaporated. It tells you water moved through the wall at some point. It does not tell you water is moving through it today, and plenty of houses show it from a leak that was repaired long ago. Wash it off and watch. If it returns, something is still wet.',
+  },
+  {
+    q: 'Do stucco stains go away on their own?',
+    a: 'Surface staining generally cleans off and stays off once whatever caused it is dealt with — adjust the sprinkler, clear the gutter, deal with the rusting fixture. A stain fed by water inside the wall will keep coming back no matter how many times you clean it, and cleaning it repeatedly is the clearest sign you have that the cause is behind the finish.',
+  },
+  {
+    q: 'Should I be worried about brown stains on my stucco?',
+    a: 'Not on their own. A brown streak with a clean track running down from a ledge or sill is usually dirt. Worry when the stain has a soft, spreading edge, darkens after rain, has no source above it, or shows up with bubbling paint or a hollow-sounding patch of wall. Those combinations mean the wall is holding water.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+/**
+ * Article, not Service — this page is informational and sells nothing.
+ * Service markup would misrepresent it and blur the boundary against
+ * /stucco-water-damage-repair/.
+ */
+const articleSchema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Water Stains on Stucco: What They Mean and What They Do Not',
+  description,
+  author: { '@type': 'Organization', name: business.name },
+  publisher: { '@type': 'Organization', name: business.name },
+};
+if (serviceArea) articleSchema.about = serviceArea;
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <SiteHeader current="/problems/water-stains-on-stucco/" />
+
+  <main id="main">
+    {/*
+      HERO. Dark PageHero, single column - no aside. This is an informational
+      page, not a money page: the conversion affordance is the ContactCta at
+      the foot. Eyebrow, h1 and lede are the same three strings the old local
+      hero rendered. Breadcrumbs are new markup only and emit BreadcrumbList
+      schema from Breadcrumbs.astro.
+    */}
+    <PageHero
+      crumbs={[
+        { href: '/problems/', label: 'Stucco problems' },
+        { href: '/problems/water-stains-on-stucco/', label: 'Water stains' },
+      ]}
+      eyebrow="Stucco problems · Daytona Beach & Volusia County"
+      title="Water stains on stucco: what they mean and what they do not"
+      lede="Most stains on a stucco wall are not water in the wall. They are runoff dirt, sprinkler minerals, or rust bleeding off a fixture. A few are the real thing. Telling them apart is easier than the internet makes it sound."
+      actions={[
+        { href: '/contact/', label: 'Request an estimate' },
+        { href: '/stucco-moisture-testing/', label: 'How moisture testing works', variant: 'secondary' },
+      ]}
+    />
+
+<section class="section">
+  <div class="wrap">
+    <LeadForm />
+  </div>
+</section>
+
+    {/* QUICK ANSWER — featured-snippet shaped */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="The short version"
+          title="The short version"
+          lede="Wash the wall. A stain that comes off and stays off was on the surface. A stain that returns after the next rain is being fed by water, and the thing worth finding is what is feeding it."
+        />
+        <p class="lede">
+          That test costs nothing and settles most cases. What a stain looks
+          like matters far less than where it sits and whether it comes back.
+        </p>
+      </div>
+    </section>
+
+    {/* THE FIELD GUIDE — sorted by cause, not by alarm */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Field guide"
+          title="The marks on a stucco wall, by what left them"
+          lede="Six cover nearly everything, ordered from least to most concerning."
+        />
+        <div class="grid-hairline cols-2 entries">
+          {marks.map((m) => (
+            <div class={`entry tone-${m.tone}`}>
+              <h3>{m.name}</h3>
+              <p class="verdict">{m.verdict}</p>
+              <p>{m.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* THE TEST — the page's central argument */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Sorting it out"
+          title="Three questions that sort it out"
+          lede="You can answer all three yourself, in an afternoon, without anybody coming out."
+        />
+        <div class="grid-hairline cols-3 entries">
+          {tests.map((t) => (
+            <div class="entry">
+              <h3>{t.factor}</h3>
+              <p>{t.body}</p>
+            </div>
+          ))}
+        </div>
+        <div class="caveat">
+          <p>
+            <strong>
+              A dramatic-looking stain on a wall that dries out is a smaller
+              problem than a faint one that keeps returning.
+            </strong>{' '}
+            Severity of appearance is close to meaningless here. Persistence
+            is the signal.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* PROOF — null-gated, renders only when a real photo set exists */}
+    {openWallPhotos && openWallPhotos.length > 0 && (
+      <section class="section" id="proof">
+        <div class="wrap">
+          <SectionHead eyebrow="Proof" title="What it looks like behind the finish" />
+          <div class="proof">
+            {openWallPhotos.map((src) => (
+              <img
+                src={src}
+                alt="Stucco opened during repair, showing the condition of the wall behind the finish"
+                loading="lazy"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {/* FLORIDA CONTEXT — past the saturated observation to the consequence */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Florida context"
+          title="Why stains read differently on this coast"
+          lede="Humidity gets blamed for everything here, which makes it useless as an explanation. The specific part is that a Florida wall rarely gets a chance to dry all the way out."
+        />
+        <p class="band-lede">
+          A wall in a dry climate sheds a storm and dries by afternoon, so a
+          stain that lingers stands out immediately. Here the ambient
+          moisture keeps a wall damp for long stretches, which means surface
+          staining is more common, darker, and less alarming than it looks —
+          organic growth thrives on it. It also means a genuine leak stays
+          hidden longer, because the wall never dries enough for the
+          difference to show.
+        </p>
+        <p class="band-lede">
+          So the reassuring half and the worrying half both get amplified.
+          That is why the wash-and-watch test matters more here than the
+          appearance of the stain, and why a mark that persists through a
+          dry stretch deserves more attention than one that shows up in a
+          wet week.
+        </p>
+      </div>
+    </section>
+
+    {/* WHAT TO DO — the two-link slot plus symptom handoffs */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Next step"
+          title="What to do about it"
+          lede="If the stain washes off, has an obvious source above it, and does not return, you are done. Adjust the sprinkler, clear the gutter, deal with the rusting bracket. Nobody needs to look at your wall."
+        />
+        <p class="lede">
+          If it keeps coming back, the next thing to establish is whether
+          the wall is actually wet — before anyone talks about repairs, and
+          certainly before anyone coats over it. Our{' '}
+          <a href="/stucco-moisture-testing/">Stucco Moisture Check</a>{' '}
+          answers that with meter readings, and you get the findings whether
+          or not you hire us. There is also a knuckle-tap check you can run
+          yourself first, written out step by step on{' '}
+          <a href="/stucco-water-damage-repair/">stucco water damage repair</a>,
+          which is also where the repair itself is covered if water has
+          already gotten in.
+        </p>
+        <p class="lede">
+          If the staining showed up alongside cracking, which pattern you
+          have changes the answer:{' '}
+          <a href="/problems/cracks-in-stucco/">
+            which cracks matter and which do not
+          </a>. If the wall also sounds hollow or gives under a thumb, that is{' '}
+          <a href="/problems/soft-spots-hollow-stucco/">
+            a separate finding with its own answer
+          </a>. And for what repair work runs in this area, see the{' '}
+          <a href="/stucco-repair/#pricing">price ranges</a>.
+        </p>
+        <p class="note">
+          One thing worth saying plainly: do not paint or coat over a stain
+          that keeps returning. It hides the evidence you need and seals
+          water into a wall that was trying to dry out. Establish the wall
+          is dry first &mdash; and if the paint there is already{' '}
+          <a href="/problems/bubbling-peeling-paint-stucco/">
+            bubbling or peeling
+          </a>, that has its own answer, which is not always water. If the whole wall sounds hollow rather than one
+          patch, the house may be{' '}
+          <a href="/eifs-repair/">EIFS rather than hardcoat stucco</a>, which
+          is a different system with a different answer.
+        </p>
+      </div>
+    </section>
+
+    {/* FAQ */}
+    <section class="section slab joint" id="faq" aria-labelledby="faq-head">
+      <div class="wrap">
+        <SectionHead id="faq-head" eyebrow="FAQ" title="Frequently asked questions" />
+        <FaqList items={faqs} />
+      </div>
+    </section>
+
+    <section class="section on-dark">
+      <div class="wrap">
+        <ContactCta heading="Not sure which kind of stain you are looking at?" />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  /*
+   * PAGE-SPECIFIC ONLY. The hero, bands, section heads, cell grid, FAQ rows
+   * and breadcrumbs come from the shared components and the global utilities
+   * in Layout.astro; those rules were deleted here rather than duplicated.
+   * What remains is this page's own furniture.
+   */
+  .band-lede { max-width: 60ch; color: var(--ink-soft); }
+  .lede { max-width: 60ch; color: var(--ink-soft); }
+  .note { color: var(--ink-soft); font-size: 0.9375rem; max-width: 60ch; }
+
+  .caveat {
+    border-left: 3px solid var(--flag);
+    padding-left: 1.25rem;
+    max-width: 60ch;
+  }
+  .caveat p { margin: 0; color: var(--ink-soft); }
+
+  .entry h3 { margin: 0 0 0.5rem; font-size: 1.0625rem; }
+  .entry p { margin: 0; color: var(--ink-soft); }
+
+  .verdict {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.375rem !important;
+    color: var(--ink-soft);
+  }
+  .tone-watch .verdict { color: var(--ink); }
+  .tone-flag .verdict { color: var(--flag); }
+
+  .proof {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .proof img { width: 100%; height: auto; border-radius: 4px; }
+
+</style>

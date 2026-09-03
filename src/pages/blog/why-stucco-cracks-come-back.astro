@@ -36,6 +36,7 @@
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
+import MobileStickyBar from '../../components/MobileStickyBar.astro';
 import ContactCta from '../../components/ContactCta.astro';
 import { business, moistureCheck } from '../../config/site';
 
@@ -209,7 +210,7 @@ const questionsToAsk = [
 
   <SiteHeader current="/blog/why-stucco-cracks-come-back/" />
 
-  <main>
+  <main id="main">
     {/* HERO */}
     <article>
       <header class="hero">
@@ -352,6 +353,10 @@ const questionsToAsk = [
               <p class="col-note">
                 If that&rsquo;s what you have, you probably don&rsquo;t need me
                 yet. Keep an eye on it and check again after hurricane season.
+                The pattern-by-pattern version is on{' '}
+                <a href="/problems/cracks-in-stucco/">
+                  cracks in stucco: when to worry
+                </a>.
               </p>
             </div>
 
@@ -418,8 +423,12 @@ const questionsToAsk = [
             The full process, what the readings mean, and what testing costs
             are on the{' '}
             <a href="/stucco-moisture-testing/">stucco moisture testing page</a>.
-            If you already know the wall is wet and you want the repair side of
-            this, that&rsquo;s covered on the{' '}
+            If you already know the wall is wet, the repair that addresses the
+            cause is{' '}
+            <a href="/stucco-water-damage-repair/">
+              stucco water damage repair
+            </a>
+            . For the repair side more broadly, that&rsquo;s covered on the{' '}
             <a href="/stucco-repair/">stucco repair page</a>, including{' '}
             <a href="/stucco-repair/#pricing">
               what repairs actually cost around here
@@ -508,6 +517,14 @@ const questionsToAsk = [
             we see most on houses here, the price ranges for this area, and how
             the work actually runs.
           </p>
+
+          <p>
+            And if the question underneath all of this is whether a stucco wall
+            is even supposed to get wet, it is &mdash;{' '}
+            <a href="/blog/is-stucco-supposed-to-get-wet/">that one has its own
+            explanation</a>, including why the answer depends on whether your
+            house is block or frame.
+          </p>
         </div>
       </section>
 
@@ -521,6 +538,8 @@ const questionsToAsk = [
   </main>
 
   <SiteFooter />
+
+  <MobileStickyBar />
 </Layout>
 
 <style>

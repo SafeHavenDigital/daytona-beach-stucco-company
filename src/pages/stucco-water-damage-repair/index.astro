@@ -1,0 +1,763 @@
+---
+/**
+ * /stucco-water-damage-repair/ — service money page, and the flagship
+ * expression of the brand position (keyword-plan brief:
+ * stucco-water-damage-repair, priority DO SECOND, marked ★).
+ *
+ * Target: `stucco water damage repair florida`, `water behind stucco repair`,
+ * `moisture behind stucco daytona beach`, `stucco leak repair`,
+ * `water stain on stucco wall`.
+ * Intent: transactional. The symptom is visible and the homeowner is alarmed.
+ *
+ * ------------------------------------------------------------------
+ * ANGLE ① — FIND THE WATER FIRST. This page is the most literal expression
+ * of it on the site: diagnosis before repair, and the diagnosis is what
+ * justifies the full repair (source + substrate + finish) instead of a patch.
+ * Do not restructure this into a patch-selling page.
+ *
+ * CANNIBALIZATION CONTROL (brief stucco-moisture-testing, 2026-08-29):
+ * The full Moisture Check process, deliverables, reading bands, and testing
+ * detail live ONLY on /stucco-moisture-testing/. This page carries a short
+ * summary plus a link. Do not re-expand them here.
+ *
+ * THERMAL IMAGING: not mentioned on this page at all. The camera is owned and
+ * used, but the detail belongs on /stucco-moisture-testing/. If it is ever
+ * added here, it identifies areas worth testing and does NOT confirm moisture
+ * on its own — the meters do. Never "our camera finds the water".
+ *
+ * NOT A HOME INSPECTION: Florida licenses home inspectors separately. This is
+ * our own assessment as the contractor who does the work. Never frame the
+ * service as an inspection.
+ *
+ * INSURANCE SECTION is general, attributed, and explicitly not advice. We are
+ * not adjusters or attorneys. Do not sharpen the hedges into promises.
+ *
+ * OMITTED — blocked on missing prerequisites, absent rather than stubbed:
+ *   - [OPEN-WALL PHOTO SET] — `openWallPhotos` is null in src/config/site.ts.
+ *     The brief names open-wall proof as this page's strongest differentiator
+ *     and it is the one thing the page ships without (client instruction
+ *     2026-08-31: "build it without the photos"). The proof block renders
+ *     automatically once the array is populated — shot 10 in
+ *     creative-output/prompts/photography-shot-list.md is the capture target.
+ *     Do NOT substitute stock or AI imagery: presenting generated visuals as
+ *     real project documentation is a hard brand constraint.
+ *   - [WARRANTY TERM] — `warrantyTerms` is null. No guarantee module.
+ *   - [LICENSE #], [PHONE] — null in site.ts. Omitted, not stubbed.
+ * ------------------------------------------------------------------
+ *
+ * VISUAL SYSTEM (redesigned 2026-09-02): migrated from this page's own local
+ * hero/band/FAQ CSS onto the shared Orlando interior-page components -
+ * PageHero, SectionHead, FaqList, Breadcrumbs - and the global utilities in
+ * Layout.astro (.section, .slab, .joint, .grid-hairline, .prose, .on-dark).
+ * COPY, FACTS, PRICING, SCHEMA, URLS, HEADING TEXT, ANCHOR IDS AND INTERNAL
+ * LINKS ARE UNCHANGED by that migration; only the markup carrying them moved.
+ * This page keeps its OWN content and structure - the sign sequence, the tap
+ * test, the entry points, the insurance section - and is not homogenized
+ * toward /stucco-repair/. Only the presentation layer is shared. Do not
+ * re-add a local hero or band rule here.
+ */
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import MobileStickyBar from '../../components/MobileStickyBar.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import FaqList from '../../components/FaqList.astro';
+import SiteImage from '../../components/SiteImage.astro';
+import openedWall from '../../assets/images/stucco-water-damage-repair.png';
+import {
+  business,
+  moistureCheck,
+  serviceArea,
+  openWallPhotos,
+  repairPriceRanges,
+  pricingDisclaimer,
+} from '../../config/site';
+
+const title =
+  'Stucco Water Damage Repair | Daytona Beach & Volusia County';
+const description =
+  'Water behind stucco, found before the wall gets closed up. The signs in the order they show up, a free check you can do yourself, and what the repair actually involves.';
+
+const usd = (n: number) => '$' + n.toLocaleString('en-US');
+
+/** The water-damage row from the researched market ranges. */
+const waterDamageRange = repairPriceRanges.find(
+  (r) => r.job === 'Water-damaged stucco repair',
+);
+const substrateRange = repairPriceRanges.find(
+  (r) => r.job === 'Major moisture and substrate restoration',
+);
+
+/** Ordered deliberately — this is the sequence a failing wall actually shows. */
+const signs = [
+  {
+    stage: 'First',
+    sign: 'Hairline cracking',
+    body: 'On its own this means very little. Nearly every stucco wall in Volusia County has some. It matters as the first item in a sequence, not as a finding by itself.',
+  },
+  {
+    stage: 'Then',
+    sign: 'Staining at window and door corners',
+    body: 'A darker streak running down from a corner, or a tide-line that stays after the wall dries. Openings are where water gets in most often, so this is the highest-signal early sign.',
+  },
+  {
+    stage: 'Then',
+    sign: 'Bubbling or peeling paint, low on the wall',
+    body: 'In a patch rather than across the whole elevation. Paint fails in one spot because moisture is pushing out from behind it there and nowhere else.',
+  },
+  {
+    stage: 'Then',
+    sign: 'Soft or hollow spots',
+    body: 'The stucco has lost its bond with what is behind it. At this point the material underneath is usually already involved.',
+  },
+  {
+    stage: 'Last',
+    sign: 'Material breaking away',
+    body: 'Pieces coming off in your hand, crumbling edges, exposed lath. The wall has been wet for a long time.',
+  },
+];
+
+/** Where water actually enters on houses in this market. */
+const entryPoints = [
+  {
+    name: 'Window and door flashing',
+    body: 'The most common entry point by a wide margin. Water runs down the wall, reaches the head of an opening, and gets behind the stucco where the flashing was never right or has failed.',
+  },
+  {
+    name: 'Rooflines and band details',
+    body: 'Where the wall meets a roof edge, a soffit, or a change in plane. Wind-driven rain moves sideways and upward, and these joints were detailed for water falling straight down.',
+  },
+  {
+    name: 'Control joints',
+    body: 'They exist to let the wall move. When they are sealed with the wrong material, painted over, or simply old, they stop shedding water and start holding it.',
+  },
+  {
+    name: 'A buried or painted weep screed',
+    body: 'The strip along the bottom of the wall that lets trapped water drain out. Raise the grade against it, mulch over it, or paint it shut, and the wall loses its only exit. Water goes in during every storm and never leaves.',
+  },
+  {
+    name: 'Penetrations',
+    body: 'Hose bibs, dryer vents, light fixtures, satellite mounts, anything drilled through the wall after the stucco went on. Each one is a hole that was supposed to be sealed.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'How do you know if water is behind stucco?',
+    a: 'From the outside, usually you cannot be certain. Staining, bubbling paint, soft or hollow-sounding spots, and cracks that keep returning are all reasons to suspect it, but none of them prove it, and a wall can look fine from the street with wet sheathing behind it. Tapping the wall will tell you where to look. Moisture meter readings are what actually settle it.',
+  },
+  {
+    q: 'What are the signs of a stucco leak?',
+    a: 'They tend to arrive in order: hairline cracking, then staining at window and door corners, then bubbling or peeling paint low on the wall, then soft or hollow spots, then material breaking away. The earlier you catch the sequence the smaller the repair is.',
+  },
+  {
+    q: 'Can water damaged stucco be repaired?',
+    a: 'Usually, yes. If the water got in recently and stayed local, the repair is the entry point plus the affected section. If it has been sitting long enough to affect the lath and sheathing behind the stucco, that material becomes part of the job. Where enough of the wall assembly has failed, patching stops making financial sense and it becomes a re-stucco conversation.',
+  },
+  {
+    q: 'How much does it cost to fix water damage behind stucco?',
+    a: waterDamageRange
+      ? `Researched market ranges for this area put water-damaged stucco repair at roughly ${usd(waterDamageRange.low)} to ${usd(waterDamageRange.high)}, and major moisture and substrate restoration higher than that. Those are area ranges rather than a quote from us. What your job costs depends mostly on how big the wet area is and how much of the material behind the stucco is involved.`
+      : 'It depends mostly on how big the wet area is and how much of the material behind the stucco is involved.',
+  },
+  {
+    q: 'Does homeowners insurance cover water damage behind stucco?',
+    a: 'It depends on the cause, and this is general information rather than advice on your policy. Florida policies commonly distinguish sudden damage, such as a storm driving water in, which may be covered, from gradual intrusion through long-term cracking or an installation defect, which often is not. Because that distinction gets decided on evidence, document the wall with dated readings and photos before anyone repairs it. Your carrier and your adjuster decide coverage, not us.',
+  },
+  {
+    q: 'What causes moisture behind stucco walls?',
+    a: 'Almost always a detail rather than the stucco itself. Failed flashing at a window or door head, an old or painted-over control joint, a weep screed buried by grade or sealed with paint, a penetration that was never properly sealed, or a roofline junction taking wind-driven rain. Stucco is not waterproof and was never meant to be — the assembly behind it is what manages water, and that is usually what has failed.',
+  },
+];
+
+const serviceSchema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Stucco water damage repair',
+  serviceType: 'Stucco water damage repair',
+  description:
+    'Repair of stucco walls where water has gotten in behind the finish. The entry point is identified and corrected, affected material behind the stucco is addressed, and the finish is rebuilt and matched.',
+  provider: { '@type': 'LocalBusiness', name: business.name },
+};
+if (serviceArea) serviceSchema.areaServed = serviceArea;
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <SiteHeader current="/stucco-water-damage-repair/" />
+
+  <main id="main">
+    {/*
+      HERO. Dark PageHero with ContactCta in the aside slot - the money-page
+      arrangement PageHero's own doc block describes. The eyebrow, h1 and lede
+      are the same three strings the old local hero rendered. Breadcrumbs are
+      new markup only and emit BreadcrumbList schema from Breadcrumbs.astro.
+      No `actions` array: the aside CTA is the conversion affordance here.
+    */}
+    <PageHero
+      crumbs={[
+        { href: '/services/', label: 'Services' },
+        { href: '/stucco-water-damage-repair/', label: 'Water damage repair' },
+      ]}
+      eyebrow="Stucco repair · Daytona Beach & Volusia County"
+      title="Water behind stucco: how we find it before we close the wall"
+      lede="A patch over a wet wall is a repair you pay for twice. The stain comes back, the crack reopens, and the second job is bigger than the first one would have been."
+      actions={[
+        { href: '/contact/', label: 'Request an estimate' },
+        { href: '/stucco-moisture-testing/', label: 'How moisture testing works', variant: 'secondary' },
+      ]}
+    >
+      <LeadForm />
+    </PageHero>
+
+    {/* THE SIGNS, IN ORDER */}
+    <section class="section" id="signs">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Reading the wall"
+          title="The signs, in the order they usually show up"
+          lede="Water damage behind stucco announces itself in a sequence. Most people call at stage three or four. Stage two is when the repair is still small."
+        />
+
+        <ol class="signs">
+          {signs.map((s) => (
+            <li>
+              <span class="stage">{s.stage}</span>
+              <div>
+                <h3>{s.sign}</h3>
+                <p>{s.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <div class="prose">
+        <p>
+          If all you have so far is the cracking at the top of that list and
+          no staining with it, you are probably not looking at a water
+          problem yet. Which pattern you have and what it means is on{' '}
+          <a href="/problems/cracks-in-stucco/">
+            cracks in stucco: when to worry
+          </a>.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* THE TAP TEST */}
+    <section class="section slab joint" id="tap-test">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Do it yourself"
+          title="A check you can do yourself right now"
+          lede="This is free, it takes about ninety seconds, and it will tell you more than staring at the crack will."
+        />
+
+        <ol class="steps">
+          <li>
+            <span class="num">1</span>
+            <div>
+              <h3>Tap along the wall with a knuckle</h3>
+              <p>
+                Start somewhere the wall looks fine, so you learn what sound
+                you are listening for. Sound stucco is bonded to what is behind
+                it and gives a solid, tight knock.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <div>
+              <h3>Work outward toward the stained or cracked area</h3>
+              <p>
+                Tap every few inches. Go below windows and doors, along the
+                bottom of the wall, and around any penetration.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <div>
+              <h3>Listen for the sound to change</h3>
+              <p>
+                A hollow or drummy note means the stucco has lost its bond
+                there. Press gently with your palm — if it gives at all, stop
+                pressing. Note where the hollow area starts and stops.
+              </p>
+            </div>
+          </li>
+        </ol>
+
+        <div class="prose">
+        <p class="caveat">
+          A hollow patch does not prove there is water behind it, and a solid
+          wall does not prove there is not. What the tap test gives you is a
+          map: the size and shape of the suspect area, which is the single most
+          useful thing you can tell us before we look at it. For reading the
+          result — and why a hollow patch and a soft one are different
+          findings — see{' '}
+          <a href="/problems/soft-spots-hollow-stucco/">
+            hollow sounding stucco and soft spots
+          </a>.
+        </p>
+
+        <p>
+          One exception worth knowing: if the whole wall sounds hollow rather
+          than one patch of it, and it gives slightly under thumb pressure,
+          the house may be EIFS rather than hardcoat stucco. That is a
+          different wall system with a different repair, covered on{' '}
+          <a href="/eifs-repair/">EIFS and synthetic stucco repair</a>.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* WHERE IT GETS IN */}
+    <section class="section" id="entry-points">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Entry points"
+          title="Where the water usually gets in around here"
+        />
+
+        <div class="prose">
+        <p>
+          Stucco is not waterproof and was never designed to be. It sheds most
+          water and the assembly behind it manages the rest. When a wall goes
+          wet, a detail has failed, not the stucco itself. If that is news,{' '}
+          <a href="/blog/is-stucco-supposed-to-get-wet/">is stucco supposed to
+          get wet</a> explains how the wall is meant to handle water in the
+          first place.
+        </p>
+        </div>
+
+        {/*
+          Five descriptive cells, not links - each names a place water gets in,
+          and none is a route. So this is a plain .grid-hairline rather than
+          the .card-link variant. The pages that do exist are linked from the
+          prose below, exactly as before.
+        */}
+        <div class="grid-hairline cols-2 entries">
+          {entryPoints.map((e) => (
+            <div class="entry">
+              <h3>{e.name}</h3>
+              <p>{e.body}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="prose">
+        <p>
+          Two things make this worse on the coast than inland. Wind-driven rain
+          arrives sideways, so joints detailed for water falling straight down
+          leak under storm conditions they never see in a test. And salt air
+          shortens the life of every sealant and every piece of metal flashing
+          in the wall, so details that were sound at ten years often are not at
+          twenty. West and south elevations take the worst of both.
+        </p>
+        <p>
+          Because openings are the most common entry point by a wide margin,
+          they have their own page:{' '}
+          <a href="/stucco-repair-around-windows/">
+            stucco repair around windows and doors
+          </a>{' '}
+          covers the flashing, the corner cracks, and who is actually
+          responsible when a window leaks.
+        </p>
+        <p>
+          Chimneys are the other structure worth naming separately. They are
+          exposed on all four sides and nobody inspects them, so they are
+          often wet long before anything shows indoors &mdash;{' '}
+          <a href="/stucco-chimney-repair/">stucco chimney repair</a>{' '}
+          covers the three places a chimney takes water in, only one of
+          which is a stucco job.
+        </p>
+        <p>
+          Overhangs are where wall water tends to end up, because that is
+          where it runs out of wall &mdash;{' '}
+          <a href="/stucco-soffit-and-band-repair/">
+            stucco soffit and band repair
+          </a>{' '}
+          covers why a failed soffit is usually not a soffit problem.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* HOW WE FIND THE SOURCE */}
+    <section class="section slab joint" id="how-we-find-it">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Diagnosis"
+          title="How we find the source"
+          lede="Guessing at the entry point is how walls get repaired twice. When the signs suggest water rather than ordinary cracking, we test before we quote the repair."
+        />
+
+        <div class="prose">
+        <p>
+          That is the <a href="/stucco-moisture-testing/">{moistureCheck.name}</a>,
+          a separate paid service at{' '}
+          <strong>{usd(moistureCheck.priceLow)}&ndash;{usd(moistureCheck.priceHigh)}</strong>,{' '}
+          {moistureCheck.priceNote}. Visual examination, then moisture meter
+          testing to investigate possible hidden moisture behind the stucco.
+          You get documented findings, the readings from the areas we tested,
+          photos, what the results mean, and recommended next steps.
+        </p>
+
+        <p>
+          You get those findings whether or not you hire us for the repair. It
+          is our own assessment as the contractor who does the work, not a home
+          inspection and not an independent inspection report. The repair
+          estimate is free and separate, and the {moistureCheck.name} is never
+          credited toward repair work.
+        </p>
+
+        <p>
+          Not every wall needs it. If the cracking is hairline and the wall is
+          dry, we will tell you that and quote the repair directly.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* OPEN-WALL PROOF — renders only when real photos exist. */}
+    {openWallPhotos && openWallPhotos.length > 0 && (
+      <section class="section" id="open-wall">
+        <div class="wrap">
+          <SectionHead
+            eyebrow="Proof"
+            title="What we find when we open it up"
+            lede="Real walls from real jobs, photographed during the repair."
+          />
+          <div class="proof">
+            {openWallPhotos.map((src) => (
+              <img src={src} alt="Stucco wall opened during repair, showing the condition of the lath and sheathing behind the finish" loading="lazy" />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {/* THE REPAIR */}
+    <section class="section" id="the-repair">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Scope"
+          title="What the repair involves"
+          lede="Three parts, in this order. Skipping the first one is what makes a repair come back."
+        />
+
+        {/*
+          ILLUSTRATION, NOT PROOF. AI-generated; not a photograph of a job
+          this company did. It is placed HERE, and deliberately NOT in the
+          #open-wall section above, which is null-gated and reserved for
+          real photographs from real jobs ("Real walls from real jobs,
+          photographed during the repair"). Putting a generated image there
+          would turn an honest empty state into a false claim. Do not move
+          it into that section.
+
+          This is the strongest spot on the page: it shows step 2 - the
+          substrate - which is the step that decides the price and the one
+          readers cannot picture from words alone.
+        */}
+        <SiteImage
+          src={openedWall}
+          variant="inline"
+          alt="A section of stucco removed below a window, exposing the sheathing, weather-resistant barrier and metal lath behind the finish."
+          caption="Opening the affected area is what shows how far the water travelled behind the finish."
+        />
+
+        <ol class="steps">
+          <li>
+            <span class="num">1</span>
+            <div>
+              <h3>The source</h3>
+              <p>
+                Correct the detail that let the water in — the flashing, the
+                joint, the screed, the penetration. Until this is done,
+                everything else is cosmetic.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <div>
+              <h3>The substrate</h3>
+              <p>
+                Open the affected area and deal with what the water reached.
+                Sometimes the lath and sheathing are sound and this step is
+                short. Where the wall has been wet a long time, this is the
+                real job and the stucco is the easy part.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <div>
+              <h3>The finish</h3>
+              <p>
+                Rebuild the stucco and match what is already on the house.
+                Knockdown, lace, dash, sand, and smooth are not equally
+                difficult, and matching a weathered wall is harder than
+                matching a new one.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    {/* COST */}
+    <section class="section slab joint" id="cost">
+      <div class="wrap">
+        <SectionHead eyebrow="Cost" title="What it costs" />
+
+        {waterDamageRange && (
+          <p class="price">
+            <strong>
+              {usd(waterDamageRange.low)}&ndash;{usd(waterDamageRange.high)}
+            </strong>{' '}
+            for water-damaged stucco repair
+            {substrateRange && (
+              <>
+                , and {usd(substrateRange.low)}&ndash;{usd(substrateRange.high)}
+                {substrateRange.openEnded ? '+' : ''} where the damage behind
+                the stucco is extensive enough that the lath and sheathing are
+                the real job
+              </>
+            )}.
+          </p>
+        )}
+
+        <p class="disclaimer">{pricingDisclaimer}</p>
+
+        <div class="prose">
+        <p>
+          The variable that moves this number most is the one you cannot see
+          from outside: whether water got in behind the wall, and how much of
+          the material back there it reached. That is the entire argument for
+          testing before you commit to a scope.
+        </p>
+
+        <p>
+          Full ranges for every kind of stucco repair, and the six things that
+          move them, are on{' '}
+          <a class="link-arrow" href="/stucco-repair/#pricing">the repair page</a>.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* SOMETIMES IT IS JUST A STAIN */}
+    <section class="section" id="just-a-stain">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Ruling it out"
+          title="Sometimes it is just a stain. We will say so."
+          lede="Not every dark mark on a stucco wall is water in the assembly."
+        />
+        <div class="prose">
+        <p>
+          Dirt and organic growth streak below anything that concentrates
+          runoff. Sprinklers hitting the same spot every morning leave mineral
+          deposits that look alarming and mean nothing. Efflorescence — a white
+          chalky bloom — tells you water moved through the material at some
+          point, which may have been a roof leak fixed years ago. A rust streak
+          under a fixture is the fixture, not the wall.
+        </p>
+        <p>
+          <strong>
+            You do not need a water damage repair for a stain on a dry wall.
+          </strong>{' '}
+          If that is what you have, we will tell you, and the conversation ends
+          there. Ruling the work out costs us a job and earns the next one.
+        </p>
+        <p>
+          Not sure which you are looking at? The{' '}
+          <a href="/stucco-crack-triage/">crack triage guide</a> walks through
+          the four patterns and tells you which ones actually matter, and{' '}
+          <a href="/problems/water-stains-on-stucco/">
+            water stains on stucco
+          </a>{' '}
+          sorts the marks themselves by what left them.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* INSURANCE */}
+    <section class="section slab joint" id="insurance">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Claims"
+          title="Insurance and water damage"
+          lede="General information, not advice on your policy. We are contractors, not adjusters or attorneys."
+        />
+        <div class="prose">
+        <p>
+          Florida policies commonly separate <strong>sudden</strong> damage — a
+          storm drives water in, something hits the wall — which may be
+          covered, from <strong>gradual</strong> intrusion through long-term
+          cracking or an installation defect, which often is not. Slow leaks
+          and construction defects are common exclusions.
+        </p>
+        <p>
+          Which puts a lot of weight on whether the damage is new. If a storm
+          is what prompted this, there is a separate page on{' '}
+          <a href="/problems/hurricane-storm-stucco-damage/">
+            telling new storm damage from damage the storm revealed
+          </a>.
+        </p>
+        <p>
+          That distinction gets decided on evidence. Dated moisture readings
+          and photographs taken before the repair are evidence. A wall that has
+          already been patched and painted is not.
+        </p>
+        <p>
+          <strong>
+            If there is any chance you will file, document the wall before
+            anyone closes it up.
+          </strong>{' '}
+          Your carrier and your adjuster decide coverage. What we can do is
+          make sure the condition is recorded properly while it is still
+          visible.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/*
+      FAQ. The shared FaqList accordion, fed the SAME `faqs` array that builds
+      the FAQPage schema above - one source, so an answer can never drift from
+      its markup. FaqList deliberately emits no schema of its own (see its doc
+      block); the page keeps ownership of that.
+    */}
+    <section class="section" id="faq" aria-labelledby="faq-head">
+      <div class="wrap">
+        <SectionHead id="faq-head" eyebrow="FAQ" title="Frequently asked questions" />
+        <FaqList items={faqs} />
+      </div>
+    </section>
+
+    <section class="section on-dark">
+      <div class="wrap">
+        <ContactCta heading="Tell us where the water is showing up" />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  /*
+   * PAGE-SPECIFIC ONLY. The hero, bands, section heads, prose column, card
+   * grid, FAQ rows and breadcrumbs come from the shared components and the
+   * global utilities in Layout.astro; those rules were deleted here rather
+   * than duplicated. What remains is this page's own furniture: the ordered
+   * sign sequence, the numbered steps, the tap-test caveat, the entry-point
+   * grid, the open-wall proof grid, and the price line.
+   */
+
+  /* --- The signs, in sequence: stage label beside each finding ---------- */
+  .signs {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 1.75rem;
+  }
+  .signs li { display: flex; gap: 1.25rem; align-items: flex-start; }
+  .signs .stage {
+    flex: none;
+    width: 4rem;
+    padding-top: 0.3em;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--flag);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .signs h3 { margin: 0 0 0.375rem; font-size: 1.0625rem; }
+  .signs p { margin: 0; color: var(--ink-soft); max-width: 60ch; }
+
+  /* --- Numbered steps --------------------------------------------------- */
+  .steps {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 1.75rem;
+  }
+  .steps li { display: flex; gap: 1.25rem; align-items: flex-start; }
+  .steps .num {
+    flex: none;
+    width: 2rem;
+    height: 2rem;
+    display: grid;
+    place-items: center;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+  .steps h3 { margin: 0 0 0.375rem; font-size: 1.0625rem; }
+  .steps p { margin: 0; color: var(--ink-soft); max-width: 60ch; }
+
+  /* --- Flag-ruled aside on the tap test --------------------------------- */
+  .caveat {
+    border-left: 3px solid var(--flag);
+    padding-left: 1.25rem;
+    max-width: 60ch;
+    color: var(--ink-soft);
+  }
+
+  /* --- Entry points: hairline cells ------------------------------------- */
+  .entry h3 { margin: 0 0 0.5rem; font-size: 1.0625rem; }
+  .entry p { margin: 0; color: var(--ink-soft); }
+
+  /* --- Open-wall proof, rendered only when real photos exist ------------ */
+  .proof {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+  .proof img { width: 100%; height: auto; display: block; }
+
+  /* --- Price line and its disclaimer ------------------------------------ */
+  .price {
+    font-family: var(--font-display);
+    font-size: clamp(1.125rem, 2.4vw, 1.375rem);
+    line-height: 1.45;
+    max-width: 46ch;
+  }
+  .price strong { color: var(--accent); }
+
+  .disclaimer {
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+    max-width: 60ch;
+    border-left: 3px solid var(--rule);
+    padding-left: 1.25rem;
+  }
+</style>

@@ -1,0 +1,494 @@
+---
+/**
+ * /new-stucco-installation/ — service money page. Pre-approved in the
+ * architecture (keyword-plan:217) and explicitly kept SEPARATE from
+ * /stucco-replacement/ at keyword-plan:713: new construction and additions
+ * are a different buyer from a homeowner re-stuccoing a failed wall.
+ *
+ * Target: `new stucco installation`, `stucco installation`, `stucco
+ * contractor new construction`, `stucco on new addition`, `stucco
+ * installation daytona beach`, `new construction stucco`.
+ * Intent: commercial. Buyer is a builder, a GC, or an owner mid-project.
+ *
+ * ------------------------------------------------------------------
+ * THE GATE. `verifiedServices.newInstallation` is TRUE as of 2026-08-31 —
+ * "new stucco on new construction and additions, as distinct from repair."
+ * That confirms the SERVICE ONLY. It authorizes no claim about method,
+ * materials, crew, certification, builder relationships, volume, lead time,
+ * or any project we have done. None of those were asked. None appear here.
+ *
+ * SPLITTING TEST — passes 4 of 4 against /stucco-repair/:
+ *   1. Different work. A full three-coat application over new lath on a
+ *      wall that does not exist yet is not a patch. Different crew-day,
+ *      different sequence, different deliverable.
+ *   2. Different buyer state. Nothing is broken. The buyer is scheduling a
+ *      trade into a build, not reacting to damage. That is the whole
+ *      difference in tone on this page: no diagnosis, no urgency.
+ *   3. SERP separation. Live SERP 2026-08-31 for `new stucco installation
+ *      new construction Florida contractor` returns CDP Stucco, Fonseca,
+ *      Ferrera, Coastal Exteriors, Garcia, Castle Group, flstucco.com —
+ *      contractors selling the install, an entirely different result set
+ *      from the repair SERP. Commercial intent is intact: unlike the foam
+ *      trim SERP, nobody here is a supplier and nothing is DIY. No
+ *      "traffic it cannot convert" problem.
+ *   4. Standalone substance. Sequencing, cure windows, and first-year
+ *      cracking are ~1,200 words of real content that exist nowhere else
+ *      on the site.
+ *
+ * THE OWNABLE ANSWER. Live SERP 2026-08-31, four queries. Every ranking
+ * contractor page sells the same thing: new stucco is durable, beautiful,
+ * adds curb appeal, call us. Not one of them tells the person scheduling
+ * the work the two things that actually decide whether they are happy:
+ *
+ *   (a) Stucco is a SEQUENCED trade with mandatory waiting between coats,
+ *       and it cannot be compressed to suit a build schedule. Sources are
+ *       public code and industry standard, NOT our claims: scratch to brown
+ *       48 hours minimum (ASTM C926); brown to finish 7 days minimum per
+ *       UBC/IBC, with NWCB recommending 10-21. Then 28-30 days before paint
+ *       with a pH at or below 10, full cure up to 90 days.
+ *   (b) Roughly two-thirds of new stucco shows some hairline cracking in
+ *       the first year, from lumber shrinkage and settlement — NOT from bad
+ *       workmanship. The homeowner who was never told this reads normal
+ *       curing as a defect and a failed job.
+ *
+ * Telling them both up front is the differentiator on a SERP where every
+ * competitor is quiet about it, and it is honest: it sets an expectation we
+ * are not going to be able to talk them out of later.
+ *
+ * The three-coat sequence and every timeline above are PUBLIC BUILDING
+ * STANDARD (ASTM C926, IBC/UBC, NWCB), described as what the material
+ * requires — never as "our process," "our system," or a method we claim.
+ * Attribution is to the standard, in the body, so the distinction is
+ * visible to the reader and not just to us.
+ *
+ * CANNIBALIZATION CONTROL. This page is about work on a wall that does not
+ * exist yet. Everything about an EXISTING wall stays where it lives:
+ *   - Recoating a sound-but-tired existing wall stays ONLY on
+ *     /stucco-resurfacing/. That page owns coating-vs-resurface.
+ *   - Re-stucco of a FAILED existing wall belongs to /stucco-replacement/,
+ *     which is NOT BUILT YET. This page therefore does not use "re-stucco"
+ *     or "replacement" as a target and reserves that ground.
+ *   - The crack-pattern taxonomy stays on /stucco-crack-triage/. This page
+ *     covers first-year curing cracks ONLY, as an expectation, and hands
+ *     off rather than diagnosing.
+ *   - The Moisture Check process stays ONLY on /stucco-moisture-testing/.
+ *   - The full price table stays on /stucco-repair/#pricing.
+ *   - EIFS/synthetic stays ONLY on /eifs-repair/.
+ *
+ * WHAT WE DO NOT SAY:
+ *   - NO builder, GC, developer, or trade relationships. Unverified.
+ *   - NO project history, square footage, volume, or homes completed.
+ *   - NO crew size, lead time, scheduling capacity, or turnaround.
+ *   - NO materials, product names, brands, mixes, or manufacturers.
+ *   - NO claim to install lath, framing, sheathing, or weather barrier —
+ *     never asked. The page describes what the assembly requires and is
+ *     careful to attribute that to the standard, not to our scope.
+ *   - NO height, storey, lift, or scaffold capability. Still UNVERIFIED
+ *     (third build running). Access appears only as a cost variable.
+ *   - NO price per square foot. The SERP throws around $7-$17/sq ft
+ *     nationally; that is not this client's number and not in the verified
+ *     market data. `repairPriceRanges` is REPAIR data and does not describe
+ *     new installation, so NO price figure is rendered on this page at all.
+ *     The pricing section explains what drives the number instead.
+ *   - NO warranty term, license number, or phone. All null in site.ts.
+ *   - NO permit, inspection, or code-compliance service claim. We describe
+ *     the standard the material follows; we do not claim to pull permits.
+ *
+ * OMITTED — absent rather than stubbed:
+ *   - [PHOTO SET] — `openWallPhotos` is null. No proof block.
+ *   - [PRICE] — no verified installation pricing exists. See above.
+ *   - `pricingDisclaimer` is deliberately NOT rendered here. It is
+ *     written for the REPAIR ranges (size of the damage, water behind
+ *     the wall, matching existing finish) and none of that describes a
+ *     wall that does not exist yet. Its mandate is to accompany the
+ *     published price ranges; this page publishes none, so rendering it
+ *     would import repair framing rather than satisfy a requirement.
+ *     If installation pricing is ever verified, a disclaimer written
+ *     for installation must ship WITH it.
+ *   - [WARRANTY TERM], [LICENSE #], [PHONE] — null in site.ts.
+ * ------------------------------------------------------------------
+ *
+ * VISUAL SYSTEM (redesigned 2026-09-02): migrated from this page's own local
+ * hero/band/FAQ CSS onto the shared Orlando interior-page components -
+ * PageHero, SectionHead, FaqList, Breadcrumbs - and the global utilities in
+ * Layout.astro (.section, .slab, .joint, .grid-hairline, .prose, .on-dark).
+ * COPY, FACTS, PRICING, SCHEMA, URLS, HEADING TEXT, ANCHOR IDS AND INTERNAL
+ * LINKS ARE UNCHANGED by that migration; only the markup carrying them moved.
+ * This page's buyer is scheduling a build, not reacting to damage, and its
+ * copy is NOT homogenized toward the repair pages. The cost section still
+ * publishes NO range and keeps its own bespoke disclaimer rather than the
+ * shared `pricingDisclaimer`. Do not re-add a local hero or band rule here.
+ */
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import MobileStickyBar from '../../components/MobileStickyBar.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import FaqList from '../../components/FaqList.astro';
+import { business, serviceArea } from '../../config/site';
+
+const title =
+  'New Stucco Installation | New Construction & Additions | Daytona Beach';
+const description =
+  'New stucco on new construction and additions in Volusia County. Why stucco is a sequenced trade that cannot be rushed, what the cure windows actually are, and why first-year hairline cracking is normal rather than a defect.';
+
+/**
+ * The sequence. Every interval here is public building standard, not a
+ * claim about our methods — ASTM C926 for scratch-to-brown, UBC/IBC for
+ * brown-to-finish, NWCB for the longer recommendation. Attributed in body
+ * copy so the reader can see it is the code and not our marketing.
+ */
+const coats = [
+  {
+    step: 'First coat',
+    wait: 'Then 48 hours, minimum',
+    body: 'Applied over the lath and scored across while still green, so the next coat has something to key into. ASTM C926 puts the minimum cure before the second coat at 48 hours. The coat nobody sees, and the one the wall depends on.',
+  },
+  {
+    step: 'Second coat',
+    wait: 'Then 7 days, minimum',
+    body: 'This is what makes the wall flat and true. Every plane, corner, and edge you will eventually look at is decided here, not by the finish. Code minimum before finishing over it is 7 days; the National Wall and Ceiling Bureau recommends 10 to 21 where the schedule allows.',
+  },
+  {
+    step: 'Finish coat',
+    wait: 'Then 28 to 30 days before paint',
+    body: 'This carries the texture and the colour. Fresh stucco is chemically hot — high pH — and paint applied too early can dull, mottle, and fail. Wait 28 to 30 days, and confirm the pH has come down to 10 or below before anything is painted over it.',
+  },
+];
+
+/** Why the timeline is the thing worth understanding before you book. */
+const realities = [
+  {
+    title: 'The waiting is the work',
+    body: 'Adding up the minimums, the wall is not paintable for well over a month after the first coat, and full cure runs up to 90 days. Almost none of that is anyone on site. A schedule treating stucco as a few days of labour will be wrong by weeks.',
+  },
+  {
+    title: 'Weather moves the dates, not the crew',
+    body: 'Cement cures by chemical reaction, and Florida humidity, heat, and afternoon rain all change how fast it happens. Cure windows are minimums under reasonable conditions, not dates to commit a closing to.',
+  },
+  {
+    title: 'Rushing shows up later, not now',
+    body: 'A coat applied over one that has not cured looks fine on the day. It bonds poorly, and that surfaces as cracking or hollow areas a year or two later, long after anyone connects it to the schedule.',
+  },
+  {
+    title: 'It is the last honest deadline in the build',
+    body: 'Stucco sits near the end of the exterior sequence, exactly where lost time from every earlier trade gets pushed — and it is the trade least able to absorb compression. Worth protecting early rather than defending later.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'How long does new stucco installation take?',
+    a: 'The application is a small share of it. Cure time between coats controls the date: 48 hours minimum after the first, 7 days after the second, then 28 to 30 days before painting. That puts a paintable wall more than a month out from the first coat, with full cure up to 90 days. Weather extends it.',
+  },
+  {
+    q: 'My new stucco has hairline cracks. Was it installed badly?',
+    a: 'Usually not. Roughly two-thirds of new stucco shows hairline cracking within the first year. Framing lumber dries and shrinks, the house settles a fraction of an inch, and rigid stucco is bonded to all of it. Cracks under about a sixteenth of an inch are generally that. Wider, growing, or staining cracks are worth looking at rather than watching.',
+  },
+  {
+    q: 'Can you speed it up to fit our schedule?',
+    a: 'The application can be scheduled around. The cure windows cannot — they are the material reacting, not anyone working. Better to give you the honest date than hit an earlier one and have the wall show it in two years. If dates are tight, the useful conversation is when stucco starts, not how fast it finishes.',
+  },
+  {
+    q: 'Do you do stucco on additions as well as whole houses?',
+    a: 'Yes. An addition has its own consideration: new work meets existing stucco at a joint, and the two will never be identical in age or texture. Where that joint falls is worth deciding before the work rather than after.',
+  },
+  {
+    q: 'When should the new stucco be painted?',
+    a: 'After the finish coat has cured, commonly 28 to 30 days, and once the pH is about 10 or below. Painting too early is one of the more expensive mistakes on a new build: the paint fails and the wall has to be prepared and repainted. Build the wait into the schedule.',
+  },
+  {
+    q: 'What does new stucco installation cost?',
+    a: 'It is priced by the wall rather than by the job, so no single figure is worth quoting here. What moves it: total square footage, how many storeys and how hard the elevations are to reach, how much detail the walls carry, and the texture chosen. A real number needs a look at the plans or the building.',
+  },
+];
+
+const serviceSchema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'New stucco installation',
+  serviceType: 'New stucco installation',
+  description:
+    'Installation of new stucco on new residential construction and additions. Stucco is applied in coats over lath, with cure time between each coat and before painting.',
+  provider: { '@type': 'LocalBusiness', name: business.name },
+};
+if (serviceArea) serviceSchema.areaServed = serviceArea;
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <SiteHeader current="/new-stucco-installation/" />
+
+  <main id="main">
+    {/*
+      HERO. Dark PageHero with ContactCta in the aside slot - the money-page
+      arrangement PageHero's own doc block describes. Eyebrow, h1 and lede are
+      the same three strings the old local hero rendered. Breadcrumbs are new
+      markup only and emit BreadcrumbList schema from Breadcrumbs.astro.
+      No `actions` array: the aside CTA is the conversion affordance here.
+    */}
+    <PageHero
+      crumbs={[
+        { href: '/services/', label: 'Services' },
+        { href: '/new-stucco-installation/', label: 'New installation' },
+      ]}
+      eyebrow="Stucco · Daytona Beach & Volusia County"
+      title="New stucco installation"
+      lede="New stucco on new construction and additions. The part worth knowing before you book: stucco is a sequenced trade with waiting built into the middle of it, and the schedule decides how the wall looks in five years."
+      actions={[
+        { href: '/contact/', label: 'Request an estimate' },
+        { href: '/process/', label: 'How an installation runs', variant: 'secondary' },
+      ]}
+    >
+      <LeadForm />
+    </PageHero>
+
+    {/* THE OWNABLE ANSWER */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="The sequence"
+          title="Stucco is not a few days of labour"
+          lede="Most people scheduling stucco price it as an application — a crew arrives, the walls get covered, the trade is done. That is not how the material behaves. Stucco goes on in coats, and each has to cure before the next can bond to it."
+        />
+
+        {/*
+          The coats in order, each labelled with its cure interval. Descriptive
+          cells, not routes - plain .grid-hairline rather than .card-link.
+        */}
+        <div class="grid-hairline cols-3 entries">
+          {coats.map((c) => (
+            <div class="entry">
+              <p class="who">{c.wait}</p>
+              <h3>{c.step}</h3>
+              <p>{c.body}</p>
+            </div>
+          ))}
+        </div>
+        <div class="caveat">
+          <p>
+            Those intervals are not our house rules. They come from the standards
+            the trade is built on &mdash; ASTM C926, the building code, and
+            the National Wall and Ceiling Bureau.{' '}
+            <strong>
+              They are what the cement needs, which means no contractor can
+              shorten them for you and none should offer to
+            </strong>{' '}
+            &mdash; and anyone who does is quoting a schedule they will
+            meet at the wall&rsquo;s expense.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* WHAT THAT MEANS FOR A BUILD */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Planning around it"
+          title="What that means if you are running a schedule"
+          lede="Four consequences worth planning around."
+        />
+        <div class="grid-hairline cols-2 entries">
+          {realities.map((r) => (
+            <div class="entry">
+              <h3>{r.title}</h3>
+              <p>{r.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* FIRST-YEAR CRACKING */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Expect this"
+          title="Your new stucco will probably develop hairline cracks"
+          lede="This is the other thing nobody tells you beforehand, and the one that causes the most upset after. Around two-thirds of new stucco develops hairline cracking in the first year. Worth hearing now rather than reading at midnight in a forum eleven months from now."
+        />
+        <div class="prose">
+        <p>
+          The cause is not the stucco. A newly built house is still moving.
+          Framing lumber dries and shrinks. The building settles, commonly a
+          quarter to three-quarters of an inch depending on the soil. Stucco
+          is rigid and bonded to all of it, so where the structure moves the
+          surface registers it. Cracks under roughly a sixteenth of an inch
+          are generally that and nothing more.
+        </p>
+        </div>
+        <div class="caveat">
+          <p>
+            <strong>
+              What is not normal is a crack you can fit a credit card edge
+              into, a crack that keeps growing after the first year, or one
+              that is staining
+            </strong>{' '}
+            &mdash; those are worth looking at properly rather than filing
+            under settling. If you are unsure which you have,{' '}
+            <a href="/stucco-crack-triage/">
+              our guide to reading stucco cracks
+            </a>{' '}
+            covers how to tell them apart.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* ADDITIONS */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Additions"
+          title="Additions, and where new stucco meets old"
+          lede="An addition is not a smaller version of a new build. New stucco has to meet existing stucco somewhere, and that joint is the decision worth making before the work rather than after."
+        />
+        <div class="prose">
+        <p>
+          The two surfaces will never be identical. The existing wall has years
+          of weathering, and its texture was applied by a different hand on a
+          different day. New material beside it reads as new, however
+          carefully it is worked &mdash; a normal outcome rather than a
+          failure, and far easier to plan for than to fix.
+        </p>
+        <p>
+          Where the existing wall is tired rather than damaged, recoating it so
+          the elevation matches is a different job &mdash;{' '}
+          <a href="/stucco-resurfacing/">stucco resurfacing</a>{' '}
+          covers when that is worth doing and when it is not.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* COST */}
+    <section class="section" id="pricing">
+      <div class="wrap">
+        <SectionHead eyebrow="Cost" title="What it costs" />
+        <p class="price">
+          New installation is priced by the wall, not by the job, so a
+          figure quoted before anyone has seen the plans is a guess. What
+          actually moves it:
+        </p>
+        <ul class="prose">
+          <li>Total square footage of wall to be covered.</li>
+          <li>
+            How many storeys, and how hard the elevations are to reach.
+          </li>
+          <li>
+            How much detail the walls carry &mdash; corners, returns, bands, and
+            openings all take work flat square footage does not show.
+          </li>
+          <li>The texture chosen, and how much hand-work it takes.</li>
+        </ul>
+        <p class="disclaimer">
+          To be clear about what that means: we are not publishing a
+          number for new installation, because there is no honest one to
+          publish before someone has seen the walls. Anyone quoting you a
+          per-square-foot figure sight unseen is quoting an average, not
+          your building.
+        </p>
+        <div class="prose">
+        <p>
+          Repair work is priced separately &mdash; see{' '}
+          <a class="link-arrow" href="/stucco-repair/#pricing">stucco repair pricing</a>.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/*
+      FAQ. The shared FaqList accordion, fed the SAME `faqs` array that builds
+      the FAQPage schema above - one source, so an answer can never drift from
+      its markup. FaqList deliberately emits no schema of its own (see its doc
+      block); the page keeps ownership of that.
+    */}
+    <section class="section slab joint" id="faq" aria-labelledby="faq-head">
+      <div class="wrap">
+        <SectionHead id="faq-head" eyebrow="FAQ" title="Questions people ask before booking" />
+        <FaqList items={faqs} />
+      </div>
+    </section>
+
+    <section class="section on-dark">
+      <div class="wrap">
+        <ContactCta heading="Send us the plans or the address" />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  /*
+   * PAGE-SPECIFIC ONLY. The hero, bands, section heads, prose column, card
+   * grid, FAQ rows and breadcrumbs come from the shared components and the
+   * global utilities in Layout.astro; those rules were deleted here rather
+   * than duplicated. What remains is this page's own furniture: the coat
+   * cells with their cure-interval label, the flag-ruled caveats, and the
+   * cost intro with its list of variables.
+   */
+
+  /* --- Cells: the coats, and the scheduling realities ------------------- */
+  .entry h3 { margin: 0 0 0.5rem; font-size: 1.0625rem; }
+  .entry p { margin: 0; color: var(--ink-soft); }
+
+  /* The cure interval above each coat - the point of this page. */
+  .who {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--flag);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem !important;
+  }
+
+  /* --- The cure-standard and first-year-cracking asides ------------------ */
+  .caveat {
+    border-left: 3px solid var(--flag);
+    padding-left: 1.25rem;
+    max-width: 60ch;
+  }
+  .caveat p { margin: 0; color: var(--ink-soft); }
+
+  /* --- Cost: an intro line over a list of variables, no published range -- */
+  .price {
+    font-family: var(--font-display);
+    font-size: clamp(1.125rem, 2.4vw, 1.375rem);
+    line-height: 1.45;
+    max-width: 52ch;
+  }
+
+  /*
+   * NOT the shared pricing disclaimer. This page publishes no ranges, so it
+   * carries its own statement of why - see the PRICING note in the doc block
+   * above. Same treatment, different words, deliberately.
+   */
+  .disclaimer {
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+    max-width: 60ch;
+    border-left: 3px solid var(--rule);
+    padding-left: 1.25rem;
+  }
+</style>

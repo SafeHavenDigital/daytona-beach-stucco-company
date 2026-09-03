@@ -1,0 +1,356 @@
+---
+interface Props {
+  heading?: string;
+  eyebrow?: string;
+}
+
+const {
+  heading = 'Get A Free Quote',
+  eyebrow = 'Free estimate',
+} = Astro.props;
+
+const situations = [
+  'Stucco repair',
+  'Stucco replacement',
+  'New stucco installation',
+  'Stucco painting',
+  'Cracking I want looked at',
+  'Stains, bubbling paint, or a soft spot',
+  'A crack that was repaired before and came back',
+  'Failed or flagged inspection',
+  'Selling, and it needs to be fixed before closing',
+  'HOA or insurance letter with a deadline',
+  'Storm damage',
+  'New stucco or a full re-stucco',
+  'Something else',
+];
+---
+
+<div class="lead-card">
+  <p class="lead-eyebrow">{eyebrow}</p>
+  <h2>{heading}</h2>
+
+  <form
+    class="lead-form"
+    action="/api/contact"
+    method="POST"
+    data-lead-form
+  >
+    <div class="hp" aria-hidden="true">
+      <label>
+        Leave blank
+        <input
+          type="text"
+          name="contact_trap_7f3a"
+          tabindex="-1"
+          autocomplete="off"
+        />
+      </label>
+    </div>
+
+    <div class="field">
+      <label>Name</label>
+      <input type="text" name="name" autocomplete="name" required />
+    </div>
+
+    <div class="two">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" name="email" autocomplete="email" required />
+      </div>
+
+      <div class="field">
+        <label>Phone</label>
+        <input type="tel" name="phone" autocomplete="tel" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Property location</label>
+      <input
+        type="text"
+        name="location"
+        autocomplete="street-address"
+        placeholder="Address, city, or neighborhood"
+      />
+    </div>
+
+    <div class="field">
+      <label>What’s going on?</label>
+      <select name="situation">
+        <option value="">Pick the closest one</option>
+        {situations.map((item) => <option>{item}</option>)}
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Tell us about your project</label>
+      <textarea
+        name="message"
+        rows="3"
+        placeholder="What are you seeing, and how long has it been there?"
+      ></textarea>
+    </div>
+
+    <button type="submit" data-submit>Get My Free Quote</button>
+
+    <p
+      class="form-status"
+      data-status
+      role="status"
+      aria-live="polite"
+      tabindex="-1"
+      hidden
+    ></p>
+
+    <p class="fine">
+      Repair estimates are free. Moisture checks are a separate paid diagnostic service.
+    </p>
+  </form>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-lead-form]').forEach((form) => {
+    const status = form.querySelector<HTMLElement>('[data-status]');
+    const button = form.querySelector<HTMLButtonElement>('[data-submit]');
+    const defaultLabel = button?.textContent ?? 'Get My Free Quote';
+
+    const setStatus = (
+      state: 'success' | 'error' | null,
+      message?: string
+    ) => {
+      if (!status) return;
+
+      if (!state) {
+        status.hidden = true;
+        status.removeAttribute('data-state');
+        status.textContent = '';
+        return;
+      }
+
+      status.hidden = false;
+      status.dataset.state = state;
+      status.textContent = message ?? '';
+    };
+
+    const clearFieldErrors = () => {
+      form.querySelectorAll('[data-invalid]').forEach((field) => {
+        field.removeAttribute('data-invalid');
+        field.querySelector('.field-error')?.remove();
+        field
+          .querySelector('input, select, textarea')
+          ?.removeAttribute('aria-invalid');
+      });
+    };
+
+    const showFieldErrors = (errors: Record<string, string>) => {
+      for (const [name, message] of Object.entries(errors)) {
+        const control = form.elements.namedItem(name);
+        if (!(control instanceof HTMLElement)) continue;
+
+        const field = control.closest('.field');
+        if (!field) continue;
+
+        field.setAttribute('data-invalid', '');
+        control.setAttribute('aria-invalid', 'true');
+
+        const note = document.createElement('span');
+        note.className = 'field-error';
+        note.textContent = message;
+        field.appendChild(note);
+      }
+
+      form
+        .querySelector<HTMLElement>(
+          '[data-invalid] input, [data-invalid] select, [data-invalid] textarea'
+        )
+        ?.focus();
+    };
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearFieldErrors();
+      setStatus(null);
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      if (button) {
+        button.disabled = true;
+        button.setAttribute('aria-busy', 'true');
+        button.textContent = 'Sending…';
+      }
+
+      try {
+        const payload = Object.fromEntries(new FormData(form).entries());
+
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const result = await response.json().catch(() => null);
+
+        if (response.ok && result?.ok) {
+          form.reset();
+          setStatus(
+            'success',
+            'Got it — your request is on its way to us. We’ll reply to the email address you provided.'
+          );
+          status?.focus();
+          return;
+        }
+
+        if (result?.errors) showFieldErrors(result.errors);
+
+        setStatus(
+          'error',
+          result?.error ??
+            'That did not go through. Please try again.'
+        );
+      } catch {
+        setStatus(
+          'error',
+          'That did not send — it looks like the connection dropped. Please try again.'
+        );
+      } finally {
+        if (button) {
+          button.disabled = false;
+          button.removeAttribute('aria-busy');
+          button.textContent = defaultLabel;
+        }
+      }
+    });
+  });
+</script>
+
+<style>
+  .lead-card {
+    background: var(--cta);
+    color: #fff;
+    padding: clamp(1rem, 2vw, 1.25rem);
+    border-top: 3px solid var(--accent);
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  .lead-eyebrow {
+    margin: 0 0 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--cta-ink) 78%, transparent);
+  }
+
+  h2 {
+    margin: 0 0 0.9rem;
+    color: var(--cta-ink);
+    font-size: clamp(1.35rem, 2.4vw, 1.7rem);
+  }
+
+  .lead-form {
+    display: grid;
+    gap: 0.7rem;
+  }
+
+  .two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+  }
+
+  .field {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  label {
+    font-family: var(--font-mono);
+    color: var(--cta-ink);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-height: 2.5rem;
+    padding: 0.6rem 0.7rem;
+    border: 1px solid var(--rule);
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  button {
+    width: 100%;
+    min-height: 3rem;
+    border: 0;
+    background: #18181b;
+    color: #fff;
+    font: inherit;
+    font-weight: 800;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  button:disabled {
+    opacity: 0.7;
+    cursor: wait;
+  }
+
+  .fine,
+  .form-status {
+    margin: 0;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--cta-ink) 82%, transparent);
+  }
+
+  .form-status[data-state="success"] {
+    color: #166534;
+  }
+
+  .form-status[data-state="error"],
+  .field-error {
+    color: #991b1b;
+  }
+
+  .field-error {
+    font-size: 0.8125rem;
+  }
+
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  @media (max-width: 34rem) {
+    .two {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,460 @@
+---
+/**
+ * /stucco-chimney-repair/ — service money page (keyword-plan "NEW 3",
+ * build priority Wave 4, gated on chimney-work confirmation).
+ *
+ * Target: `stucco chimney repair`, `chimney stucco repair`, `cracked chimney
+ * stucco`, `leaking stucco chimney`, `chimney stucco water damage`, `stucco
+ * chimney replacement`, `exterior chimney stucco repair`.
+ * Intent: problem-specific commercial, narrow. One page, not a cluster
+ * (keyword-plan item 6) — cracked, leaking, and replacement all sit here.
+ *
+ * ------------------------------------------------------------------
+ * THE GATE, AND HOW FAR IT ACTUALLY CLEARS. keyword-plan:655 held this URL
+ * on `[DOES THE CLIENT DO CHIMNEY WORK?]` — "including whether they handle
+ * the flashing or coordinate with a roofer."
+ *
+ * `verifiedServices.chimneyRepair` is TRUE as of 2026-08-31. That answers
+ * the FIRST half. The SECOND half — flashing, crown, roof access — was NOT
+ * asked and is NOT answered. Flashing and crown work belong to the roofing
+ * and chimney trades, and confirming a service never authorizes a claim
+ * about method or scope.
+ *
+ * So this page is deliberately scoped to the STUCCO on the chimney, and it
+ * says so in the body rather than hiding the boundary. That limitation is
+ * turned into the page's differentiator instead of being papered over:
+ * the honest scope note IS the trust signal on a SERP where every
+ * competitor claims the whole chimney.
+ *
+ * Do NOT add flashing, crown, cap, flue, liner, or masonry-rebuild claims
+ * to this page until the client answers that question directly.
+ *
+ * THE OWNABLE ANSWER (keyword-plan item 9). Live SERP 2026-08-31 across
+ * three queries: every ranking result is a chimney company, a roofer, or an
+ * out-of-state stucco firm, and every one of them explains that a stucco
+ * chimney leaks at the crown, the flashing, or through cracked stucco —
+ * then sells the reader whichever of those three THEY happen to fix. Not
+ * one tells the homeowner that the three have different owners, or that
+ * calling the wrong trade first is how people end up paying twice. That is
+ * the page: which of the three you have decides who you should be calling,
+ * and one of the three is not us.
+ *
+ * ZERO local competition (keyword-plan:534 — "Zero Volusia. Zero Daytona").
+ * Small volume, blue ocean. Kept short on purpose: 1,000-1,500 words is the
+ * right size for the intent, and padding it would not add a ranking signal.
+ *
+ * CANNIBALIZATION CONTROL (keyword-plan item 7 — "low"). This page is about
+ * a STRUCTURE, not a failure mode:
+ *   - The general wet-wall case, sign sequence and entry-point survey stay
+ *     on /stucco-water-damage-repair/.
+ *   - The crack-pattern taxonomy stays on /stucco-crack-triage/.
+ *   - The Moisture Check process stays ONLY on /stucco-moisture-testing/.
+ *   - The full price table stays on /stucco-repair/#pricing.
+ *
+ * WHAT WE DO NOT SAY:
+ *   - We do NOT claim flashing, crown, cap, or masonry work. Unverified.
+ *   - We do NOT claim roof access or working at height. Unverified.
+ *   - We do NOT quote chimney-specific prices. The SERP throws around
+ *     $500-$1,500 and "$20k to rebuild" — neither is this client's number
+ *     and neither is in the verified market data. The existing verified
+ *     ranges are reused instead.
+ *   - We do NOT claim thermal imaging proves moisture. Brand constraint.
+ *   - We do NOT say stucco waterproofs a chimney.
+ *     `verifiedServices.standaloneWaterproofing` is FALSE.
+ *
+ * OMITTED — absent rather than stubbed:
+ *   - [PHOTO SET] — `openWallPhotos` is null. No proof block.
+ *   - [WARRANTY TERM], [LICENSE #], [PHONE] — null in site.ts.
+ * ------------------------------------------------------------------
+ *
+ * VISUAL SYSTEM (redesigned 2026-09-02): migrated from this page's own local
+ * hero/band/FAQ CSS onto the shared Orlando interior-page components -
+ * PageHero, SectionHead, FaqList, Breadcrumbs - and the global utilities in
+ * Layout.astro (.section, .slab, .joint, .grid-hairline, .prose, .on-dark).
+ * COPY, FACTS, PRICING, SCHEMA, URLS, HEADING TEXT, ANCHOR IDS AND INTERNAL
+ * LINKS ARE UNCHANGED by that migration; only the markup carrying them moved.
+ * The page keeps its own argument - three leak points, only one of which is
+ * our work - and is NOT homogenized toward the other repair pages. The
+ * scope-edge caveat naming what we do NOT do stays exactly as written. Do not
+ * re-add a local hero or band rule here.
+ */
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import MobileStickyBar from '../../components/MobileStickyBar.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import FaqList from '../../components/FaqList.astro';
+import {
+  business,
+  serviceArea,
+  repairPriceRanges,
+  pricingDisclaimer,
+} from '../../config/site';
+
+const title =
+  'Stucco Chimney Repair | Cracked & Leaking Chimneys | Daytona Beach';
+const description =
+  'Cracked or leaking stucco chimney in Volusia County. Why chimneys crack before the rest of the house, the three places the water actually gets in, and which of them a stucco contractor is the right call for.';
+
+const usd = (n: number) => '$' + n.toLocaleString('en-US');
+
+const crackRange = repairPriceRanges.find((r) => r.job === 'Minor crack repair');
+const patchRange = repairPriceRanges.find(
+  (r) => r.job === 'Small patch or hole repair',
+);
+const waterRange = repairPriceRanges.find(
+  (r) => r.job === 'Water-damaged stucco repair',
+);
+
+/**
+ * The page's ownable answer. Three entry points, three different owners.
+ * The third entry is the one that makes the page credible — it sends work
+ * away, and it is also the honest edge of our verified scope.
+ */
+const entryPoints = [
+  {
+    where: 'The stucco itself',
+    who: 'A stucco contractor',
+    body: 'Cracks wide enough to hold water, hollow areas where the stucco has let go of what is behind it, or an old patch that has opened back up. Water goes in through the face of the wall and stays in. This is the one we do.',
+  },
+  {
+    where: 'The top of the chimney',
+    who: 'A chimney company',
+    body: 'The flat surface at the top around the flue moves every time the chimney heats and cools, and it cracks. Water then goes straight down inside the structure, no matter how good the stucco outside is.',
+  },
+  {
+    where: 'Where the chimney meets the roof',
+    who: 'A roofer',
+    body: 'The metal tying the chimney into the roof surface. When it lifts, corrodes, or was never set into the wall properly, water gets in at the roofline. A ceiling stain near the chimney usually points here rather than at the stucco.',
+  },
+];
+
+/** Why chimneys fail first. The mechanism nobody local is explaining. */
+const reasons = [
+  {
+    title: 'It is exposed on four sides',
+    body: 'Every other wall has a roof over part of it and a neighbouring wall beside it. A chimney above the roofline takes sun, wind, and rain from every direction, all day, with nothing shading it.',
+  },
+  {
+    title: 'It heats and cools from the inside',
+    body: 'A working fireplace puts a heat cycle through the middle of the structure that no other part of the house sees. The material expands, contracts, and eventually cracks — in the same places each time.',
+  },
+  {
+    title: 'It is narrow',
+    body: 'A chimney has a lot of corners and edges relative to its size, and stucco moves most at edges. The same square footage cracks more here than on a flat elevation.',
+  },
+  {
+    title: 'Nobody looks at it',
+    body: 'It is the one part of the house you cannot inspect from the ground with any confidence. Most chimney damage here has been going on for years by the time anyone calls, because the first visible sign shows up indoors.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Why is my stucco chimney cracking when the rest of the house is fine?',
+    a: 'Because a chimney lives a harder life than any wall on the house. It is exposed on all four sides with no shade, it heats and cools from the inside if the fireplace gets used, and it is a small structure with a lot of edges — and stucco cracks at edges. It is normal for a chimney to crack well before the rest of a house. What matters is whether those cracks are still just cracks.',
+  },
+  {
+    q: 'Can a stucco chimney be repaired, or does it need to be rebuilt?',
+    a: 'Most of the time the stucco can be repaired. The question is the condition of the structure underneath. If the stucco is cracked but the chimney behind it is sound, that is a repair — cut back to solid material, rebuild the finish, match the texture. If water has been getting in long enough that the structure itself has deteriorated, no amount of stucco work fixes it, and you need a mason or a chimney company rather than us.',
+  },
+  {
+    q: 'Where does a stucco chimney actually leak?',
+    a: 'One of three places: through the stucco itself, from the flat top of the chimney around the flue, or where the chimney meets the roof. They look similar from the ground and they have three different trades attached to them. Cracked stucco is our work. The top of the chimney and the roofline connection are not.',
+  },
+  {
+    q: 'I have a water stain on the ceiling near my chimney. Is that the stucco?',
+    a: 'Possibly, but that symptom points more often at the top of the chimney or the roofline connection than at the stucco face. Water entering through cracked stucco usually shows on the chimney itself or the wall below it, not on a ceiling. Worth having someone look before you assume it is a stucco job — including us telling you it is not.',
+  },
+  {
+    q: 'Should I just paint or seal the chimney to stop the cracks?',
+    a: 'Painting over a cracked chimney hides the cracks for a season and then they come back through, because paint does not stop the movement that caused them. It also makes the next repair harder to match. If the cracks are cosmetic, paint is a reasonable finishing step after the repair. It is not the repair.',
+  },
+  {
+    q: 'How do I know if the cracks on my chimney are serious?',
+    a: 'From the ground you mostly cannot, which is the honest answer. What raises the concern is a crack you can fit a credit card edge into, staining running down from one, a section that sounds hollow rather than solid, or stucco already patched here once that opened up again. Any of those and it is worth testing rather than watching.',
+  },
+];
+
+const serviceSchema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Stucco chimney repair',
+  serviceType: 'Stucco chimney repair',
+  description:
+    'Repair of cracked, hollow, and water-damaged stucco on residential chimneys. Damaged stucco is cut back to sound material, rebuilt, and matched to the existing finish.',
+  provider: { '@type': 'LocalBusiness', name: business.name },
+};
+if (serviceArea) serviceSchema.areaServed = serviceArea;
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <SiteHeader current="/stucco-chimney-repair/" />
+
+  <main id="main">
+    {/*
+      HERO. Dark PageHero with ContactCta in the aside slot - the money-page
+      arrangement PageHero's own doc block describes. Eyebrow, h1 and lede are
+      the same three strings the old local hero rendered. Breadcrumbs are new
+      markup only and emit BreadcrumbList schema from Breadcrumbs.astro.
+      No `actions` array: the aside CTA is the conversion affordance here.
+    */}
+    <PageHero
+      crumbs={[
+        { href: '/services/', label: 'Services' },
+        { href: '/stucco-chimney-repair/', label: 'Chimney repair' },
+      ]}
+      eyebrow="Stucco repair · Daytona Beach & Volusia County"
+      title="Stucco chimney repair"
+      lede="The chimney is almost always the first part of a stucco house to crack, and the last part anyone looks at. If yours is cracked or letting water in, the thing to sort out first is which of three places it is getting in — because only one of them is a stucco job."
+      actions={[
+        { href: '/contact/', label: 'Request an estimate' },
+        { href: '/problems/water-stains-on-stucco/', label: 'Tracing a water stain', variant: 'secondary' },
+      ]}
+    >
+      <LeadForm />
+    </PageHero>
+
+    {/* WHY CHIMNEYS FIRST */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Why chimneys first"
+          title="Why the chimney cracks before the rest of the house"
+          lede="People call assuming something has gone wrong with their chimney specifically. Usually nothing has. It is the hardest-used piece of stucco on the building, and it fails first for four reasons that have nothing to do with how well it was built."
+        />
+
+        {/*
+          Four descriptive cells, not links - each is a reason, not a route.
+          Plain .grid-hairline rather than the .card-link variant.
+        */}
+        <div class="grid-hairline cols-2 entries">
+          {reasons.map((r) => (
+            <div class="entry">
+              <h3>{r.title}</h3>
+              <p>{r.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* THE OWNABLE ANSWER */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Three leak points"
+          title="The three places a stucco chimney leaks"
+          lede="Straight answers are hard to find here, because the companies writing about it each fix one of the three and describe that one as the problem. All three put water inside the house, and all three have a different trade attached."
+        />
+
+        <div class="grid-hairline cols-3 entries">
+          {entryPoints.map((e) => (
+            <div class="entry">
+              <h3>{e.where}</h3>
+              <p class="who">{e.who}</p>
+              <p>{e.body}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="caveat">
+          <p>
+            We are a stucco company, so we will say the useful thing rather
+            than the profitable one:{' '}
+            <strong>
+              two of those three are not our work, and if that is what you
+              have, we will tell you so instead of selling you a stucco
+              repair that will not stop the leak.
+            </strong>{' '}
+            Repairing the stucco face on a chimney that is taking water in
+            at the top is the most common wasted spend in this category.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* SCOPE + WHAT THE WORK IS */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Scope"
+          title="What we do on a chimney"
+          lede="The stucco. Cracked, hollow, delaminated or water-damaged stucco gets cut back to material still solidly attached, rebuilt, and textured to match what is there — the same work we do on any wall, on a structure that makes reaching it more involved."
+        />
+        <div class="prose">
+        <p>
+          Matching matters more here than people expect. A chimney is a
+          small, isolated object, so a patch that does not match reads from
+          the street in a way it never would on a long wall.
+        </p>
+        </div>
+        <div class="caveat">
+          <p>
+            What we do not do is the rest of the chimney. The top, the flue,
+            the metal at the roofline, and the masonry structure itself are
+            other trades' work, and we would rather be clear about the edge
+            of ours than take a job we should not.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* DIAGNOSIS HANDOFF */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="A paid diagnostic service"
+          title="When it is worth testing first"
+        />
+        <div class="prose">
+        <p>
+          If there is staining, a hollow-sounding section, or a repair here
+          that came back, the question is no longer where the cracks are —
+          it is how far the water has gone. That is what a{' '}
+          <a href="/stucco-moisture-testing/">Stucco Moisture Check</a>{' '}
+          is for, and it is the difference between pricing a patch and
+          pricing the actual job.
+        </p>
+        <p>
+          If the water turns out to be coming from somewhere other than the
+          stucco, that is a finding too. More on the general case on{' '}
+          <a href="/stucco-water-damage-repair/">stucco water damage repair</a>.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* COST */}
+    <section class="section" id="cost">
+      <div class="wrap">
+        <SectionHead eyebrow="Cost" title="What it costs" />
+        {crackRange && patchRange && waterRange ? (
+          <>
+            <p class="price">
+              A chimney is usually small work by area. Limited cracking in
+              sound stucco runs roughly{' '}
+              <strong>
+                {usd(crackRange.low)}&ndash;{usd(crackRange.high)}
+              </strong>
+              , a damaged section or a failed previous patch roughly{' '}
+              <strong>
+                {usd(patchRange.low)}&ndash;{usd(patchRange.high)}
+              </strong>
+              , and a repair where water has already gotten in behind the
+              finish roughly{' '}
+              <strong>
+                {usd(waterRange.low)}&ndash;{usd(waterRange.high)}
+              </strong>
+              .
+            </p>
+            <p class="cost-note">
+              Access behaves differently on a chimney than on a wall. The
+              area is small; reaching it safely is not, and on a small job
+              that is a real share of the cost. Full ranges are on{' '}
+              <a href="/stucco-repair/#pricing">the repair pricing page</a>.
+            </p>
+            <p class="disclaimer">{pricingDisclaimer}</p>
+          </>
+        ) : (
+          <p class="price">
+            Chimney repairs are small by area but harder to reach than a
+            wall, and access is a real share of the cost on a small job.
+          </p>
+        )}
+      </div>
+    </section>
+
+    {/*
+      FAQ. The shared FaqList accordion, fed the SAME `faqs` array that builds
+      the FAQPage schema above - one source, so an answer can never drift from
+      its markup. FaqList deliberately emits no schema of its own (see its doc
+      block); the page keeps ownership of that.
+    */}
+    <section class="section slab joint" id="faq" aria-labelledby="faq-head">
+      <div class="wrap">
+        <SectionHead id="faq-head" eyebrow="FAQ" title="Frequently asked questions" />
+        <FaqList items={faqs} />
+      </div>
+    </section>
+
+    <section class="section on-dark">
+      <div class="wrap">
+        <ContactCta heading="Tell us what the chimney is doing" />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  /*
+   * PAGE-SPECIFIC ONLY. The hero, bands, section heads, prose column, card
+   * grid, FAQ rows and breadcrumbs come from the shared components and the
+   * global utilities in Layout.astro; those rules were deleted here rather
+   * than duplicated. What remains is this page's own furniture: the reason
+   * and leak-point cells, the trade label on each leak point, the two
+   * flag-ruled asides, and the price line.
+   */
+
+  /* --- Cells: why chimneys fail first, and the three leak points -------- */
+  .entry h3 { margin: 0 0 0.5rem; font-size: 1.0625rem; }
+  .entry p { margin: 0; color: var(--ink-soft); }
+
+  /* Which trade owns each of the three leak points - the page's whole point. */
+  .who {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--flag);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem !important;
+  }
+
+  /* --- The "two of three are not our work" and scope-edge asides -------- */
+  .caveat {
+    border-left: 3px solid var(--flag);
+    padding-left: 1.25rem;
+    max-width: 60ch;
+  }
+  .caveat p { margin: 0; color: var(--ink-soft); }
+
+  /* --- Price line and its disclaimer ------------------------------------ */
+  .price {
+    font-family: var(--font-display);
+    font-size: clamp(1.125rem, 2.4vw, 1.375rem);
+    line-height: 1.45;
+    max-width: 52ch;
+  }
+  .price strong { color: var(--accent); }
+
+  .cost-note { color: var(--ink-soft); max-width: 60ch; }
+
+  .disclaimer {
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+    max-width: 60ch;
+    border-left: 3px solid var(--rule);
+    padding-left: 1.25rem;
+  }
+</style>

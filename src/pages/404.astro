@@ -1,0 +1,147 @@
+---
+/**
+ * 404 — page not found. Built 2026-09-01.
+ *
+ * Astro prerenders this to dist/client/404.html. The Cloudflare adapter's
+ * ASSETS binding serves that file for any unmatched path with a real 404
+ * status, so no Worker route, no `_routes.json` entry, and no wrangler
+ * change is needed. It is a static asset like any other page.
+ *
+ * ------------------------------------------------------------------
+ * THIS PAGE IS A ROUTER, NOT CONTENT.
+ *
+ * It exists because a mistyped or dead URL previously hit the Worker's
+ * bare default. Its whole job is to get the visitor to one of four
+ * places in one click. Deliberately short.
+ *
+ * OWNER CONSTRAINTS FOR THIS BUILD, all held:
+ *   - NO new business claims, services, pricing, or informational
+ *     content. Nothing on this page describes work, capability, or
+ *     cost. Every line is navigation or apology.
+ *   - Existing SiteHeader/SiteFooter/Layout used unchanged in design.
+ *   - NO robots.txt, sitemap, canonical, or astro.config change. The
+ *     one Layout edit is an additive optional `noindex` prop, agreed
+ *     with the owner before building; every other page renders
+ *     byte-identically.
+ *
+ * NO SCHEMA. An error page has no entity worth describing, and
+ * emitting CollectionPage or WebPage here would put a junk node in
+ * the graph for a URL that should never be indexed.
+ *
+ * `noindex` is passed for that reason. It is `noindex, follow` rather
+ * than `noindex, nofollow` — the links below should still pass a
+ * crawler through to the real pages.
+ *
+ * NO ContactCta COMPONENT. It carries a paragraph about sending a
+ * photo and what happens next, which is content this page is not
+ * supposed to add. /contact/ is linked as a plain route instead.
+ *
+ * PLUS standing brand constraints: no phone (null), no licence
+ * number, no warranty, no service claim, no price. Nothing here
+ * imports from site.ts except the header/footer already do.
+ * ------------------------------------------------------------------
+ */
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileStickyBar from '../components/MobileStickyBar.astro';
+
+const title = 'Page Not Found | Daytona Beach Stucco Company';
+const description =
+  'That page does not exist. Links to stucco services, common stucco problems, and how to get in touch.';
+
+/** The four routes the owner asked for, in order of likely usefulness. */
+const routes = [
+  {
+    href: '/services/',
+    name: 'Stucco services',
+    what: 'Every job we have a page for, grouped by what it is.',
+  },
+  {
+    href: '/problems/',
+    name: 'What your stucco is telling you',
+    what: 'Start here if you know what you can see but not what it is called.',
+  },
+  {
+    href: '/contact/',
+    name: 'Get in touch',
+    what: 'Send a photo of the wall and ask.',
+  },
+  {
+    href: '/',
+    name: 'Home',
+    what: 'Back to the start.',
+  },
+];
+---
+
+<Layout title={title} description={description} noindex>
+  <SiteHeader />
+
+  <main id="main">
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">404 &middot; Page not found</p>
+        <h1>That page isn&rsquo;t here</h1>
+        <p class="hero-lede">
+          The link may be old, or the address may have a typo in it. Nothing is
+          wrong on your end. Here is where most people are trying to get to.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <ul class="routes">
+          {routes.map((r) => (
+            <li>
+              <a href={r.href}>{r.name}</a>
+              <span class="what">{r.what}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  .hero {
+    padding-block: clamp(3rem, 9vw, 6rem);
+    background: linear-gradient(180deg, var(--paper-warm), var(--paper));
+    border-bottom: 1px solid var(--rule);
+  }
+  .hero h1 { max-width: 18ch; }
+  .hero-lede {
+    font-size: clamp(1.0625rem, 2.2vw, 1.25rem);
+    color: var(--ink-soft);
+    max-width: 44ch;
+    margin-top: 1.25rem;
+  }
+
+  .routes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 44rem;
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .routes a {
+    font-weight: 650;
+    font-size: 1.0625rem;
+    text-decoration: none;
+  }
+  .routes a:hover { text-decoration: underline; }
+
+  .what {
+    display: block;
+    color: var(--ink-soft);
+    margin-top: 0.125rem;
+  }
+</style>

@@ -1,0 +1,445 @@
+---
+/**
+ * /problems/soft-spots-hollow-stucco/ — SUPPORTING problem/symptom page.
+ * keyword-plan Wave 4 item, pulled forward 2026-08-31: keyword-plan:604
+ * names this page as a required inbound source for
+ * /stucco-moisture-testing/ ("the second-most-linked URL on the site"),
+ * and it was the last unbuilt page on that list apart from the held
+ * 4-point guide. Brief:
+ * ./campaigns/content-plan/soft-spots-hollow-stucco.md
+ *
+ * Target: `hollow sounding stucco`, `soft spot in stucco`,
+ * `stucco delamination`, `bulging stucco wall`, `drummy stucco`,
+ * `stucco sounds hollow when tapped`.
+ * Intent: INFORMATIONAL, nearest-to-transactional of the three problem
+ * pages. The reader has already tapped the wall.
+ *
+ * ------------------------------------------------------------------
+ * THIS IS NOT A SERVICE PAGE. It interprets a finding;
+ * /stucco-water-damage-repair/ and /stucco-repair/ sell.
+ *
+ * WORD CEILING: 1,000-1,500 rendered words inside <main> (owner
+ * direction). Measure with the <main>-extraction method — header and
+ * footer chrome adds ~700-790 words.
+ *
+ * LINKING MODEL (keyword-plan:314): UP to exactly one service money
+ * page (/stucco-water-damage-repair/), ACROSS to /stucco-repair/#pricing.
+ *
+ * CANNIBALIZATION CONTROL — THE TIGHTEST ON THE SITE. Read before
+ * editing:
+ *   - /stucco-water-damage-repair/ OWNS THE TAP TEST. Its "A check you
+ *     can do yourself right now" section is the three-step method.
+ *     DO NOT REBUILD IT HERE. This page interprets the RESULT; that
+ *     page produces it. Reference and link.
+ *   - /eifs-repair/ OWNS EIFS IDENTIFICATION. Its `idTests` array opens
+ *     with "Tap it" — the same physical act as this page's primary
+ *     keyword. Name the whole-wall-hollow signal, then hand off. Do NOT
+ *     rebuild its four ID tests (tap, press, bottom edge, behind a
+ *     fixture).
+ *   - /stucco-moisture-testing/ owns the Moisture Check. Link only.
+ *   - /stucco-repair/ owns repair method and cost. No method or cost
+ *     section here.
+ *
+ * THE TWO OWNABLE ANSWERS, both absent from the SERP:
+ *   1. HOLLOW AND SOFT ARE NOT THE SAME FINDING. Hollow is a bond
+ *      failure and can be bone dry. Soft is water already in the
+ *      substrate. Every consumer-facing competitor collapses both into
+ *      "serious, call a professional." The distinction changes urgency.
+ *   2. HOW MUCH of the wall sounds hollow matters more than the sound.
+ *      A whole wall reading hollow is usually EIFS working as designed,
+ *      not hardcoat failing. One patch is the real finding.
+ *
+ * CONCRETE SPALLING IS VERIFIED NOT OFFERED (`concreteSpallingRepair:
+ * false`). Bulging or breaking-away concrete at a balcony edge, stair
+ * landing, or railing post is spalling — NOT this company's work, and
+ * NOT to be implied as capability, including by adjacency. The bulging
+ * section must route it out explicitly.
+ *
+ * NOT A HOME INSPECTION (FL licenses inspectors separately). Structural
+ * movement routes to a structural engineer — not a claimed capability.
+ *
+ * NO THERMAL-IMAGING CLAIM. Conditional, screening aid only, not raised.
+ *
+ * NO REMOVAL-METHOD, TOOLING, CONTAINMENT OR DEBRIS claim (UNVERIFIED).
+ * No lath or substrate lifespan figure (not attributable).
+ *
+ * NO PRICE RANGE renders, so `pricingDisclaimer` is deliberately not
+ * imported. Cost lives at /stucco-repair/#pricing.
+ *
+ * OMITTED — blocked, absent rather than stubbed:
+ *   - [OPEN WALL PHOTO SET] — `openWallPhotos` is null. This page has
+ *     the strongest case on the site for it: "a delaminated patch
+ *     opened up" is precisely the proof it lacks. Block is null-gated
+ *     and renders when populated. Do NOT substitute stock or AI imagery.
+ *   - [PHONE], [LICENSE #], [WARRANTY TERM] — null.
+ * ------------------------------------------------------------------
+ *
+ * VISUAL SYSTEM (redesigned 2026-09-02): migrated from this page's own local
+ * hero/band/FAQ CSS onto the shared Orlando interior-page components -
+ * PageHero, SectionHead, FaqList, Breadcrumbs - and the global utilities in
+ * Layout.astro (.section, .slab, .joint, .grid-hairline, .on-dark). COPY,
+ * FACTS, SCHEMA, URLS, HEADING TEXT, ANCHOR IDS AND INTERNAL LINKS ARE
+ * UNCHANGED by that migration; only the markup carrying them moved.
+ * The hollow-versus-soft distinction that is this page’s whole argument stays exactly as written.
+ * This page keeps its informational register - single-column hero, no aside
+ * CTA - and is NOT homogenized toward the service money pages. Do not re-add
+ * a local hero or band rule here.
+ */
+import LeadForm from '../../../components/LeadForm.astro';
+import Layout from '../../../layouts/Layout.astro';
+import SiteHeader from '../../../components/SiteHeader.astro';
+import SiteFooter from '../../../components/SiteFooter.astro';
+import MobileStickyBar from '../../../components/MobileStickyBar.astro';
+import ContactCta from '../../../components/ContactCta.astro';
+import PageHero from '../../../components/PageHero.astro';
+import SectionHead from '../../../components/SectionHead.astro';
+import FaqList from '../../../components/FaqList.astro';
+import { business, serviceArea, openWallPhotos } from '../../../config/site';
+
+const title =
+  'Hollow Sounding Stucco and Soft Spots | Daytona Beach & Volusia County';
+const description =
+  'A hollow sound and a soft spot are two different findings with two different answers. How much of the wall sounds hollow matters more than the sound itself.';
+
+/**
+ * The interpretation table — the page's core. Keyed on WHAT THE WALL
+ * DID, since that is what the reader has in hand after tapping.
+ */
+const findings = [
+  {
+    name: 'The whole wall sounds hollow, everywhere',
+    verdict: 'Probably EIFS, probably fine',
+    tone: 'calm',
+    body: 'The most misread result on the list. A wall that reads hollow uniformly, edge to edge, usually is not failing hardcoat — it is a different cladding. EIFS is foam board under a thin coating, so it sounds drum-like by construction and always has. Consistency is the tell: failure is patchy, a wall system is uniform.',
+  },
+  {
+    name: 'One patch sounds hollow, the rest sounds solid',
+    verdict: 'A real finding, worth sizing',
+    tone: 'watch',
+    body: 'This is the one that means something. The stucco has lost its bond to what is behind it over a defined area — the trade calls it delamination. Map where the hollow note starts and stops. That outline, not the sound, is the useful information.',
+  },
+  {
+    name: 'Hollow, but the wall is dry with no staining',
+    verdict: 'A bond problem, not yet a water problem',
+    tone: 'watch',
+    body: 'Delamination does not require water. Stucco can debond from poor original bonding, from movement, or from a coat applied over a surface it never keyed into. A dry hollow patch is a repair, but not the urgent kind.',
+  },
+  {
+    name: 'The wall gives slightly under thumb pressure',
+    verdict: 'Different finding — press gently and stop',
+    tone: 'flag',
+    body: 'Softness is not the same as hollowness. It means something behind the finish has lost its integrity, which generally means water has been there long enough to break down what it is sitting on. The more serious of the two, and it usually arrives later.',
+  },
+  {
+    name: 'Hollow or soft with staining, bubbling paint, or a musty smell',
+    verdict: 'Water is in the assembly',
+    tone: 'flag',
+    body: 'Any of these alongside a hollow or soft patch settles the question. The bond did not fail on its own — water got in, stayed, and took the wall apart from behind. How long that has been going on decides the scope.',
+  },
+  {
+    name: 'A visible bulge or a section pushing outward',
+    verdict: 'Stop pressing on it',
+    tone: 'flag',
+    body: 'A wall that has begun to deform is carrying weight it was not meant to carry, and poking at it can bring a section down. Note it, keep off it, and get an opinion. If the bulging is in concrete at a balcony edge or stair landing rather than in stucco on a wall, that is a different trade entirely — see below.',
+  },
+];
+
+/** What separates the two symptoms — the distinction the SERP misses. */
+const distinctions = [
+  {
+    factor: 'Hollow is about the bond',
+    body: 'Tapping tells you whether the stucco is still attached to what is behind it. A drummy note means there is a gap where there should be contact. That gap can be dry, and a dry debonded patch is a contained repair rather than an emergency.',
+  },
+  {
+    factor: 'Soft is about the substrate',
+    body: 'Pressing tells you about the condition of what is underneath. Give means the material behind the finish has degraded — and the thing that degrades it is nearly always water that has been present for a while. Softness is generally the later stage.',
+  },
+  {
+    factor: 'Size is about the cost',
+    body: 'Neither sound nor give tells you what a repair runs. The extent does. A hollow patch the size of a dinner plate and one that covers half an elevation are the same finding at very different scales, which is why mapping the outline is worth doing before anyone quotes it.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Why does my stucco sound hollow when I tap it?',
+    a: 'Either the stucco has lost its bond to what is behind it over that area, or the wall is not hardcoat stucco at all. The difference is extent. A single patch that sounds hollow while the rest of the wall sounds solid is a bond failure worth looking at. A wall that sounds hollow uniformly, everywhere, is usually EIFS — foam board under a thin coating, which is drum-like by design and always was.',
+  },
+  {
+    q: 'Is hollow stucco a serious problem?',
+    a: 'Less serious than most pages will tell you, on its own. A hollow patch on a dry wall with no staining is a bond failure, and it is a contained repair rather than an emergency. It becomes serious when it arrives with staining, bubbling paint, a soft spot, or a musty smell inside — those say water is involved, and water is what turns a localized repair into a larger one.',
+  },
+  {
+    q: 'What is the difference between hollow and soft stucco?',
+    a: 'Hollow is what you hear; soft is what you feel. Hollow means the stucco has separated from its substrate — the bond failed, and that can happen on a perfectly dry wall. Soft means the material behind the finish has lost integrity, which almost always means water has been sitting there. Soft is the more advanced of the two.',
+  },
+  {
+    q: 'Can hollow stucco be repaired without replacing the whole wall?',
+    a: 'Usually, yes. Debonded stucco is normally addressed by removing the affected area and rebuilding it, and the scope follows the extent of the hollow area rather than the size of the wall. What pushes a job larger is not the hollow sound — it is water having been in the assembly long enough to damage what is behind it.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+/** Article, not Service — informational, sells nothing. */
+const articleSchema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Hollow Sounding Stucco and Soft Spots: What They Mean',
+  description,
+  author: { '@type': 'Organization', name: business.name },
+  publisher: { '@type': 'Organization', name: business.name },
+};
+if (serviceArea) articleSchema.about = serviceArea;
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <SiteHeader current="/problems/soft-spots-hollow-stucco/" />
+
+  <main id="main">
+    {/*
+      HERO. Dark PageHero, single column - no aside. This is an informational
+      page, not a money page: the conversion affordance is the ContactCta at
+      the foot. Eyebrow, h1 and lede are the same three strings the old local
+      hero rendered. Breadcrumbs are new markup only and emit BreadcrumbList
+      schema from Breadcrumbs.astro.
+    */}
+    <PageHero
+      crumbs={[
+        { href: '/problems/', label: 'Stucco problems' },
+        { href: '/problems/soft-spots-hollow-stucco/', label: 'Soft spots & hollow stucco' },
+      ]}
+      eyebrow="Stucco problems · Daytona Beach & Volusia County"
+      title="Hollow sounding stucco and soft spots"
+      lede="Two different findings, and almost everything written about them treats them as one. A hollow sound is a bond problem. A soft spot is a water problem. Which one you have changes how much it matters."
+      actions={[
+        { href: '/contact/', label: 'Request an estimate' },
+        { href: '/stucco-water-damage-repair/', label: 'Stucco water damage repair', variant: 'secondary' },
+      ]}
+    />
+
+<section class="section">
+  <div class="wrap">
+    <LeadForm />
+  </div>
+</section>
+
+    {/* QUICK ANSWER */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="The short version"
+          title="The short version"
+          lede="How much of the wall sounds hollow matters more than the sound itself. One hollow patch on an otherwise solid wall is a real finding. A wall that sounds hollow everywhere is usually not failing stucco at all — it is a different cladding, behaving normally."
+        />
+        <p class="lede">
+          And if the wall gives under your thumb rather than just sounding
+          drummy, that is the more advanced problem of the two.
+        </p>
+      </div>
+    </section>
+
+    {/* THE INTERPRETATION TABLE */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Findings"
+          title="What the wall told you, and what it means"
+          lede="Six results cover nearly everything, ordered from least to most concerning."
+        />
+        <div class="grid-hairline cols-2 entries">
+          {findings.map((f) => (
+            <div class={`entry tone-${f.tone}`}>
+              <h3>{f.name}</h3>
+              <p class="verdict">{f.verdict}</p>
+              <p>{f.body}</p>
+            </div>
+          ))}
+        </div>
+        <p class="note">
+          If the whole wall reads hollow and gives slightly, the house may be{' '}
+          <a href="/eifs-repair/">EIFS rather than hardcoat stucco</a> — that
+          page has the checks that settle it, including the one that ends the
+          argument. It is a different wall system with a different repair, and
+          having it is not bad news.
+        </p>
+      </div>
+    </section>
+
+    {/* THE DISTINCTION — the ownable answer */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="The distinction"
+          title="Hollow and soft are not the same problem"
+          lede="Nearly every page you will find on this collapses the two into one warning. They are worth separating, because they carry different urgency."
+        />
+        <div class="grid-hairline cols-2 entries">
+          {distinctions.map((d) => (
+            <div class="entry">
+              <h3>{d.factor}</h3>
+              <p>{d.body}</p>
+            </div>
+          ))}
+        </div>
+        <div class="caveat">
+          <p>
+            <strong>
+              A dry hollow patch is a repair. A soft patch is a repair plus
+              whatever the water has already done behind it.
+            </strong>{' '}
+            That second part is the whole reason it is worth knowing which one
+            you have before anyone quotes the work.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* PROOF — null-gated */}
+    {openWallPhotos && openWallPhotos.length > 0 && (
+      <section class="section" id="proof">
+        <div class="wrap">
+          <SectionHead eyebrow="Proof" title="What it looks like behind the finish" />
+          <div class="proof">
+            {openWallPhotos.map((src) => (
+              <img
+                src={src}
+                alt="Stucco opened during repair, showing the condition of the wall behind the finish"
+                loading="lazy"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {/* NOT OUR WORK — the spalling boundary */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Look-alike"
+          title="One thing that looks similar and is not"
+          lede="If the bulging or breaking-away is in concrete rather than stucco on a wall — a balcony edge, a stair landing, the base of a railing post — that is concrete spalling, usually rusting steel expanding inside the concrete. It looks related. It is a different trade."
+        />
+        <p class="band-lede">
+          <strong>We do not do spalling repair</strong>, and it is worth
+          knowing early rather than after someone has quoted you for the wrong
+          work. On a condo or multi-family building it is also frequently tied
+          to milestone inspection and reserve-study requirements, which is a
+          different conversation again.
+        </p>
+      </div>
+    </section>
+
+    {/* WHAT TO DO — two-link slot plus handoffs */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead eyebrow="Next step" title="What to do about it" />
+        <p class="lede">
+          First, find the edges. The single most useful thing you can hand
+          anyone is where the hollow area starts and stops — the outline
+          determines scope, and you can map it in a few minutes with a
+          knuckle. The method is set out step by step on{' '}
+          <a href="/stucco-water-damage-repair/">stucco water damage repair</a>,
+          along with the repair itself should water turn out to be involved.
+        </p>
+        <p class="lede">
+          A dry patch with no staining near it is a contained repair, and
+          there is no particular hurry about it. If a stain did show up with
+          it, read{' '}
+          <a href="/problems/water-stains-on-stucco/">
+            what the stain itself means
+          </a>{' '}
+          first — plenty of them turn out to be surface marks rather than
+          water in the wall.
+        </p>
+        <p class="lede">
+          To settle whether the wall is wet before anyone opens it, our{' '}
+          <a href="/stucco-moisture-testing/">Stucco Moisture Check</a> puts
+          meter readings against it, and the findings are yours either way.
+          Repair costs for this area sit on the{' '}
+          <a href="/stucco-repair/#pricing">price ranges</a>.
+        </p>
+        <p class="note">
+          Two boundaries worth naming. Do not coat or paint over a hollow area
+          — it hides the outline and changes nothing underneath. And if a
+          section of wall is visibly deforming, or the evidence points at
+          movement in the structure rather than the finish, the right call is a
+          structural engineer rather than a stucco contractor. We will say so
+          instead of selling a repair over the top of it.
+        </p>
+      </div>
+    </section>
+
+    {/* FAQ */}
+    <section class="section slab joint" id="faq" aria-labelledby="faq-head">
+      <div class="wrap">
+        <SectionHead id="faq-head" eyebrow="FAQ" title="Frequently asked questions" />
+        <FaqList items={faqs} />
+      </div>
+    </section>
+
+    <section class="section on-dark">
+      <div class="wrap">
+        <ContactCta heading="Not sure what you are hearing when you tap it?" />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  /*
+   * PAGE-SPECIFIC ONLY. The hero, bands, section heads, cell grid, FAQ rows
+   * and breadcrumbs come from the shared components and the global utilities
+   * in Layout.astro; those rules were deleted here rather than duplicated.
+   * What remains is this page's own furniture.
+   */
+  .band-lede { max-width: 60ch; color: var(--ink-soft); }
+  .lede { max-width: 60ch; color: var(--ink-soft); }
+  .note { color: var(--ink-soft); font-size: 0.9375rem; max-width: 60ch; }
+
+  .caveat {
+    border-left: 3px solid var(--flag);
+    padding-left: 1.25rem;
+    max-width: 60ch;
+  }
+  .caveat p { margin: 0; color: var(--ink-soft); }
+
+  .entry h3 { margin: 0 0 0.5rem; font-size: 1.0625rem; }
+  .entry p { margin: 0; color: var(--ink-soft); }
+
+  .verdict {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.375rem !important;
+    color: var(--ink-soft);
+  }
+  .tone-watch .verdict { color: var(--ink); }
+  .tone-flag .verdict { color: var(--flag); }
+
+  .proof {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .proof img { width: 100%; height: auto; border-radius: 4px; }
+
+</style>

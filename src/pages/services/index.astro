@@ -1,0 +1,320 @@
+---
+/**
+ * /services/ — CLUSTER HUB. Built 2026-09-01.
+ *
+ * WHY THIS PAGE EXISTS: ten service pages plus the Moisture Check were
+ * reachable only through in-body links from related pages. The header
+ * carries six items and the footer five; between them they exposed
+ * /stucco-repair/, /stucco-crack-triage/, /problems/,
+ * /stucco-moisture-testing/, the blog post and /contact/. Everything
+ * else was invisible to anyone not already reading an adjacent page.
+ * /problems/ solved this for the diagnostic cluster. This is the same
+ * fix for the service cluster.
+ *
+ * ------------------------------------------------------------------
+ * THIS IS A NAVIGATION PAGE, NOT A SERVICE PAGE.
+ *
+ * Schema is CollectionPage + ItemList — deliberately NOT Service, and
+ * NOT LocalBusiness. Every service page below already carries its own
+ * Service node with its own name and description. Emitting Service
+ * here would duplicate eleven of them under one URL and put this page
+ * in competition with the pages it exists to feed. It carries no
+ * FAQPage for the same reason: every question belongs to a child.
+ *
+ * OWNER CONSTRAINTS FOR THIS BUILD, all held:
+ *   - NO invented services. The roster below was verified line by
+ *     line against `verifiedServices` in src/config/site.ts before a
+ *     word was written. Eleven entries, each mapping to a flag the
+ *     client set true or to the named `moistureCheck`. See the
+ *     ROSTER note below for the exclusions and why.
+ *   - NO new service CATEGORIES. This page invents no grouping that
+ *     implies a capability. The three headings below are ordering
+ *     devices over pages that already exist, not a service taxonomy.
+ *   - NO claims, pricing, or credentials. Every `what` string is
+ *     compressed from the child page's own title/description/h1.
+ *     Nothing is asserted here that is not already argued and
+ *     sourced there.
+ *   - Existing SiteHeader/SiteFooter used unchanged.
+ *   - HEADER NAV NOT MODIFIED (owner instruction). This page is
+ *     currently reachable only by direct URL. Adding "/services/" to
+ *     the nav in SiteHeader.astro is the obvious follow-up when
+ *     authorized — and until then this hub has the same orphan
+ *     problem it was built to solve, one level up.
+ *
+ * ROSTER — WHAT IS EXCLUDED AND WHY. Do not add to this list without
+ * checking the same way:
+ *   - /problems/* (five pages) and /stucco-crack-triage/ are
+ *     DIAGNOSTIC, not services. They belong to /problems/ and are
+ *     linked below only as a routing aid, under a heading that says
+ *     so.
+ *   - /blog/why-stucco-cracks-come-back/ is editorial.
+ *   - / and /contact/ are already in the header.
+ *   - NO standalone waterproofing or sealing entry.
+ *     `standaloneWaterproofing: false` is a VERIFIED fact, not a
+ *     pending gate. It may happen inside a repair; it is not a thing
+ *     a customer can buy, and this hub must never imply otherwise.
+ *   - NO concrete spalling entry. `concreteSpallingRepair: false`,
+ *     also verified. Not by adjacency either — that is exactly the
+ *     failure mode a services list invites, since spalling sits
+ *     beside every one of these in a reader's mind.
+ *
+ * CANNIBALIZATION CONTROL: each entry gets ONE sentence saying what
+ * the page is for, then hands off. No method, no process, no
+ * materials, no reasoning. If this page ever grows enough substance
+ * to rank for a service term itself, it is stealing from the page it
+ * exists to feed. Kept short for that reason.
+ *
+ * PLUS standing brand constraints: no thermal imaging as proof; NOT a
+ * home inspection (FL licenses inspectors separately); no structural
+ * or engineering assessment; no warranty, licence number, or phone;
+ * no height/access claim; no crew size, lead time, or project
+ * history. NO PRICE RANGE renders, so `pricingDisclaimer` is NOT
+ * imported — the Moisture Check entry links to its own page rather
+ * than repeating the $300-$500 figure, which would drag the
+ * disclaimer along with it.
+ * ------------------------------------------------------------------
+ */
+import LeadForm from '../../components/LeadForm.astro';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import MobileStickyBar from '../../components/MobileStickyBar.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import { business, serviceArea, moistureCheck } from '../../config/site';
+
+const title = 'Stucco Services | Daytona Beach & Volusia County';
+const description =
+  'Everything we do to stucco — repair, water damage, EIFS, replacement, resurfacing, painting, chimneys, soffits, windows, and new installation. Find the page for the work you need.';
+
+/**
+ * Three groups, ordered by how people arrive. Repair first because
+ * that is what the site is for; the rest follow.
+ *
+ * `what` is compressed from each child's own title/description/h1 —
+ * see the header note. Nothing here is new.
+ */
+const groups = [
+  {
+    heading: 'Repair',
+    lede: 'Something is wrong with a wall that is already there.',
+    services: [
+      {
+        href: '/stucco-repair/',
+        name: 'Stucco repair',
+        what: 'The main page: cracks, patching, water damage and re-stucco, plus researched price ranges for this area and what moves the number.',
+      },
+      {
+        href: '/stucco-water-damage-repair/',
+        name: 'Stucco water damage repair',
+        what: 'For when water has been getting in behind the wall and the material underneath is part of the job.',
+      },
+      {
+        href: '/eifs-repair/',
+        name: 'EIFS and synthetic stucco repair',
+        what: 'EIFS is a different system from hardcoat, and which one you have changes the repair. Start here if you are not sure.',
+      },
+      {
+        href: '/stucco-repair-around-windows/',
+        name: 'Repair around windows and doors',
+        what: 'Cracks and leaks at openings, including whether it is the window company or the stucco contractor you actually need.',
+      },
+      {
+        href: '/stucco-chimney-repair/',
+        name: 'Stucco chimney repair',
+        what: 'Cracked or leaking stucco chimneys, and which of the places water gets in is ours to fix.',
+      },
+      {
+        href: '/stucco-soffit-and-band-repair/',
+        name: 'Soffit, band and trim repair',
+        what: 'Cracked, sagging or open stucco soffits and decorative bands — usually a symptom of something above them.',
+      },
+    ],
+  },
+  {
+    heading: 'Replacing and refinishing',
+    lede: 'The wall is sound, tired, or past saving — three different answers.',
+    services: [
+      {
+        href: '/stucco-replacement/',
+        name: 'Stucco replacement',
+        what: 'Removing failed stucco and rebuilding it, when what is behind the wall decides the job rather than what it looks like.',
+      },
+      {
+        href: '/stucco-resurfacing/',
+        name: 'Stucco resurfacing and recoating',
+        what: 'Whole-wall recoating for stucco that is sound but tired, and how to tell whether your wall qualifies.',
+      },
+      {
+        href: '/stucco-painting/',
+        name: 'Stucco painting',
+        what: 'Repainting stucco exteriors, and why a coastal wall gets checked for moisture before anything is coated.',
+      },
+    ],
+  },
+  {
+    heading: 'New work and diagnosis',
+    lede: 'Nothing to repair yet, or nothing anyone has identified.',
+    services: [
+      {
+        href: '/new-stucco-installation/',
+        name: 'New stucco installation',
+        what: 'New construction and additions, where stucco is a sequenced trade with cure windows that cannot be rushed.',
+      },
+      {
+        href: '/stucco-moisture-testing/',
+        name: moistureCheck.name,
+        what: 'A separate paid service that looks for water behind the wall before you pay to close it up. Repair estimates stay free and separate.',
+      },
+    ],
+  },
+];
+
+const flat = groups.flatMap((g) => g.services);
+
+/**
+ * CollectionPage with an ItemList of all eleven. Not Service — see the
+ * header note: every child owns its own Service node.
+ */
+const collectionSchema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Stucco services',
+  description,
+  publisher: { '@type': 'Organization', name: business.name },
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: flat.map((s, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: s.name,
+      url: s.href,
+    })),
+  },
+};
+if (serviceArea) collectionSchema.about = serviceArea;
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(collectionSchema)} />
+
+  <SiteHeader current="/services/" />
+
+  <main id="main">
+    {/* HERO */}
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">Services &middot; Daytona Beach &amp; Volusia County</p>
+        <h1>What we do to stucco</h1>
+        <p class="hero-lede">
+          Every job below has its own page explaining what the work involves.
+          If you already know what you need, go straight to it. If you are
+          only sure something is wrong, start with{' '}
+          <a href="/problems/">what your stucco is telling you</a> instead.
+        </p>
+      </div>
+    </section>
+
+<section class="section">
+  <div class="wrap">
+    <LeadForm />
+  </div>
+</section>
+
+    {/* THE INDEX — the whole point of the page */}
+    {groups.map((g) => (
+      <section class="section">
+        <div class="wrap">
+          <h2>{g.heading}</h2>
+          <p class="group-lede">{g.lede}</p>
+          <div class="entries">
+            {g.services.map((s) => (
+              <article class="entry">
+                <h3><a href={s.href}>{s.name}</a></h3>
+                <p>{s.what}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    ))}
+
+    {/* ROUTING — for the reader who cannot pick from a list */}
+    <section class="section band">
+      <div class="wrap">
+        <h2>If you are not sure which one you need</h2>
+        <p class="band-lede">
+          Most people arrive knowing what they can see, not what it is called.
+          That is the other way in.
+        </p>
+        <ul class="routes">
+          <li>
+            <a href="/problems/">What your stucco is telling you</a> &mdash;
+            cracks, stains, bubbling paint, hollow spots and storm damage,
+            each with a check you can run yourself for nothing.
+          </li>
+          <li>
+            <a href="/stucco-crack-triage/">Crack triage</a> &mdash; if what
+            you are looking at is a crack and the question is whether it
+            matters.
+          </li>
+          <li>
+            <a href="/stucco-repair/#pricing">What stucco repair costs</a>{' '}
+            &mdash; researched ranges for this area, and the six things that
+            move the number.
+          </li>
+        </ul>
+        <p class="note">
+          Still not obvious? Just ask. Photos help and go by email &mdash; a
+          wall is easier to read than a description of one, and it costs you
+          nothing to ask.
+        </p>
+      </div>
+    </section>
+
+    <ContactCta heading="Not sure which of these you need?" />
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  .hero {
+    padding-block: clamp(3rem, 9vw, 6rem);
+    background: linear-gradient(180deg, var(--paper-warm), var(--paper));
+    border-bottom: 1px solid var(--rule);
+  }
+  .hero h1 { max-width: 22ch; }
+  .hero-lede {
+    font-size: clamp(1.0625rem, 2.2vw, 1.25rem);
+    color: var(--ink-soft);
+    max-width: 46ch;
+    margin-top: 1.25rem;
+  }
+
+  .section + .section { padding-top: 0; }
+
+  .group-lede { color: var(--ink-soft); max-width: 46ch; margin-bottom: 0; }
+
+  .band { background: var(--paper-warm); border-block: 1px solid var(--rule); }
+  .band-lede { max-width: 46ch; color: var(--ink-soft); }
+  .note { color: var(--ink-soft); font-size: 0.9375rem; max-width: 46ch; }
+
+  .entries {
+    display: grid;
+    gap: 1.75rem;
+    margin: 1.5rem 0 0;
+    max-width: 44rem;
+  }
+  .entry h3 { margin: 0 0 0.375rem; font-size: 1.0625rem; }
+  .entry p { margin: 0; color: var(--ink-soft); }
+
+  .routes {
+    margin: 1.5rem 0 1.5rem;
+    padding-left: 1.125rem;
+    max-width: 46ch;
+    color: var(--ink-soft);
+  }
+  .routes li + li { margin-top: 0.75rem; }
+</style>

@@ -1,0 +1,493 @@
+---
+/**
+ * /problems/cracks-in-stucco/ — SUPPORTING problem/symptom page.
+ * keyword-plan Wave 2 item 8, "QUICK WIN", Wk 7. Brief:
+ * ./campaigns/content-plan/cracks-in-stucco-when-to-worry.md
+ *
+ * Target: `cracks in stucco when to worry`, `hairline cracks in stucco`,
+ * `is it normal to have cracks in stucco`, `stair step cracks in stucco`,
+ * `types of stucco cracks`, `spider cracks in stucco`,
+ * `how wide is too wide for a stucco crack`.
+ * Intent: INFORMATIONAL. Reassurance-seeking. Not a buyer yet.
+ *
+ * ------------------------------------------------------------------
+ * THIS IS NOT A SERVICE PAGE. It diagnoses; /stucco-repair/ sells. The
+ * page must be usable by someone who never contacts us. Per the voice
+ * profile, "yours is probably fine" is the most persuasive move
+ * available here — do not walk it back into a soft pitch.
+ *
+ * WORD CEILING: 1,000-1,500 rendered words inside <main> (owner
+ * direction, overriding the brief's 1,800-2,400). Measure with the
+ * <main>-extraction method, not a whole-file count — header and footer
+ * chrome adds ~700-790 words.
+ *
+ * LINKING MODEL (keyword-plan:314) — every /problems/ page links UP to
+ * exactly one service money page and ACROSS to /stucco-repair/#pricing.
+ * Up = /stucco-repair/. Across = /stucco-repair/#pricing. The extra
+ * links to /stucco-moisture-testing/, /stucco-water-damage-repair/,
+ * /stucco-repair-around-windows/ and /blog/why-stucco-cracks-come-back/
+ * are the symptom-specific handoffs this page exists to make.
+ *
+ * CANNIBALIZATION CONTROL. /stucco-crack-repair/ was rejected 0-of-4 on
+ * 2026-08-30 and consolidated into /stucco-repair/. This page survived
+ * that consolidation ONLY because it targets the informational question
+ * (keyword-plan:832). Keep the boundary:
+ *   - "Which crack do I have, and does it matter" lives HERE.
+ *   - What the repair is, what it costs, who to hire → /stucco-repair/.
+ *   - Why a repaired crack returns → /blog/why-stucco-cracks-come-back/.
+ *   - The window-corner detail (flashing, head, sill, perimeter joint)
+ *     → /stucco-repair-around-windows/. Name the pattern here, do not
+ *     rebuild the anatomy.
+ *   - The Moisture Check process → /stucco-moisture-testing/ only.
+ * If this page grows a repair-method or cost-breakdown section, that is
+ * the cannibalization the rejection warned about. Cut it and link.
+ *
+ * CRACK WIDTHS ARE ATTRIBUTED, NOT CLAIMED (keyword-plan:476). The
+ * 1/16" and 1/8" figures are long-published trade convention and are
+ * framed as such. They are NOT this contractor's measurement standard,
+ * and no sentence may imply we diagnose by width alone.
+ *
+ * NOT A HOME INSPECTION: Florida licenses home inspectors separately.
+ * Nothing here may frame us as inspecting. Structural cracking is
+ * routed to a structural engineer — `structuralEngineering` is not a
+ * claimed capability.
+ *
+ * NO THERMAL-IMAGING CLAIM. Not mentioned on this page at all. It is
+ * conditional, it is a screening aid, and this page has no reason to
+ * raise it.
+ *
+ * OMITTED — blocked, absent rather than stubbed:
+ *   - [CRACK TYPE PHOTO SET] — the brief's blocker. `openWallPhotos` is
+ *     null in src/config/site.ts and no crack-pattern set exists. The
+ *     proof block renders automatically once populated. Do NOT
+ *     substitute stock or AI imagery as real project documentation.
+ *   - [PHONE] — null. The photo-submission CTA routes to /contact/ via
+ *     ContactCta, which handles its own null-gating.
+ *   - [LICENSE #], [WARRANTY TERM] — null. No credential or guarantee
+ *     module on this page.
+ * ------------------------------------------------------------------
+ *
+ * VISUAL SYSTEM (redesigned 2026-09-02): migrated from this page's own local
+ * hero/band/FAQ CSS onto the shared Orlando interior-page components -
+ * PageHero, SectionHead, FaqList, Breadcrumbs - and the global utilities in
+ * Layout.astro (.section, .slab, .joint, .grid-hairline, .on-dark). COPY,
+ * FACTS, SCHEMA, URLS, HEADING TEXT, ANCHOR IDS AND INTERNAL LINKS ARE
+ * UNCHANGED by that migration; only the markup carrying them moved. The
+ * six-pattern field guide, the attributed crack widths and the
+ * structural-engineer boundary stay exactly as written. This page keeps its
+ * informational register - single-column hero, no aside CTA - and is NOT
+ * homogenized toward the service money pages. Do not re-add a local hero or
+ * band rule here.
+ */
+import LeadForm from '../../../components/LeadForm.astro';
+import Layout from '../../../layouts/Layout.astro';
+import SiteHeader from '../../../components/SiteHeader.astro';
+import SiteFooter from '../../../components/SiteFooter.astro';
+import MobileStickyBar from '../../../components/MobileStickyBar.astro';
+import ContactCta from '../../../components/ContactCta.astro';
+import PageHero from '../../../components/PageHero.astro';
+import SectionHead from '../../../components/SectionHead.astro';
+import FaqList from '../../../components/FaqList.astro';
+import { business, serviceArea, openWallPhotos } from '../../../config/site';
+
+const title =
+  'Cracks in Stucco: When to Worry | Daytona Beach & Volusia County';
+const description =
+  'A field guide to stucco crack patterns — which are cosmetic, which mean water is getting in, and which need someone to look behind the wall. Written for Florida coastal houses.';
+
+/**
+ * The field guide. Ordered least to most concerning, deliberately: the
+ * reader arrives frightened and the first thing they should find is the
+ * pattern they probably have.
+ */
+const patterns = [
+  {
+    name: 'Hairline and spider cracks',
+    verdict: 'Usually cosmetic',
+    tone: 'calm',
+    body: 'Fine, shallow, often in a web across a wall face. This is the stucco shrinking as it cured, plus years of expanding in the sun and contracting overnight. On a dry wall with no staining, it is the most ordinary thing on a stucco house and does no structural harm.',
+  },
+  {
+    name: 'Straight cracks along a joint or seam',
+    verdict: 'Movement, usually manageable',
+    tone: 'calm',
+    body: 'Clean and straight, vertical or horizontal, often where a control joint sits or two sections of wall meet. The wall is moving where it was built to move, or where a joint should have been and was not. Worth sealing so it stops taking on water.',
+  },
+  {
+    name: 'Diagonal cracks from window and door corners',
+    verdict: 'Look closer',
+    tone: 'watch',
+    body: 'Running out at roughly 45 degrees from a corner. A window is a hole in the wall, and a hole concentrates stress at its corners, so this shows up on nearly every stucco house. On a dry wall it is normal. What changes the answer is anything appearing with it.',
+  },
+  {
+    name: 'Stair-step cracking',
+    verdict: 'Get it looked at',
+    tone: 'watch',
+    body: 'Stepping diagonally, usually following the block joints underneath. This one differs in kind — it can be reporting movement in the structure behind the stucco rather than in the stucco itself. It does not automatically mean a foundation problem, but it deserves a real opinion rather than a patch.',
+  },
+  {
+    name: 'Cracking with staining, bubbling paint, or efflorescence',
+    verdict: 'Water is already involved',
+    tone: 'flag',
+    body: 'A stain running down below the crack. Paint blistering near it. A chalky white powder on the surface. Any of these and the crack has stopped being the question — water has been moving through the wall long enough to leave evidence, and the damage is where you cannot see it.',
+  },
+  {
+    name: 'A crack that came back after it was repaired',
+    verdict: 'The cause was never fixed',
+    tone: 'flag',
+    body: 'The most useful signal on this list. A crack that reopens in the same place was either filled with something rigid where the wall needed something that stretches, or patched over an active water problem. Either way the patch treated the symptom.',
+  },
+];
+
+/** The escalation logic — what actually turns a nothing crack into a real one. */
+const escalators = [
+  {
+    factor: 'Water has a way in and no way out',
+    body: 'Stucco is not waterproof and was never designed to be — the layers behind it manage water and send it back out. A crack matters when it feeds water into an assembly that has stopped draining, because the wall then holds it against sheathing and framing.',
+  },
+  {
+    factor: 'It was sealed with the wrong thing',
+    body: 'Filling a moving crack with a rigid patch guarantees it reopens, usually within a season. Worse, coating over an active leak seals water inside the wall, where it does more damage than before.',
+  },
+  {
+    factor: 'Time',
+    body: 'The only genuinely urgent one. A crack letting water in is not a fixed-size problem waiting for you. The difference between a localized repair and rebuilding a section of wall is mostly how many rainy seasons went by first.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Is it normal to have cracks in stucco?',
+    a: 'Yes. Nearly every stucco house has them. Stucco is a cement product that shrinks as it cures, on a wall that expands in the heat and contracts overnight. Fine hairline and spider cracking on a dry wall is ordinary. What is not normal is cracking that comes with stains, bubbling paint, a soft spot, or a history of reopening after repair.',
+  },
+  {
+    q: 'Do stucco cracks mean foundation problems?',
+    a: 'Almost never for hairline, spider, or corner cracking — those are the stucco moving. Stair-step cracking that follows the block joints behind the wall can indicate structural movement, though it still has ordinary explanations more often than not. If the evidence points at the structure rather than the finish, the right call is a structural engineer, not a stucco contractor. We will say so.',
+  },
+  {
+    q: 'Can you paint over cracked stucco?',
+    a: 'You can, and for fine cracking on a dry wall an elastomeric coating is a legitimate answer. But paint is not a repair, and over an active leak it seals water into the wall and hides the evidence you needed. Establish the wall is dry first, then coat it. Never the other way around.',
+  },
+  {
+    q: 'How do you fix hairline cracks in stucco?',
+    a: 'If the wall is dry, the honest answer is often that you do not have to do anything. When it is worth addressing, the point is to keep water out without creating a rigid line across a moving wall — a flexible sealant or a coating rated to bridge fine cracks, not a hard patch. If a crack was filled once and came back, filling it again is not the answer.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+/**
+ * Article, not Service. This page is informational and sells nothing —
+ * marking it up as a Service would misrepresent it and blur the
+ * boundary against /stucco-repair/.
+ */
+const articleSchema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Cracks in Stucco: Which Ones Matter and Which Ones Do Not',
+  description,
+  author: { '@type': 'Organization', name: business.name },
+  publisher: { '@type': 'Organization', name: business.name },
+};
+if (serviceArea) articleSchema.about = serviceArea;
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <SiteHeader current="/problems/cracks-in-stucco/" />
+
+  <main id="main">
+    {/*
+      HERO. Dark PageHero, single column - no aside. This is an informational
+      page, not a money page: the conversion affordance is the ContactCta at
+      the foot, and putting a form beside the h1 would change the page's
+      register. Eyebrow, h1 and lede are the same three strings the old local
+      hero rendered. Breadcrumbs are new markup only and emit BreadcrumbList
+      schema from Breadcrumbs.astro.
+    */}
+    <PageHero
+      crumbs={[
+        { href: '/problems/', label: 'Stucco problems' },
+        { href: '/problems/cracks-in-stucco/', label: 'Cracks in stucco' },
+      ]}
+      eyebrow="Stucco problems · Daytona Beach & Volusia County"
+      title="Cracks in stucco: which ones matter and which ones do not"
+      lede="Most cracks in stucco are cosmetic. Almost every stucco house in Florida has them, and on a dry wall they are damaging nothing. The ones that matter have something else going on with them — and that difference is what this page is for."
+      actions={[
+        { href: '/contact/', label: 'Request an estimate' },
+        { href: '/blog/why-stucco-cracks-come-back/', label: 'Why cracks come back', variant: 'secondary' },
+      ]}
+    />
+
+<section class="section">
+  <div class="wrap">
+    <LeadForm />
+  </div>
+</section>
+
+    {/* THE QUICK ANSWER — featured-snippet shaped */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead eyebrow="The short version" title="The short version" />
+        <p class="lede">
+          A crack is worth worrying about when it comes with a stain,
+          bubbling paint, a chalky white residue, a soft or hollow spot, or
+          a history of reopening after it was patched. A hairline crack on a
+          dry wall with none of those is ordinary.
+        </p>
+        <p class="lede">
+          That is the whole test, and you can run it yourself without anyone
+          selling you anything. The rest of this page is how to tell which
+          one you have.
+        </p>
+      </div>
+    </section>
+
+    {/* THE FIELD GUIDE — the core of the page */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Field guide"
+          title="A field guide to stucco crack patterns"
+          lede="Six patterns cover nearly everything you will find on a wall, ordered from least to most concerning."
+        />
+        <div class="grid-hairline cols-2 entries">
+          {patterns.map((p) => (
+            <div class={`entry tone-${p.tone}`}>
+              <h3>{p.name}</h3>
+              <p class="verdict">{p.verdict}</p>
+              <p>{p.body}</p>
+            </div>
+          ))}
+        </div>
+        <p class="note">
+          If yours is at a window or door with staining below it, that detail
+          is walked through on{' '}
+          <a href="/stucco-repair-around-windows/">
+            stucco repair around windows and doors
+          </a>.
+        </p>
+      </div>
+    </section>
+
+    {/* WIDTH — the PAA question, answered honestly */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead eyebrow="Crack width" title={'What “too wide” actually means'} />
+        <p class="lede">
+          Trade convention has long put the line at about 1/16 of an inch —
+          roughly a credit card edge — with anything wider than about 1/8 of
+          an inch worth a closer look. Hold a card to the wall and you have a
+          usable measurement.
+        </p>
+        <div class="caveat">
+          <p>
+            Treat that as a rule of thumb, not a verdict.{' '}
+            <strong>
+              A hairline crack with a stain running out of it is a worse
+              problem than a wide crack in a dry wall.
+            </strong>{' '}
+            Width tells you how much water can get in. It says nothing about
+            whether water is already in there — which is the question that
+            decides what a repair costs.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* ESCALATION — what turns cheap into expensive */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Escalation"
+          title="What turns a cosmetic crack into an expensive one"
+          lede="Three things, and only one of them is urgent."
+        />
+        <div class="grid-hairline cols-3 entries">
+          {escalators.map((e) => (
+            <div class="entry">
+              <h3>{e.factor}</h3>
+              <p>{e.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* PROOF — null-gated, renders only when a real photo set exists */}
+    {openWallPhotos && openWallPhotos.length > 0 && (
+      <section class="section" id="proof">
+        <div class="wrap">
+          <SectionHead eyebrow="Proof" title="What it looks like behind the finish" />
+          <div class="proof">
+            {openWallPhotos.map((src) => (
+              <img
+                src={src}
+                alt="Stucco opened during repair, showing the condition of the wall behind the finish"
+                loading="lazy"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {/* FLORIDA CONTEXT — past the saturated observation to the consequence */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead eyebrow="Florida context" title="Why walls crack differently on this coast" />
+        <p class="lede">
+          Every contractor in Florida will tell you salt air and humidity are
+          hard on stucco. True, and not especially useful. The part that
+          changes what you should do is more specific.
+        </p>
+        <p class="lede">
+          Thermal cycling here is relentless — a west-facing wall in Daytona
+          Beach or Port Orange swings through a wide temperature range every
+          day of the year, so the movement that opens fine cracking never
+          stops. Then the rain arrives horizontally. A wall that would shed a
+          straight-down rain without trouble gets water driven into the
+          openings, the joints, and the tops of windows under pressure.
+        </p>
+        <p class="lede">
+          So the cracking is thermal and largely unavoidable. The damage is
+          the wind-driven water finding it. Which is why the useful question
+          on a coastal house is never how bad the crack looks — it is whether
+          that crack has been feeding water into the wall behind it.
+        </p>
+        <p class="lede">
+          Which is also why cracking seems to appear all at once after a
+          storm. If that is what brought you here, the first thing worth
+          working out is{' '}
+          <a href="/problems/hurricane-storm-stucco-damage/">
+            which of it is actually new
+          </a>{' '}&mdash; a clean, bright crack and a dirty, weathered one
+          are different findings.
+        </p>
+      </div>
+    </section>
+
+    {/* WHAT TO DO — the two-link slot, plus symptom handoffs */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead eyebrow="Next step" title="What to do about it" />
+        <p class="band-lede">
+          If the wall is dry and the cracking is fine, the honest answer is
+          usually nothing at all, or a coating when you next paint. Nobody
+          needs to come look at it.
+        </p>
+        <p class="band-lede">
+          If there is staining, bubbling paint, or a hollow-sounding spot,
+          the question is not what a patch costs — it is whether water is
+          behind the wall right now, because closing that up is a repair you
+          pay twice for. Not every stain means that, and{' '}
+          <a href="/problems/water-stains-on-stucco/">
+            what the different stains actually mean
+          </a>{' '}
+          is worth reading first. Our{' '}
+          <a href="/stucco-moisture-testing/">Stucco Moisture Check</a>{' '}
+          answers that with meter readings, and you get the findings whether
+          or not you hire us. If water has already gotten in, that work is
+          covered on{' '}
+          <a href="/stucco-water-damage-repair/">stucco water damage repair</a>.
+        </p>
+        <p class="band-lede">
+          If the crack was already patched once and came back, that has its
+          own explanation, worth reading before paying for a third:{' '}
+          <a href="/blog/why-stucco-cracks-come-back/">
+            why stucco cracks come back
+          </a>.
+        </p>
+        <p class="band-lede">
+          For the repair side generally, and what it costs in this area, see{' '}
+          <a href="/stucco-repair/">stucco repair</a> and the{' '}
+          <a href="/stucco-repair/#pricing">price ranges</a>.
+        </p>
+        <p class="note">
+          One boundary worth naming. If the pattern is stair-step and the
+          evidence points at the structure rather than the finish, the right
+          call is a structural engineer, not a stucco contractor. We will say
+          so rather than sell you a repair over the top of it.
+        </p>
+      </div>
+    </section>
+
+    {/* FAQ */}
+    {/*
+      FAQ. The shared FaqList accordion, fed the SAME `faqs` array that builds
+      the FAQPage schema above - one source, so an answer can never drift from
+      its markup. FaqList deliberately emits no schema of its own (see its doc
+      block); the page keeps ownership of that.
+    */}
+    <section class="section slab joint" id="faq" aria-labelledby="faq-head">
+      <div class="wrap">
+        <SectionHead id="faq-head" eyebrow="FAQ" title="Frequently asked questions" />
+        <FaqList items={faqs} />
+      </div>
+    </section>
+
+    <section class="section on-dark">
+      <div class="wrap">
+        <ContactCta heading="Not sure which kind of crack you have?" />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  /*
+   * PAGE-SPECIFIC ONLY. The hero, bands, section heads, cell grid, FAQ rows
+   * and breadcrumbs come from the shared components and the global utilities
+   * in Layout.astro; those rules were deleted here rather than duplicated.
+   * What remains is this page's own furniture: the pattern and escalator
+   * cells, the three-tone verdict label that carries the field guide's whole
+   * argument, the width caveat and the proof grid.
+   */
+  .band-lede { max-width: 60ch; color: var(--ink-soft); }
+  .lede { max-width: 60ch; color: var(--ink-soft); }
+  .note { color: var(--ink-soft); font-size: 0.9375rem; max-width: 60ch; }
+
+  .caveat {
+    border-left: 3px solid var(--flag);
+    padding-left: 1.25rem;
+    max-width: 60ch;
+  }
+  .caveat p { margin: 0; color: var(--ink-soft); }
+
+  .entry h3 { margin: 0 0 0.5rem; font-size: 1.0625rem; }
+  .entry p { margin: 0; color: var(--ink-soft); }
+
+  .verdict {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.375rem !important;
+    color: var(--ink-soft);
+  }
+  .tone-watch .verdict { color: var(--ink); }
+  .tone-flag .verdict { color: var(--flag); }
+
+  .proof {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .proof img { width: 100%; height: auto; border-radius: 4px; }
+
+</style>

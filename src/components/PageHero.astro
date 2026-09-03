@@ -1,0 +1,138 @@
+---
+/**
+ * Dark interior-page hero. Ported from the Orlando Concrete Contractors
+ * `.phero`: breadcrumbs, eyebrow, h1, lede, action row, and an optional
+ * right-hand "answer" panel that states the short version of the page's
+ * question above the fold.
+ *
+ * The reference pairs this with a lead-capture form and a phone callbox.
+ * Here the right column is a generic slot instead, because:
+ *   - `phone` is null in src/config/site.ts, so a callbox would be a dead
+ *     affordance. Never stub one.
+ *   - the contact form is already owned by ContactCta.astro, which computes
+ *     its own href and honeypot behavior. Pages that want it pass it in.
+ *
+ * SLOTS
+ *   default  — right column. Use <ContactCta variant="inline" heading="" />
+ *              on money pages, or a .hero-answer block on informational
+ *              pages. Omit entirely for a single-column hero.
+ *
+ * PROPS are content only. Nothing here invents facts: `eyebrow`, `title` and
+ * `lede` are page-supplied, and `actions` renders only what it is given.
+ */
+import Breadcrumbs from './Breadcrumbs.astro';
+import type { Crumb } from './Breadcrumbs.astro';
+
+interface Action {
+  href: string;
+  label: string;
+  /** 'primary' is the solid accent button; 'secondary' the outlined one. */
+  variant?: 'primary' | 'secondary';
+}
+
+interface Props {
+  /** Trail after Home. Omit to render no breadcrumbs. */
+  crumbs?: Crumb[];
+  /** Mono uppercase label above the h1. */
+  eyebrow?: string;
+  title: string;
+  /** Supporting sentence under the h1. */
+  lede?: string;
+  actions?: Action[];
+}
+
+const { crumbs, eyebrow, title, lede, actions = [] } = Astro.props;
+const hasAside = Astro.slots.has('default');
+---
+
+<section class="page-hero on-dark">
+  <div class="wrap">
+    {crumbs && crumbs.length > 0 && <Breadcrumbs items={crumbs} />}
+
+    <div class:list={['hero-grid', hasAside && 'has-aside']}>
+      <div class="hero-main">
+        {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+        <h1>{title}</h1>
+        {lede && <p class="lede">{lede}</p>}
+
+        {actions.length > 0 && (
+          <div class="hero-actions">
+            {actions.map((a) => (
+              <a
+                class:list={[
+                  'btn',
+                  a.variant === 'secondary' ? 'btn-secondary' : 'btn-primary',
+                ]}
+                href={a.href}
+              >
+                {a.label}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {hasAside && (
+        <div class="hero-aside">
+          <slot />
+        </div>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    padding-top: 1.25rem;
+    padding-bottom: var(--section-y);
+  }
+
+  .hero-grid {
+    display: grid;
+    gap: 2.75rem;
+    padding-top: 2rem;
+  }
+
+  .hero-main h1 { max-width: 18ch; }
+
+  .hero-main .lede { margin-top: 1.5rem; }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2.75rem;
+  }
+
+  /* The reference's raised inner panel: one step lighter than the band,
+   * with a hairline border. Used by .hero-answer and by ContactCta. */
+  .hero-aside :global(.hero-answer) {
+    align-self: start;
+    padding: 2rem;
+    border: 1px solid var(--shell-rule);
+    border-radius: 2px;
+    background: #1d1f22;
+  }
+
+  .hero-aside :global(.hero-answer > :last-child) { margin-bottom: 0; }
+
+  /* ContactCta keeps its own markup; the panel treatment is applied from
+   * out here so the component needs no dark variant. */
+  .hero-aside :global(.cta) {
+    padding: 1.5rem;
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--accent);
+    border-radius: 2px;
+    background: var(--paper-warm);
+  }
+
+  @media (min-width: 62rem) {
+    .hero-grid.has-aside {
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .hero-actions { margin-top: 4rem; }
+  }
+</style>

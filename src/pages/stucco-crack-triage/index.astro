@@ -50,6 +50,7 @@
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
+import MobileStickyBar from '../../components/MobileStickyBar.astro';
 import ContactCta from '../../components/ContactCta.astro';
 import { business, moistureCheck, serviceArea } from '../../config/site';
 
@@ -83,6 +84,7 @@ const patterns: readonly Pattern[] = [
     tone: 'watch',
     detail: [
       'This does not need emergency attention. It is worth keeping an eye on, worth addressing eventually for appearance and to keep water out of the surface, and not worth losing a weekend over.',
+      'When this pattern covers a whole elevation rather than one section — and especially on a wall already carrying a history of mismatched patches — patching it spot by spot leaves you with the same wall. That is the case where <a href="/stucco-resurfacing/">resurfacing the elevation</a> is worth pricing against another round of repairs.',
       '<strong>What would change the verdict:</strong> if any individual line in the web widens past a credit card edge, or if staining appears along it, read Pattern 3 and Pattern 4 again.',
     ],
   },
@@ -97,7 +99,7 @@ const patterns: readonly Pattern[] = [
     tone: 'watch',
     detail: [
       'This one is about <em>change over time</em>, not the crack itself. A stable corner crack that has looked the same for four years is a very different thing from one that has doubled since spring.',
-      '<strong>Why this pattern gets extra attention:</strong> window and door corners are also where water most commonly gets in, because that is where flashing and sealant do the hard work. The crack may be harmless. The junction it sits on is the highest-risk detail on the wall. If this crack comes with anything in Pattern 4, treat Pattern 4 as the answer.',
+      '<strong>Why this pattern gets extra attention:</strong> window and door corners are also where water most commonly gets in, because that is where flashing and sealant do the hard work. The crack may be harmless. The junction it sits on is the highest-risk detail on the wall. If this crack comes with anything in Pattern 4, treat Pattern 4 as the answer. What that junction is made of, and who repairs it when it fails, is covered on <a href="/stucco-repair-around-windows/">stucco repair around windows and doors</a>.',
     ],
   },
   {
@@ -200,10 +202,19 @@ if (serviceArea) articleSchema.about = serviceArea;
 
   <SiteHeader current="/stucco-crack-triage/" />
 
-  <main>
+  <main id="main">
     {/* HERO */}
     <section class="hero">
-      <div class="wrap">
+      {/*
+        HERO COLUMN ALIGNED 2026-09-02. This used to be a bare `.wrap`
+        (72rem) while every content section below it uses `.wrap narrow`
+        (46rem), so the h1 and the intro paragraph started at two different
+        left edges. The h1 also carried `max-width: 20ch`, which introduced
+        a THIRD edge. Now the hero shares the narrow column with the intro
+        that follows it, matching /blog/why-stucco-cracks-come-back/.
+        Wording, links and functionality unchanged.
+      */}
+      <div class="wrap narrow">
         <p class="eyebrow">A homeowner&rsquo;s guide</p>
         <h1>What your stucco crack is actually telling you</h1>
         <p class="hero-lede">
@@ -451,6 +462,8 @@ if (serviceArea) articleSchema.about = serviceArea;
   </main>
 
   <SiteFooter />
+
+  <MobileStickyBar />
 </Layout>
 
 <style>
@@ -458,7 +471,14 @@ if (serviceArea) articleSchema.about = serviceArea;
   .narrow { width: min(46rem, 92vw); }
   .narrow-p { max-width: 46rem; }
 
-  .hero { padding-block: 3.5rem 2rem; }
+  /* Hero treatment ported from /blog/why-stucco-cracks-come-back/: a
+   * --paper-warm band closed by a hairline, with fluid vertical spacing
+   * that tightens on small screens instead of holding 3.5rem there. */
+  .hero {
+    padding-block: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 3vw, 2rem);
+    background: var(--paper-warm);
+    border-bottom: 1px solid var(--rule);
+  }
   .eyebrow {
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -466,8 +486,22 @@ if (serviceArea) articleSchema.about = serviceArea;
     color: var(--muted, #666);
     margin: 0 0 0.75rem;
   }
-  h1 { font-size: clamp(1.9rem, 4.5vw, 2.9rem); line-height: 1.15; margin: 0 0 1rem; max-width: 20ch; }
-  .hero-lede { font-size: 1.2rem; line-height: 1.6; max-width: 46rem; margin: 0; }
+  /* h1 metrics left to the global rule in Layout.astro, which is what the
+   * reference page uses. The old local clamp() and the `max-width: 20ch`
+   * are gone: the 20ch cap was the third competing alignment edge in this
+   * hero, wrapping the headline well short of the column the copy uses. */
+  h1 { margin: 0 0 1rem; }
+
+  /* Matches the reference .hero-lede: fluid size, --ink-soft, and a 36rem
+   * measure inside the 46rem column so the lede sets slightly narrower
+   * than the headline above it. */
+  .hero-lede {
+    font-size: clamp(1.0625rem, 2.2vw, 1.25rem);
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 36rem;
+    margin: 1rem 0 0;
+  }
 
   .section { padding-block: 2.5rem; }
   .section.alt { background: var(--alt, #f7f6f4); }

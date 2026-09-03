@@ -1,0 +1,476 @@
+---
+/**
+ * /stucco-soffit-and-band-repair/ — service money page.
+ * Unblocked by `verifiedServices.trimBandSoffitRepair` (VERIFIED 2026-08-31:
+ * foam trim, decorative bands, and stucco soffits).
+ *
+ * Target: `stucco soffit repair`, `stucco soffit repair Daytona Beach`,
+ * `soffit and band repair`, `damaged stucco soffit`, `stucco overhang
+ * repair`, `soffit water damage stucco`.
+ * Intent: problem-specific commercial, local.
+ *
+ * ------------------------------------------------------------------
+ * WHY ONE PAGE AND NOT THREE. The client verified three things at once —
+ * foam trim, decorative bands, stucco soffits. They are one crew-day, not
+ * three keyword groups. Splitting test run 2026-08-31 on live SERPs:
+ *
+ *   SOFFITS — passes 3 of 4. Different work (overhead, horizontal, lath,
+ *   ladder access), different buyer state (a sagging or open overhang, not
+ *   a cracked wall), SERP separation (Cirilo Stucco ranks a dedicated
+ *   /soffit-replacement-and-repair URL and is the ONLY specialist result;
+ *   the rest are generic Florida stucco homepages — the split exists and
+ *   nobody local has claimed it), and standalone substance. BUILD.
+ *
+ *   FOAM TRIM / DECORATIVE BANDS — passes 2 of 4. MERGED HERE, NOT BUILT.
+ *   Criterion 3 fails hard: the commercial SERP is entirely MANUFACTURERS
+ *   and SUPPLIERS — stuccofoamtrim.com, Ocala Architectural Foam,
+ *   Decoramould, Warehouse Bay, Castle Group. Nobody sells the repair;
+ *   everybody sells the product. The repair-intent query returns DIY
+ *   forums, YouTube plastering tutorials, and Walmart. That is exactly the
+ *   failure that killed /stucco-crack-repair/ (keyword-plan:706): a page
+ *   there draws traffic it cannot convert. Criterion 1 also fails — a
+ *   cracked foam band is base coat, mesh, finish, texture-match, i.e. the
+ *   same work as a wall patch, performed on a shape.
+ *
+ *   So bands ride INSIDE this page as an H2 + FAQs. They do not get
+ *   co-equal billing, and they do not get a URL. Do NOT create
+ *   /foam-trim-repair/ or /decorative-band-repair/.
+ *
+ * THE OWNABLE ANSWER. Live SERP 2026-08-31: the only page in Florida
+ * written about stucco soffit repair describes the repair procedure. Not
+ * one result tells the homeowner the thing that actually decides their
+ * outcome — that a failed soffit is almost never a soffit problem. It is
+ * the visible end of water that arrived from somewhere else, usually
+ * above. Repairing it without finding that source buys a repeat. That is
+ * the page: the soffit is the symptom, and the sequence matters.
+ *
+ * WHAT WE DO NOT SAY:
+ *   - NO height limit, storey cutoff, lift/scaffold claim, or any statement
+ *     about what we can or cannot reach. UNVERIFIED — never asked. Access
+ *     is discussed ONLY as a cost variable, which the verified
+ *     `pricingDisclaimer` already names ("how hard the area is to reach").
+ *   - NO materials, product names, brands, or fastener/lath specifics.
+ *     `trimBandSoffitRepair: true` confirms the SERVICE. It authorizes no
+ *     claim about method, material, certification, or project history.
+ *   - NO vented/unvented soffit or attic-ventilation engineering claims.
+ *   - NO pest, bird, or wildlife removal claim. We may say an open soffit
+ *     is a way in; we do not offer to deal with what got in.
+ *   - NO roofing, fascia, gutter, or drip-edge work claimed. Those are the
+ *     usual upstream source and belong to the roofing trade.
+ *   - NO thermal-imaging-proves-moisture claim. Brand constraint.
+ *   - NO waterproofing/sealing as a standalone service.
+ *     `standaloneWaterproofing` is FALSE.
+ *   - NO warranty term, license number, or phone. All null in site.ts.
+ *
+ * CANNIBALIZATION CONTROL. This page is about a LOCATION on the building:
+ *   - EIFS-vs-hardcoat identification stays ONLY on /eifs-repair/. The
+ *     "foam" on that page is foam BOARD in a wall assembly — a different
+ *     material doing a different job from decorative foam trim. This page
+ *     must not drift into wall-assembly territory.
+ *   - The general wet-wall case and entry-point survey stay on
+ *     /stucco-water-damage-repair/.
+ *   - The crack-pattern taxonomy stays on /stucco-crack-triage/.
+ *   - The Moisture Check process stays ONLY on /stucco-moisture-testing/.
+ *   - The full price table stays on /stucco-repair/#pricing.
+ *
+ * OMITTED — absent rather than stubbed:
+ *   - [PHOTO SET] — `openWallPhotos` is null. No proof block.
+ * ------------------------------------------------------------------
+ *
+ * VISUAL SYSTEM (redesigned 2026-09-02): migrated from this page's own local
+ * hero/band/FAQ CSS onto the shared Orlando interior-page components -
+ * PageHero, SectionHead, FaqList, Breadcrumbs - and the global utilities in
+ * Layout.astro (.section, .slab, .joint, .grid-hairline, .prose, .on-dark).
+ * COPY, FACTS, PRICING, SCHEMA, URLS, HEADING TEXT, ANCHOR IDS AND INTERNAL
+ * LINKS ARE UNCHANGED by that migration; only the markup carrying them moved.
+ * The page keeps its own argument - a failed soffit is usually not a soffit
+ * problem - and the merged bands-and-foam-trim section stays merged here
+ * rather than becoming its own URL. NOT homogenized toward the other repair
+ * pages. Do not re-add a local hero or band rule here.
+ */
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import MobileStickyBar from '../../components/MobileStickyBar.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import FaqList from '../../components/FaqList.astro';
+import {
+  business,
+  serviceArea,
+  repairPriceRanges,
+  pricingDisclaimer,
+} from '../../config/site';
+
+const title =
+  'Stucco Soffit & Band Repair | Damaged Overhangs | Daytona Beach';
+const description =
+  'Cracked, sagging, or open stucco soffits and decorative bands in Volusia County. Why a failed soffit is usually not a soffit problem, and what to check before repairing it.';
+
+const usd = (n: number) => '$' + n.toLocaleString('en-US');
+
+const crackRange = repairPriceRanges.find((r) => r.job === 'Minor crack repair');
+const patchRange = repairPriceRanges.find(
+  (r) => r.job === 'Small patch or hole repair',
+);
+const waterRange = repairPriceRanges.find(
+  (r) => r.job === 'Water-damaged stucco repair',
+);
+
+/**
+ * The ownable answer. Every competing page describes the repair. None
+ * explains that the soffit is where the damage SHOWS, not where it starts.
+ */
+const sources = [
+  {
+    where: 'From above, off the roof edge',
+    body: 'The most common by a distance. Water off the roof that is not carried away cleanly runs back along the underside instead of dropping clear. The soffit is just the first thing it touches. Nothing is wrong with it at all.',
+  },
+  {
+    where: 'From the wall, running down',
+    body: 'Water getting in higher up travels down inside the assembly and arrives at the overhang, because that is where it runs out of wall. The staining shows at the bottom; the entry point is well above it.',
+  },
+  {
+    where: 'From the soffit itself',
+    body: 'A crack, an old patch that opened, or an impact hole letting water straight into a surface that cannot shed it. This is the case where repairing the soffit is the whole job, and the least common of the three.',
+  },
+];
+
+/** Why overhead stucco behaves differently from a wall. */
+const reasons = [
+  {
+    title: 'It is horizontal',
+    body: 'A wall sheds water. A soffit does not. Anything reaching the underside sits there and works in, so a defect that would be cosmetic on a wall is an active leak overhead.',
+  },
+  {
+    title: 'Gravity works against the repair',
+    body: 'Material has to bond and hold overhead while it cures. Slower work than the same square footage on a wall, and where quick patches fail first.',
+  },
+  {
+    title: 'Once it opens, it is a way in',
+    body: 'A hole in a wall is a hole. A hole in a soffit is an opening into the space behind it &mdash; dry, sheltered, and immediately attractive to anything looking for exactly that.',
+  },
+  {
+    title: 'You never see it',
+    body: 'Nobody looks up at their own overhangs. Soffit damage is routinely years old by the time anyone notices, which is why it is so often wetter behind than it looked.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Why is my stucco soffit cracking or falling when the walls are fine?',
+    a: 'Because a soffit is horizontal and a wall is not. Walls shed water; an overhang holds whatever reaches it. Add that most soffit damage is fed by water arriving from above, and it is normal for the underside to fail while the wall beside it still looks sound.',
+  },
+  {
+    q: 'Can a stucco soffit be patched, or does the whole thing come down?',
+    a: 'It depends on what is behind it. If the damage is limited and the material behind it is sound, it is a patch: cut back to solid, rebuild, texture to match. If water has sat up there long enough that what supports the stucco has gone soft, patching the surface only hides it.',
+  },
+  {
+    q: 'There is a hole in my soffit and something is getting in. Can you close it?',
+    a: 'We repair the stucco, which closes the opening. What we do not do is deal with whatever has already moved in behind it, and sealing an opening with something still inside causes a worse problem than the hole. Any sign of activity gets handled first, by someone who does that work.',
+  },
+  {
+    q: 'What are the decorative bands on my house, and can they be repaired?',
+    a: 'The raised horizontal strips running across the wall, usually between floors or around windows, are typically a shaped foam core with a coating over it &mdash; decorative rather than structural. When one cracks or breaks away, it is repaired like any other stucco damage: cut back to sound material, rebuild the profile, texture to match.',
+  },
+  {
+    q: 'A section of my foam trim broke off. Is that a structural problem?',
+    a: 'No &mdash; the trim is not holding anything up. It matters for two other reasons: it is a visible break in the finish on the front of the house, and it is an open edge where water can get behind a coating meant to be continuous. Neither is urgent the way a wet wall is, and neither improves on its own.',
+  },
+  {
+    q: 'Do you repair the roof or gutters if that is where the water is coming from?',
+    a: 'No. If the water reaching your soffit is coming off the roof edge, that is roofing work, and we would tell you rather than repair the soffit and leave the cause running. Better said up front than have you pay twice for the same overhang.',
+  },
+];
+
+const serviceSchema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Stucco soffit and band repair',
+  serviceType: 'Stucco soffit and band repair',
+  description:
+    'Repair of cracked, damaged, and water-affected stucco soffits, decorative bands, and foam trim on residential exteriors. Damaged material is cut back to sound material, rebuilt, and matched to the existing finish.',
+  provider: { '@type': 'LocalBusiness', name: business.name },
+};
+if (serviceArea) serviceSchema.areaServed = serviceArea;
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <SiteHeader current="/stucco-soffit-and-band-repair/" />
+
+  <main id="main">
+    {/*
+      HERO. Dark PageHero with ContactCta in the aside slot - the money-page
+      arrangement PageHero's own doc block describes. Eyebrow, h1 and lede are
+      the same three strings the old local hero rendered. Breadcrumbs are new
+      markup only and emit BreadcrumbList schema from Breadcrumbs.astro.
+      No `actions` array: the aside CTA is the conversion affordance here.
+    */}
+    <PageHero
+      crumbs={[
+        { href: '/services/', label: 'Services' },
+        { href: '/stucco-soffit-and-band-repair/', label: 'Soffit and band' },
+      ]}
+      eyebrow="Stucco repair · Daytona Beach & Volusia County"
+      title="Stucco soffit and band repair"
+      lede="Cracked, stained, sagging, or open overhangs, and the decorative bands and foam trim across the front of the house. Before any of it gets repaired, the useful question is where the water came from — because a soffit is usually not where the problem started."
+      actions={[
+        { href: '/contact/', label: 'Request an estimate' },
+        { href: '/problems/water-stains-on-stucco/', label: 'Tracing a water stain', variant: 'secondary' },
+      ]}
+    >
+      <LeadForm />
+    </PageHero>
+
+    {/* WHY OVERHEAD IS DIFFERENT */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Overhead is different"
+          title="Why soffits fail differently from walls"
+          lede="Overhead stucco is the same material doing a harder job. Four things make the underside behave unlike any wall."
+        />
+
+        {/*
+          Four descriptive cells, not links - each is a reason, not a route.
+          Plain .grid-hairline rather than the .card-link variant.
+        */}
+        <div class="grid-hairline cols-2 entries">
+          {reasons.map((r) => (
+            <div class="entry">
+              <h3>{r.title}</h3>
+              <p>{r.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* THE OWNABLE ANSWER */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Where it starts"
+          title="A failed soffit is usually not a soffit problem"
+          lede="This is the part that decides whether your repair lasts, and the part nobody writing about soffit repair mentions. Water shows up at the overhang because that is the lowest point it reaches, not because that is where it got in. It comes from three places."
+        />
+
+        <div class="grid-hairline cols-3 entries">
+          {sources.map((s) => (
+            <div class="entry">
+              <h3>{s.where}</h3>
+              <p>{s.body}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="caveat">
+          <p>
+            Which means the order matters more than the repair does.{' '}
+            <strong>
+              Rebuilding a soffit while water is still arriving from above
+              produces a repair that looks right and fails in the same spot,
+              and the second failure is always worse than the first
+            </strong>{' '}
+            &mdash; the material behind it has had another season to get
+            wet. If the source is roofing, we will say so.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* WHAT THE WORK IS */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Scope"
+          title="What the repair involves"
+          lede="Damaged stucco is cut back to material still solidly attached, rebuilt, and textured to match what is there — the same work we do on a wall. Overhead it is slower, because the repair has to hold while it sets and the area has to be reached safely at all."
+        />
+        <div class="prose">
+        <p>
+          What matters before we start is how far the damage goes. Cutting
+          into a soffit and finding it wet well past the visible edge is
+          common, and much better known while pricing the job than halfway
+          through it.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* BANDS AND FOAM TRIM — merged, not a separate URL */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Bands and trim"
+          title="Decorative bands and foam trim"
+          lede="The raised strips between floors, and the shaped trim around windows and doors, are usually a foam core with a coating over it. Appearance rather than structure, and repaired on the same visit as the soffit above them."
+        />
+        <div class="prose">
+        <p>
+          Two things go wrong with them. They crack, generally where one
+          length meets another or turns a corner. And sections break away
+          from impact, ladders, or age. Neither threatens the building. Both
+          are on the front of the house where everyone sees them.
+        </p>
+        </div>
+        <div class="caveat">
+          <p>
+            Repairing a band is a matching problem more than a strength
+            problem. The profile has to be rebuilt to the same shape and
+            depth as the run either side of it, or it reads as a repair from
+            the street for as long as the house stands.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* DIAGNOSIS HANDOFF */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="A paid diagnostic service"
+          title="When it is worth testing first"
+        />
+        <div class="prose">
+        <p>
+          Staining across a soffit, a hollow-sounding section, or an
+          overhang repaired here before that failed again all point the same
+          way: the question is no longer where the damage is, it is how far
+          the water went. That is what a{' '}
+          <a href="/stucco-moisture-testing/">Stucco Moisture Check</a>{' '}
+          is for, and on overhead work it is the difference between pricing
+          a patch and pricing the real job.
+        </p>
+        <p>
+          If the water turns out to have come from the wall above rather
+          than the roof edge, that is a finding too. More on the general
+          case on{' '}
+          <a href="/stucco-water-damage-repair/">stucco water damage repair</a>.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* COST */}
+    <section class="section" id="cost">
+      <div class="wrap">
+        <SectionHead eyebrow="Cost" title="What it costs" />
+        {crackRange && patchRange && waterRange ? (
+          <>
+            <p class="price">
+              Most soffit and band work is small by area. Limited cracking
+              in sound material runs roughly{' '}
+              <strong>
+                {usd(crackRange.low)}&ndash;{usd(crackRange.high)}
+              </strong>
+              , a damaged section or a failed previous patch roughly{' '}
+              <strong>
+                {usd(patchRange.low)}&ndash;{usd(patchRange.high)}
+              </strong>
+              , and a repair where water has already gotten in behind the
+              finish roughly{' '}
+              <strong>
+                {usd(waterRange.low)}&ndash;{usd(waterRange.high)}
+              </strong>
+              .
+            </p>
+            <p class="cost-note">
+              Two things move the number on overhead work: how hard the
+              area is to reach, a real share of the cost on a small job, and
+              how far the damage runs once opened up, which nobody can price
+              from the ground. Full ranges are on{' '}
+              <a href="/stucco-repair/#pricing">the repair pricing page</a>.
+            </p>
+            <p class="disclaimer">{pricingDisclaimer}</p>
+          </>
+        ) : (
+          <p class="price">
+            Soffit and band repairs are small by area but harder to reach
+            than a wall, and access is a real share of the cost on a small
+            job.
+          </p>
+        )}
+      </div>
+    </section>
+
+    {/*
+      FAQ. The shared FaqList accordion, fed the SAME `faqs` array that builds
+      the FAQPage schema above - one source, so an answer can never drift from
+      its markup. FaqList deliberately emits no schema of its own (see its doc
+      block); the page keeps ownership of that.
+    */}
+    <section class="section slab joint" id="faq" aria-labelledby="faq-head">
+      <div class="wrap">
+        <SectionHead id="faq-head" eyebrow="FAQ" title="Frequently asked questions" />
+        <FaqList items={faqs} />
+      </div>
+    </section>
+
+    <section class="section on-dark">
+      <div class="wrap">
+        <ContactCta heading="Tell us what the soffit is doing" />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  /*
+   * PAGE-SPECIFIC ONLY. The hero, bands, section heads, prose column, card
+   * grid, FAQ rows and breadcrumbs come from the shared components and the
+   * global utilities in Layout.astro; those rules were deleted here rather
+   * than duplicated. What remains is this page's own furniture: the reason
+   * and water-source cells, the three flag-ruled asides, and the price line.
+   */
+
+  /* --- Cells: why overhead differs, and the three water sources --------- */
+  .entry h3 { margin: 0 0 0.5rem; font-size: 1.0625rem; }
+  .entry p { margin: 0; color: var(--ink-soft); }
+
+  /* --- The order-matters, band-matching and scope asides ---------------- */
+  .caveat {
+    border-left: 3px solid var(--flag);
+    padding-left: 1.25rem;
+    max-width: 60ch;
+  }
+  .caveat p { margin: 0; color: var(--ink-soft); }
+
+  /* --- Price line and its disclaimer ------------------------------------ */
+  .price {
+    font-family: var(--font-display);
+    font-size: clamp(1.125rem, 2.4vw, 1.375rem);
+    line-height: 1.45;
+    max-width: 52ch;
+  }
+  .price strong { color: var(--accent); }
+
+  .cost-note { color: var(--ink-soft); max-width: 60ch; }
+
+  .disclaimer {
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+    max-width: 60ch;
+    border-left: 3px solid var(--rule);
+    padding-left: 1.25rem;
+  }
+</style>

@@ -28,7 +28,19 @@ export default defineConfig({
   // Deploy with `npm run deploy`. Worker name and compatibility date come from
   // the root wrangler.jsonc; see that file for the RESEND_API_KEY secret
   // requirement.
-  adapter: cloudflare(),
+  // IMAGE OPTIMIZATION MUST BE PREBUILT, NOT ON-DEMAND.
+  //
+  // Left to itself this adapter installs its workerd image service, which
+  // rewrites every <Image> to a /_image?href=... endpoint and transforms on
+  // request. This site is output: 'static', so that route is never emitted -
+  // `grep -c _image dist/server/entry.mjs` returns 0 - and every image 404s
+  // in production while the built HTML looks perfectly correct. Verified
+  // 2026-09-02, and it is a silent failure, so do not remove this option.
+  //
+  // 'compile' runs sharp at BUILD time instead: real .webp variants land in
+  // dist/client/_astro/ and the srcset points at files. Setting Astro's
+  // top-level `image.service` does NOT work - the adapter overrides it.
+  adapter: cloudflare({ imageService: 'compile' }),
 
   redirects: {
     // Consolidated into /stucco-repair/ on 2026-08-28 by client direction.

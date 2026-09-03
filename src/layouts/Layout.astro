@@ -1,4 +1,8 @@
 ---
+import '@fontsource-variable/archivo';
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/500.css';
+import '@fontsource/ibm-plex-mono/500.css';
 import { business } from '../config/site';
 
 interface Props {
@@ -11,9 +15,15 @@ interface Props {
    * redirect is the stronger and less ambiguous signal.
    */
   canonicalPath?: string;
+  /**
+   * Emit `noindex` instead of `index`. Added 2026-09-01 for /404.astro —
+   * an error page must not enter the index. Defaults to false, so every
+   * existing page renders exactly as before.
+   */
+  noindex?: boolean;
 }
 
-const { title, description, canonicalPath } = Astro.props;
+const { title, description, canonicalPath, noindex = false } = Astro.props;
 
 /**
  * Self-referencing canonical.
@@ -48,7 +58,10 @@ const canonical =
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="robots" content="index, follow" />
+    <meta
+      name="robots"
+      content={noindex ? 'noindex, follow' : 'index, follow'}
+    />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
@@ -61,19 +74,76 @@ const canonical =
 
 <style is:global>
   :root {
-    --ink: #1a1d1f;
-    --ink-soft: #4a5157;
-    --ink-faint: #6b7378;
-    --rule: #e2e0dc;
+    /* ------------------------------------------------------------------
+     * Palette — ported from the Orlando Concrete Contractors design.
+     *
+     * The system is a light/dark SPLIT, not a dark theme. Dark bands
+     * (header, hero, footer, final CTA) sit on --shell; the content
+     * between them sits on --paper so long-form copy stays readable.
+     * Use the .on-dark class to flip a band's token values.
+     * ------------------------------------------------------------------ */
+
+    /* Dark band — zinc-900 */
+    --shell: #18181b;
+    --shell-ink: #e7e5e4;      /* stone-200  */
+    --shell-ink-soft: #a3a3a3; /* neutral-400 */
+    --shell-rule: #27272a;     /* zinc-800   */
+
+    /* Light content */
     --paper: #ffffff;
-    --paper-warm: #f7f5f1;
-    --sand: #efe9df;
-    --accent: #1f4e5f;
-    --accent-deep: #163a47;
-    --flag: #8a5a2b;
+    --paper-warm: #e7e5e4;     /* stone-200 — panel ground */
+    --sand: #d6d3d1;           /* stone-300 — alt panel     */
+    --rule: #a8a29e;           /* stone-400 — hairline grid */
+
+    --ink: #18181b;
+    --ink-soft: #52525b;       /* zinc-600 */
+    --ink-faint: #71717a;      /* zinc-500 */
+
+    /* Accent — orange-700, hover amber-700 */
+    --accent: #c2410c;
+    --accent-deep: #b45309;
+    --accent-ink: #ffffff;
+
+    /* CTA — deep professional red, DELIBERATELY SEPARATE from --accent.
+     * Buttons only. --accent still owns body links, list markers, the
+     * eyebrow rule and the ContactCta panel ground; repointing --accent
+     * itself would repaint all of those, which is not what was asked.
+     * Change these two values to retune the buttons site-wide. */
+    --cta: #9b1c1c;
+    --cta-deep: #7f1d1d;
+    --cta-ink: #ffffff;
+
+    /* Semantic verdict scale — crack triage severity.
+     * Preserved deliberately. These are NOT decorative and must never be
+     * swapped for a saturated traffic-light palette. They read correctly
+     * only on light grounds, which is why triage panels stay light. */
+    --verdict-watch: #7a9a7e;  /* sage — monitor  */
+    --verdict-look: #c08a3e;   /* amber — inspect */
+    --verdict-act: #b4543a;    /* rust — act now  */
+    --flag: var(--verdict-look);
+
+    /* Type */
+    --font-display: 'Archivo Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --font-body: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
     --measure: 34rem;
     --gutter: clamp(1.25rem, 5vw, 2.5rem);
     --section-y: clamp(3rem, 8vw, 5.5rem);
+  }
+
+  /* Dark band. Rebinds the light tokens so any component nested inside
+   * renders correctly without needing its own dark variant. */
+  .on-dark {
+    --paper: var(--shell);
+    --paper-warm: var(--shell);
+    --sand: #27272a;
+    --rule: var(--shell-rule);
+    --ink: var(--shell-ink);
+    --ink-soft: var(--shell-ink-soft);
+    --ink-faint: var(--shell-ink-soft);
+    background: var(--shell);
+    color: var(--shell-ink);
   }
 
   * { box-sizing: border-box; }
@@ -84,26 +154,60 @@ const canonical =
     margin: 0;
     background: var(--paper);
     color: var(--ink);
-    font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: var(--font-body);
     font-size: 1.0625rem;
-    line-height: 1.6;
+    line-height: 1.62;
     -webkit-font-smoothing: antialiased;
   }
 
-  h1, h2, h3 {
-    line-height: 1.15;
-    letter-spacing: -0.02em;
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1.06;
     margin: 0 0 0.75rem;
     text-wrap: balance;
   }
 
-  h1 { font-size: clamp(2rem, 6vw, 3.25rem); }
-  h2 { font-size: clamp(1.5rem, 4vw, 2.125rem); }
-  h3 { font-size: clamp(1.125rem, 2.5vw, 1.3125rem); }
+  /* Orlando's scale: 34->56px h1, 31->50px h2, with tracking tightening
+   * as size grows (-1.156px at 34px, -1.904px at 56px). */
+  h1 {
+    font-size: clamp(2.125rem, 5.2vw, 3.5rem);
+    letter-spacing: -0.034em;
+    line-height: 1.04;
+  }
+
+  h2 {
+    font-size: clamp(1.9375rem, 4.4vw, 3.125rem);
+    letter-spacing: -0.028em;
+    line-height: 1.18;
+  }
+
+  h3 {
+    font-size: clamp(1.1875rem, 1.6vw, 1.25rem);
+    font-weight: 700;
+    letter-spacing: -0.018em;
+    line-height: 1.18;
+  }
+
+  h4 {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+
+  /* Section lede — Orlando 19.105 -> 23px */
+  .lede {
+    font-size: clamp(1.1875rem, 1.8vw, 1.4375rem);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 52rem;
+  }
 
   p { margin: 0 0 1.125rem; max-width: var(--measure); }
 
   a { color: var(--accent); }
+
+  .on-dark a { color: var(--shell-ink); }
 
   strong { font-weight: 650; }
 
@@ -116,13 +220,404 @@ const canonical =
 
   .section { padding-block: var(--section-y); }
 
+  /* Mono eyebrow with a 28x2px accent rule — the signature section marker. */
   .eyebrow {
-    font-size: 0.75rem;
-    letter-spacing: 0.11em;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--ink-faint);
-    font-weight: 600;
+    font-weight: 500;
     margin: 0 0 0.875rem;
+  }
+
+  .eyebrow::before {
+    content: '';
+    flex: 0 0 auto;
+    width: 1.75rem;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  /* Mono meta/label text with no rule. */
+  .meta {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--ink-faint);
+  }
+
+  /* --- Buttons -------------------------------------------------------
+   * Square geometry (2px radius), 2px border, min 56px tall. The pair is
+   * solid accent primary + outlined secondary. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+    min-height: 3.5rem;
+    padding: 1.0625rem 2rem;
+    border-radius: 2px;
+    border: 2px solid transparent;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+  }
+
+  .btn-primary {
+    background: var(--cta);
+    border-color: var(--cta);
+    color: var(--cta-ink);
+  }
+
+  .btn-primary:hover {
+    background: var(--cta-deep);
+    border-color: var(--cta-deep);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border-color: var(--rule);
+    color: var(--ink);
+  }
+
+  .btn-secondary:hover {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+
+  .on-dark .btn-secondary {
+    border-color: #737373;
+    color: var(--shell-ink);
+  }
+
+  .on-dark .btn-secondary:hover {
+    background: var(--shell-ink);
+    border-color: var(--shell-ink);
+    color: var(--shell);
+  }
+
+  /* --- Hairline grid --------------------------------------------------
+   * A 1px rule between cells with no borders.
+   *
+   * THE SEAMS ARE DRAWN BY THE CELLS, NOT BY THE CONTAINER. This used to
+   * work the other way round: the container painted --rule, a 1px gap let it
+   * show through, and each cell painted --paper-warm on top. That is the
+   * usual trick and it has one bug, which shipped on 16 pages. When the item
+   * count does not divide evenly by the column count, CSS Grid still
+   * reserves the trailing track. No cell paints it, so the container's rule
+   * colour showed through at full cell size and rendered as a FAKE EMPTY
+   * BROWN CARD. Fixed 2026-09-02.
+   *
+   * Now the container is transparent and each cell draws its own hairlines
+   * with an outset box-shadow, which costs no layout space and so cannot
+   * shift the grid. A reserved-but-empty track contains no cell, therefore
+   * paints nothing, therefore disappears - at every breakpoint and for any
+   * item count, including the .cols-* collapses at 62rem and 34rem.
+   *
+   * Cells are still free to set their own `background` (the homepage does,
+   * with --sand and --paper); the rules do not depend on the cell ground.
+   * Do NOT restore `background`/`border` on the container - that is exactly
+   * the bug. Adding filler cells is not a fix either: it invents content and
+   * breaks again at the next breakpoint. */
+  .grid-hairline {
+    display: grid;
+    gap: 1px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    /* Clip the outermost cells' shadows so the grid keeps a clean edge
+     * without the container drawing a border of its own. */
+    overflow: hidden;
+    /* The outer frame the container border used to provide. Drawn as a
+     * shadow so it, too, occupies no layout space. */
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  .grid-hairline > * {
+    background: var(--paper-warm);
+    margin: 0;
+    /* Each cell paints the 1px seam on all four sides. Neighbours overlap
+     * into the same gap, and the container clips the outer overhang. */
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  /* --- Interior-page system (2026-09-01) -------------------------------
+   * Ported from the Orlando Concrete Contractors interior pages, which are
+   * themselves an Astro site using this same vocabulary. These are the
+   * shared utilities the per-page <style> blocks were each re-declaring.
+   * ------------------------------------------------------------------- */
+
+  /* Alternate light ground. The reference alternates --slab / --slab-2 down
+   * the page so adjacent sections separate without a rule. Equivalent to the
+   * `.band` class the interior pages already use locally; kept under both
+   * names so existing pages keep working while they migrate. */
+  .slab,
+  .band { background: var(--paper-warm); }
+
+  /* Hairline seam at a section boundary, with a 1px highlight below it —
+   * the reference's `.joint`. Use where two sections share a ground color
+   * and would otherwise run together. */
+  .joint {
+    border-top: 1px solid var(--rule);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  }
+
+  .on-dark .joint {
+    border-top-color: #000;
+    box-shadow: inset 0 1px 0 var(--shell-rule);
+  }
+
+  /* Column counts for .grid-hairline. Collapse at the reference's
+   * breakpoints: 3/4-up drop to 2 under 62rem, everything to 1 under 34rem. */
+  .cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+  @media (max-width: 62rem) {
+    .cols-3,
+    .cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 34rem) {
+    .cols-2,
+    .cols-3,
+    .cols-4 { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  /* --- Short final row: let the last cards absorb the leftover width ----
+   * Added 2026-09-02, after the hairline-grid fix.
+   *
+   * Fixing the fake-empty-box bug made an unused trailing track invisible,
+   * which was correct but left a visibly short final row - three cards in a
+   * two-up grid ended with one card and a hole. These rules make the last
+   * real card(s) span the remainder instead, so an incomplete row reads as
+   * deliberate.
+   *
+   * The count is detected in pure CSS. `li:nth-child(2n+1):nth-last-child(1)`
+   * is true only of a cell that is BOTH in an odd position and the last one -
+   * i.e. the orphan of a two-up grid. The same trick, with 3n and the two
+   * last-child offsets, covers the three-up cases. Nothing is added to the
+   * markup and no content is invented: the existing cards simply get wider.
+   *
+   * Each block is scoped to the breakpoint where that column count is
+   * actually in force, because .cols-3/.cols-4 collapse to two-up under
+   * 62rem and to one-up under 34rem. Below 34rem every grid is single
+   * column, so no rule applies and nothing spans. */
+
+  /* TWO-UP. Applies to .cols-2 at every width above the 1-col collapse, and
+   * to .cols-3/.cols-4 only in the 34-62rem band where they are two-up. */
+  @media (min-width: 34.0625rem) {
+    .cols-2 > :nth-child(2n + 1):nth-last-child(1) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (min-width: 34.0625rem) and (max-width: 62rem) {
+    .cols-3 > :nth-child(2n + 1):nth-last-child(1),
+    .cols-4 > :nth-child(2n + 1):nth-last-child(1) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* THREE-UP, above the 62rem collapse only.
+   * Remainder 1: the single orphan spans all three tracks.
+   * Remainder 2: the final pair splits the row, so neither is left narrow
+   * beside a gap. */
+  @media (min-width: 62.0625rem) {
+    .cols-3 > :nth-child(3n + 1):nth-last-child(1) {
+      grid-column: 1 / -1;
+    }
+
+    .cols-3 > :nth-child(3n + 1):nth-last-child(2) {
+      grid-column: span 2;
+    }
+  }
+
+  /* FOUR-UP, above the 62rem collapse only.
+   * Remainder 1: the orphan spans all four tracks.
+   * Remainder 2: the final pair takes two tracks each.
+   * Remainder 3 is deliberately NOT rebalanced - four tracks do not divide
+   * into three without fractional spans, and the least-bad option (leaving
+   * one track short) is what the browser already does. No grid on this site
+   * currently hits that case; if one ever does, the honest fix is to change
+   * the item count, not to fake a span. */
+  @media (min-width: 62.0625rem) {
+    .cols-4 > :nth-child(4n + 1):nth-last-child(1) {
+      grid-column: 1 / -1;
+    }
+
+    .cols-4 > :nth-child(4n + 1):nth-last-child(2),
+    .cols-4 > :nth-child(4n + 2):nth-last-child(1) {
+      grid-column: span 2;
+    }
+  }
+
+  /* --- Breadcrumbs (styled globally so PageHero can restyle its own) --- */
+  .crumbs { padding-block: 1rem; }
+
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+  }
+
+  .crumbs li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .crumbs a {
+    padding-block: 0.25rem;
+    color: var(--ink-soft);
+    text-decoration: underline;
+    text-decoration-color: var(--rule);
+    text-underline-offset: 0.2em;
+  }
+
+  .crumbs a:hover {
+    color: var(--ink);
+    text-decoration-color: currentColor;
+  }
+
+  .crumbs [aria-current='page'] { color: var(--ink); }
+
+  .crumbs .sep { color: var(--rule); }
+
+  .on-dark .crumbs a { color: var(--shell-ink-soft); text-decoration-color: #4a4f53; }
+  .on-dark .crumbs a:hover,
+  .on-dark .crumbs [aria-current='page'] { color: var(--shell-ink); }
+  .on-dark .crumbs .sep { color: #4a4f53; }
+
+  /* --- Long-form prose -------------------------------------------------
+   * The reference's `.body`: a readable column with list markers in the
+   * accent, underlined links, and vertical rhythm from a single owl rule.
+   * Wrap a run of narrative paragraphs in it; it does nothing to headings
+   * outside itself. */
+  .prose {
+    max-width: 68ch;
+    color: var(--ink-soft);
+  }
+
+  .prose > * + * { margin-top: 1.5rem; }
+
+  .prose p { margin-bottom: 0; max-width: none; }
+
+  .prose h3 { margin-top: 2.75rem; margin-bottom: 0; }
+
+  .prose h4 { margin-top: 2rem; margin-bottom: 0; }
+
+  .prose ul,
+  .prose ol {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 0;
+    padding-left: 1.5rem;
+  }
+
+  .prose li { list-style: outside; }
+
+  .prose ol li { list-style: decimal; }
+
+  .prose li::marker { color: var(--accent); }
+
+  .prose strong { color: var(--ink); font-weight: 650; }
+
+  .prose a {
+    text-decoration: underline;
+    text-decoration-color: var(--rule);
+    text-underline-offset: 0.15em;
+  }
+
+  .prose a:hover { text-decoration-color: currentColor; }
+
+  /* --- Card link -------------------------------------------------------
+   * A cell inside .grid-hairline that is itself a link, with the accent bar
+   * that wipes across the top edge on hover. Matches the homepage cards, so
+   * service and problem indexes read as the same object. */
+  .card-link {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 2rem;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .card-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background: var(--accent);
+    transition: width 180ms ease;
+  }
+
+  .card-link:hover::before { width: 100%; }
+
+  .card-link h3 { margin: 0; }
+
+  .card-link p {
+    margin: 0;
+    max-width: 54ch;
+    color: var(--ink-soft);
+  }
+
+  .card-link .card-go {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* --- Inline arrow link ----------------------------------------------- */
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: border-color 180ms ease;
+  }
+
+  .link-arrow:hover { border-bottom-color: currentColor; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-link::before,
+    .link-arrow { transition: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn { transition: none; }
   }
 
   @media (prefers-reduced-motion: reduce) {

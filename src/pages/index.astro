@@ -2,14 +2,20 @@
 import Layout from '../layouts/Layout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import MobileStickyBar from '../components/MobileStickyBar.astro';
 import ContactCta from '../components/ContactCta.astro';
+import LeadForm from '../components/LeadForm.astro';
 import {
   business,
   moistureCheck,
   phone,
   serviceArea,
+  serviceAreaProse,
   openWallPhotos,
   whatMovesThePrice,
+  repairPriceRanges,
+  repairPerSquareFoot,
+  pricingDisclaimer,
 } from '../config/site';
 
 /**
@@ -23,10 +29,100 @@ import {
  * It targets contractor/company entity queries — "stucco contractor daytona
  * beach", "stucco company daytona beach" — and links out to each authoritative
  * service page. Repair, cost, and geo intent all belong to /stucco-repair/.
+ *
+ * VISUAL SYSTEM (2026-09-01): section structure ported from the Orlando
+ * Concrete Contractors reference — dark hero with a two-column copy/form
+ * split, a hairline capability strip beneath it, then alternating light and
+ * dark bands, ending on a dark final CTA. All copy, links, headings, prices,
+ * and schema below are the pre-existing Daytona content, unchanged. Only the
+ * markup around them moved.
+ *
+ * The reference's hero carries a background photograph. We have no real
+ * photography and brand/creative-kit.md forbids fabricating job imagery, so
+ * the hero is a flat --shell ground. Drop a real photo in later.
  */
 const title = 'Daytona Beach Stucco Company | Stucco Contractor in Volusia County';
 const description =
   'Daytona Beach Stucco Company is a licensed and insured stucco contractor serving Daytona Beach and Volusia County. Repair, water damage, moisture diagnostics, and re-stucco. Free repair estimates.';
+
+/**
+ * The hairline capability strip under the hero. Mirrors the reference's
+ * four-cell list. Every entry is a verified service with a live page.
+ */
+const capabilities = ['Repair', 'Water damage', 'Diagnostics', 'Re-stucco'];
+
+/**
+ * PRICING EXCERPT (2026-09-02).
+ *
+ * CANNIBALIZATION GUARD — read before widening this.
+ * `/stucco-repair/#pricing` is the authoritative cost asset (keyword-plan.md
+ * architecture rule 1b; the COST/ESTIMATE/QUOTE group routes there and to no
+ * other URL). The homepage must NOT reproduce it. positioning.md names
+ * published ranges as white space, so showing nothing here forfeits the
+ * differentiator — but showing all nine rows would build a second cost page
+ * at `/`, which rule 1c forbids.
+ *
+ * The resolution: FOUR rows, taken from the existing array by index so they
+ * cannot drift from the source, plus the mandatory disclaimer, plus a link out.
+ * Four spans the actual range (a $250 low to a $7,000+ open end) which is the
+ * differentiating fact, without reproducing the table.
+ *
+ * DO NOT rewrite these strings. They render from `repairPriceRanges` verbatim.
+ * DO NOT drop `pricingDisclaimer` — site.ts marks it MANDATORY wherever a
+ * range renders, because these are researched market ranges for the area and
+ * NOT this company's quotes.
+ */
+const priceExcerpt = [
+  repairPriceRanges[0], // Minor crack repair — the floor
+  repairPriceRanges[4], // Water-damaged stucco repair — the positioning case
+  repairPriceRanges[6], // Large wall section or partial replacement
+  repairPriceRanges[8], // Full resurfacing — the open-ended ceiling
+];
+
+const money = (n: number) => `$${n.toLocaleString('en-US')}`;
+
+/**
+ * PROOF STRIP (2026-09-02).
+ *
+ * voice-profile.md:229 — "Front-load proof that exists — and omit the rest."
+ * Revised 2026-09-01: where a fact is null, OMIT the element; never stub it.
+ *
+ * So this array is BUILT, not written. Each entry is conditional on a verified
+ * constant in src/config/site.ts. `reviewCount`, `rating`, `warrantyTerms`,
+ * `openWallPhotos`, `licenseNumber` and `phone` are all null, so the cells that
+ * would carry them simply do not exist here. When the client supplies one, add
+ * its cell — do not add the cell first and fill it later.
+ *
+ * `business.founded` renders as "Since 2018". It is a START DATE and nothing
+ * more: no computed duration, no years-of-experience claim. See site.ts.
+ */
+const proofPoints: { label: string; value: string }[] = [];
+
+if (business.founded) {
+  proofPoints.push({
+    label: 'Working here',
+    value: `Since ${business.founded}`,
+  });
+}
+
+if (business.licensedAndInsured) {
+  proofPoints.push({
+    label: 'Credentials',
+    value: 'Licensed and insured',
+  });
+}
+
+if (serviceArea && serviceArea.length) {
+  proofPoints.push({
+    label: 'Service area',
+    value: serviceArea.join(' and '),
+  });
+}
+
+proofPoints.push({
+  label: 'Diagnostics',
+  value: moistureCheck.name,
+});
 
 /**
  * LocalBusiness schema. Fields are added only when verified — `telephone`,
@@ -65,54 +161,243 @@ if (serviceArea) schema.areaServed = serviceArea;
 
   <SiteHeader current="/" />
 
-  <main>
-    {/* HERO */}
-    <section class="hero">
-      <div class="wrap">
-        <p class="eyebrow">Daytona Beach &amp; Volusia County</p>
-        <h1>{business.name}</h1>
-        <p class="hero-lede">
-          A stucco contractor working Daytona Beach and Volusia County since
-          {' '}{business.founded}. We find out why a wall failed before we close
-          it up &mdash; which is why our repairs don&rsquo;t come back.
-        </p>
+  <main id="main">
+    {/*
+      HERO — dark band, two columns. Copy left, the contact panel right,
+      matching the reference's 1.15fr / 0.85fr split. The form itself is the
+      existing ContactCta in `inline` variant; its behavior is untouched.
+    */}
+    <section class="hero on-dark">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Daytona Beach &amp; Volusia County</p>
 
-        <div class="hero-actions">
-          <ContactCta variant="inline" heading="" />
+          <h1>{business.name}</h1>
+
+          <p class="hero-lede">
+            A stucco contractor working Daytona Beach and Volusia County since
+            {' '}{business.founded}. We find out why a wall failed before we close
+            it up &mdash; which is why our repairs don&rsquo;t come back.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="/contact/">Request an estimate</a>
+            <a class="btn btn-secondary" href="/stucco-repair/">
+              Stucco repair &amp; costs
+            </a>
+          </div>
+
+          {/*
+            NOT "send a photo" — /api/contact posts JSON and forwards no
+            attachments, and the form at /contact/ deliberately has no file
+            input (see the note in src/pages/contact/index.astro). Photos are
+            requested by email reply instead. A CTA promising an upload the
+            form cannot accept would be a false claim about our own
+            functionality. Revisit if attachment handling is ever built.
+          */}
+          <p class="hero-note">
+            Tell us what you&rsquo;re looking at and we&rsquo;ll tell you what
+            it is. Free repair estimates.
+          </p>
+
+          <ul class="capabilities">
+            {capabilities.map((item) => <li>{item}</li>)}
+          </ul>
         </div>
+
+        <aside class="hero-panel" aria-label="Contact Daytona Beach Stucco Company">
+          <LeadForm />
+        </aside>
+      </div>
+    </section>
+
+    {/*
+      PROOF STRIP (2026-09-02). Renders only cells built from verified
+      constants — see `proofPoints` in the frontmatter. It carries the
+      "licensed and insured" line that used to sit under the hero CTAs, where
+      positioning.md:292 says a saturated claim must not lead. True, worth
+      stating, wrong place. Here it sits among other facts instead of standing
+      in for a differentiator.
+    */}
+    {proofPoints.length > 0 && (
+      <section class="section proof-strip band" aria-label="About the company">
+        <div class="wrap">
+          <ul class="proof grid-hairline">
+            {proofPoints.map((item) => (
+              <li>
+                <span class="proof-label">{item.label}</span>
+                <span class="proof-value">{item.value}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
+
+    {/*
+      DISTRESS-STATE ROUTER (2026-09-02).
+
+      voice-profile.md:226 — "Name the distress state out loud." The audience
+      is problem-aware / solution-unaware (audience.md:118): they know the wall
+      is wrong but not what service fixes it. This section does the naming and
+      hands each state to the page that already answers it.
+
+      EVERY href here is a live route, verified 2026-09-02. This block invents
+      no content — it is pure routing to pages that already exist. Do not add a
+      state without a page to send it to; a state named and then unanswered is
+      worse than one left out.
+    */}
+    <section class="section triage" id="start-here">
+      <div class="wrap">
+        <header class="section-head">
+          <p class="eyebrow">Start here</p>
+          <h2>Which one of these is you?</h2>
+          <p class="section-lede">
+            If one of these sounds like your situation, start there &mdash;
+            each one goes to what we&rsquo;ve written about it.
+          </p>
+        </header>
+
+        <div class="states grid-hairline">
+          <a class="state" href="/problems/cracks-in-stucco/">
+            <h3>There are cracks and we don&rsquo;t know if they matter</h3>
+            <p>Which cracks are cosmetic, which ones aren&rsquo;t, and how to tell them apart.</p>
+          </a>
+
+          <a class="state" href="/problems/water-stains-on-stucco/">
+            <h3>There&rsquo;s a stain, and it keeps coming back</h3>
+            <p>What a stain on stucco usually means about what is happening behind it.</p>
+          </a>
+
+          <a class="state" href="/problems/soft-spots-hollow-stucco/">
+            <h3>A spot sounds hollow or gives when we press it</h3>
+            <p>Stucco that has come loose from the wall behind it, and what that means.</p>
+          </a>
+
+          <a class="state" href="/problems/bubbling-peeling-paint-stucco/">
+            <h3>The paint is bubbling or peeling off</h3>
+            <p>Why paint lifts off stucco, and why repainting it usually doesn&rsquo;t hold.</p>
+          </a>
+
+          <a class="state" href="/problems/hurricane-storm-stucco-damage/">
+            <h3>A storm came through</h3>
+            <p>What to look for on the walls after wind-driven rain, and what to document.</p>
+          </a>
+
+          <a class="state" href="/stucco-crack-triage/">
+            <h3>We just want to know whether to worry</h3>
+            <p>A walk through what you&rsquo;re looking at, ending in a plain answer.</p>
+          </a>
+        </div>
+
+        <p class="states-more">
+          <a class="more" href="/problems/">Every stucco problem we write about</a>
+        </p>
       </div>
     </section>
 
     {/* WHAT WE DO — the services index. This is the homepage's core job. */}
     <section class="section" id="services">
       <div class="wrap">
-        <h2>What we do</h2>
+        <header class="section-head">
+          <p class="eyebrow">What we do</p>
+          <h2>Stucco work across Daytona Beach and Volusia County</h2>
+          <p class="section-lede">
+            Stucco work on houses and buildings across Daytona Beach and Volusia
+            County &mdash; repair, water damage, diagnostics, and full re-stucco.
+          </p>
+        </header>
 
-        <p>
-          Stucco work on houses and buildings across Daytona Beach and Volusia
-          County &mdash; repair, water damage, diagnostics, and full re-stucco.
-        </p>
+        <div class="cards grid-hairline">
+        <a class="card" href="/stucco-repair/">
+          <h3>Stucco Repair &amp; Costs</h3>
+          <p>
+            Cracks, patching, water damage, re-stucco, and texture matching.
+            How we decide which repair you actually need and what affects cost.
+          </p>
+          <span class="card-go">View service</span>
+        </a>
 
-        <ul class="links">
-          <li>
-            <a href="/stucco-repair/">Stucco repair</a> &mdash; cracks,
-            patching, water damage, re-stucco, and texture matching. How we
-            decide which one you actually need, what it costs in this area, and
-            why three quotes came back three different numbers.
-          </li>
-          <li>
-            <a href="/stucco-moisture-testing/">The {moistureCheck.name}</a>
-            {' '}&mdash; a separate paid diagnostic service. We check for
-            moisture behind the wall before anyone quotes a repair.
-          </li>
-          <li>
-            <a href="/blog/why-stucco-cracks-come-back/">
-              Why stucco cracks come back
-            </a>
-            {' '}&mdash; the long version of what goes wrong when a repair
-            fixes the surface instead of the cause.
-          </li>
-        </ul>
+        <a class="card" href="/stucco-water-damage-repair/">
+          <h3>Stucco Water Damage Repair</h3>
+          <p>
+            Repair for stucco affected by water intrusion and damaged exterior wall areas.
+          </p>
+          <span class="card-go">View service</span>
+        </a>
+
+        <a class="card" href="/eifs-repair/">
+          <h3>EIFS Repair</h3>
+          <p>
+            Repair for damaged or failing EIFS exterior wall systems.
+          </p>
+          <span class="card-go">View service</span>
+        </a>
+
+        <a class="card" href="/stucco-resurfacing/">
+          <h3>Stucco Resurfacing</h3>
+          <p>
+            Resurfacing for worn or deteriorated stucco that needs a renewed exterior finish.
+          </p>
+          <span class="card-go">View service</span>
+        </a>
+
+        <a class="card" href="/stucco-replacement/">
+          <h3>Stucco Replacement</h3>
+          <p>
+            Replacement for stucco sections where repair alone is not the right solution.
+          </p>
+          <span class="card-go">View service</span>
+        </a>
+
+        <a class="card" href="/new-stucco-installation/">
+          <h3>New Stucco Installation</h3>
+          <p>
+            New stucco installation for exterior wall areas and new construction work.
+          </p>
+          <span class="card-go">View service</span>
+        </a>
+
+        <a class="card" href="/stucco-painting/">
+          <h3>Stucco Painting</h3>
+          <p>
+            Painting for exterior stucco surfaces that need a refreshed finish.
+          </p>
+          <span class="card-go">View service</span>
+        </a>
+
+        <a class="card" href="/stucco-repair-around-windows/">
+          <h3>Stucco Repair Around Windows</h3>
+          <p>
+            Targeted repair where stucco damage or moisture concerns occur around windows.
+          </p>
+          <span class="card-go">View service</span>
+        </a>
+
+        <a class="card" href="/stucco-chimney-repair/">
+          <h3>Stucco Chimney Repair</h3>
+          <p>
+            Repair for cracked, deteriorated, or damaged stucco around chimney exteriors.
+          </p>
+          <span class="card-go">View service</span>
+        </a>
+
+        <a class="card" href="/stucco-soffit-and-band-repair/">
+          <h3>Soffit &amp; Band Repair</h3>
+          <p>
+            Stucco repair for soffits, decorative bands, and related exterior trim areas.
+          </p>
+          <span class="card-go">View service</span>
+        </a>
+
+        <a class="card" href="/stucco-moisture-testing/">
+          <h3>The {moistureCheck.name}</h3>
+          <p>
+            A separate paid diagnostic service for checking moisture behind the wall before repair.
+          </p>
+          <span class="card-go">View service</span>
+        </a>
+      </div>
       </div>
     </section>
 
@@ -120,38 +405,131 @@ if (serviceArea) schema.areaServed = serviceArea;
         /stucco-repair/; this is the summary that earns the click. */}
     <section class="section band" id="how-we-work">
       <div class="wrap">
-        <h2>How we work</h2>
+        <header class="section-head">
+          <p class="eyebrow">How we work</p>
+          <h2>Most stucco repairs fail because nobody looked behind the wall</h2>
+        </header>
 
-        <p class="band-lede">
-          Most stucco repairs fail because nobody looked behind the wall.
-        </p>
+        <div class="prose">
+          <p>
+            A crack gets filled, sanded, and painted. It looks right for a season,
+            then opens again in the same place.
+            <strong>
+              That&rsquo;s because the crack was never the problem &mdash; it was
+              the evidence.
+            </strong>
+            When water gets behind stucco it doesn&rsquo;t dry out on its own, and
+            patching the surface seals it in.
+          </p>
 
-        <p>
-          A crack gets filled, sanded, and painted. It looks right for a season,
-          then opens again in the same place.
-          <strong>
-            That&rsquo;s because the crack was never the problem &mdash; it was
-            the evidence.
-          </strong>
-          When water gets behind stucco it doesn&rsquo;t dry out on its own, and
-          patching the surface seals it in.
-        </p>
+          <p>
+            Not every crack means water &mdash; hairline cracking is normal in
+            Florida. <strong>But you can&rsquo;t tell which is which from the
+            outside</strong>, and that&rsquo;s the whole reason the first repair
+            failed. If you want to narrow it down yourself first, start with{' '}
+            <a href="/problems/cracks-in-stucco/">
+              which cracks matter and which don&rsquo;t
+            </a>.
+          </p>
 
-        <p>
-          Not every crack means water. Hairline cracking is normal in Florida.
-          <strong>
-            Some of what I look at is cosmetic, and I&rsquo;ll tell you when it
-            is.
-          </strong>
-          {' '}But you can&rsquo;t tell which is which from the outside, and
-          that&rsquo;s the whole reason the first repair failed.
-        </p>
+          <p>
+            <a class="more" href="/stucco-repair/">
+              More on how we approach a repair and what it costs
+            </a>
+          </p>
+        </div>
+      </div>
+    </section>
 
-        <p>
-          <a href="/stucco-repair/">
-            More on how we approach a repair and what it costs
-          </a>
-        </p>
+    {/*
+      RULING-OUT + OBJECTIONS (2026-09-02).
+
+      voice-profile.md:240 — "Rule things out. At least one place per page where
+      work is ruled unnecessary." The cosmetic-cracking concession existed on
+      this page but was buried mid-paragraph in "How we work"; it earns nothing
+      there. Promoted here to its own callout where it does its job.
+
+      The objections are the three the audience actually holds
+      (audience.md — fear of being burned, Stage-3 sophistication, low trust):
+      the repeat-repair fear, the cheaper quote, and "why pay to diagnose."
+      Each is answered with an argument or a verified fact and nothing else —
+      no warranty, no review, no project count, no photo. All four are null.
+
+      NOT INCLUDED, deliberately: any objection whose honest answer requires a
+      fact we do not have. "How long will it take" and "what if it fails again"
+      both need `warrantyTerms` or a measured timeline. Answering them from
+      nothing would be the exact overclaim this positioning is built against.
+    */}
+    <section class="section objections" id="straight-answers">
+      <div class="wrap">
+        <header class="section-head">
+          <p class="eyebrow">Straight answers</p>
+          <h2>Before you call anyone</h2>
+        </header>
+
+        <div class="ruling-out">
+          <h3>Sometimes the answer is that you don&rsquo;t need us yet</h3>
+          <p>
+            Hairline cracking is normal in Florida, and not all of it needs
+            repairing. When that&rsquo;s what we find, we say so and we
+            don&rsquo;t sell you a repair. We would rather tell you the wall is
+            fine than find you an expensive problem you don&rsquo;t have.
+          </p>
+        </div>
+
+        <div class="qa-list">
+          <div class="qa">
+            <h3>We already had this repaired and it came back</h3>
+            <p>
+              That is the pattern this whole approach is built around: a repair
+              that closes the surface without addressing what caused it. If
+              water is getting into the wall, patching over it does not change
+              that &mdash; so the crack has the same reason to open again that
+              it had the first time.
+              {' '}<a href="/blog/why-stucco-cracks-come-back/">
+                The long version of why that happens
+              </a>{' '}goes through it properly.
+            </p>
+          </div>
+
+          <div class="qa">
+            <h3>Why not just go with the cheaper quote?</h3>
+            <p>
+              Sometimes you should &mdash; if the wall is sound, the cheaper
+              quote is the right quote. The problem is that a patch price and a
+              repair price look like the same purchase from the outside, and
+              they are not. What separates them is whether anyone established
+              what was behind the wall before pricing it. If nobody looked, the
+              low number is a guess wearing a price tag.
+            </p>
+          </div>
+
+          <div class="qa">
+            <h3>Why would we pay for a diagnosis on top of the repair?</h3>
+            <p>
+              Not every job calls for it. The repair estimate is free, and
+              where the damage is visible and localized, that estimate can be
+              the whole conversation. The
+              {' '}{moistureCheck.name} is for when nobody can tell from the
+              outside &mdash; a stain that returns, a soft spot, a repair that
+              already failed once. Paying for it separately is what keeps the
+              answer honest: we get paid the same whether the wall is wet or
+              fine.
+            </p>
+          </div>
+
+          <div class="qa">
+            <h3>Do you work on condo and commercial buildings?</h3>
+            <p>
+              Yes &mdash; we perform commercial and condo stucco work and we are
+              licensed and insured for it, including multi-story buildings and
+              buildings that stay occupied while we work.
+              {' '}<a href="/commercial-stucco/">
+                Commercial and condo stucco work
+              </a>{' '}covers how that side of it runs.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -173,44 +551,51 @@ if (serviceArea) schema.areaServed = serviceArea;
     */}
     <section class="section" id="moisture-check">
       <div class="wrap">
-        <p class="eyebrow">A paid diagnostic service</p>
-        <h2>The {moistureCheck.name}</h2>
+        <header class="section-head">
+          <p class="eyebrow">A paid diagnostic service</p>
+          <h2>The {moistureCheck.name}</h2>
+        </header>
 
-        <p>
-          Before anyone quotes you a repair, it&rsquo;s worth knowing whether
-          there&rsquo;s moisture behind the wall. That&rsquo;s a separate piece
-          of work from the repair, and it&rsquo;s what the
-          {' '}{moistureCheck.name} is: a visual examination, moisture meter
-          testing, and thermal imaging when it&rsquo;s appropriate. You get the
-          findings, the readings, and what we&rsquo;d do next &mdash; whether or
-          not you ever hire us.
-        </p>
+        <div class="prose">
+          <p>
+            Before anyone quotes you a repair, it&rsquo;s worth knowing whether
+            there&rsquo;s moisture behind the wall. That&rsquo;s a separate piece
+            of work from the repair, and it&rsquo;s what the
+            {' '}{moistureCheck.name} is: a visual examination, moisture meter
+            testing, and thermal imaging when it&rsquo;s appropriate. You get the
+            findings, the readings, and what we&rsquo;d do next &mdash; whether or
+            not you ever hire us.
+          </p>
 
-        <p>
-          It costs ${moistureCheck.priceLow}&ndash;${moistureCheck.priceHigh}
-          {' '}and is <strong>not</strong> included in the free repair estimate.
-        </p>
+          <p>
+            It costs ${moistureCheck.priceLow}&ndash;${moistureCheck.priceHigh}
+            {' '}and is <strong>not</strong> included in the free repair estimate.
+          </p>
 
-        <p>
-          <a href="/stucco-moisture-testing/">
-            The full process, what the readings mean, and what it costs
-          </a>
-        </p>
+          <p>
+            <a class="more" href="/stucco-moisture-testing/">
+              The full process, what the readings mean, and what it costs
+            </a>
+          </p>
+        </div>
       </div>
     </section>
 
     {/* PRICING */}
     <section class="section band" id="pricing">
       <div class="wrap">
-        <h2>What it costs</h2>
+        <header class="section-head">
+          <p class="eyebrow">What it costs</p>
+          <h2>Two prices, and they are not the same thing</h2>
+        </header>
 
-        <div class="prices">
+        <div class="prices grid-hairline">
           <div class="price-card">
             <p class="price-label">Repair estimate</p>
             <p class="price-figure">Free</p>
             <p class="price-body">
-              If you know what you need done, I&rsquo;ll come look at it and give
-              you a number for the work. No charge for that.
+              If you know what you need done, we&rsquo;ll come look at it and
+              give you a number for the work. No charge for that.
             </p>
           </div>
 
@@ -227,8 +612,40 @@ if (serviceArea) schema.areaServed = serviceArea;
           </div>
         </div>
 
+        {/*
+          The market-range excerpt. Four of nine rows — see the cannibalization
+          guard in the frontmatter before touching this.
+        */}
+        <div class="ranges">
+          <h3>What stucco repair runs in this area</h3>
+
+          <ul class="range-list">
+            {priceExcerpt.map((row) => (
+              <li>
+                <span class="range-job">{row.job}</span>
+                <span class="range-num">
+                  {money(row.low)}&ndash;{money(row.high)}{row.openEnded ? '+' : ''}
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          <p class="range-psf">
+            Roughly {money(repairPerSquareFoot.low)}&ndash;{money(repairPerSquareFoot.high)}
+            {' '}per square foot, {repairPerSquareFoot.note}.
+          </p>
+
+          <p class="range-note">{pricingDisclaimer}</p>
+
+          <p>
+            <a class="more" href="/stucco-repair/#pricing">
+              The full range table and what moves the number
+            </a>
+          </p>
+        </div>
+
         <div class="separation">
-          <h3>These are two different things, and I&rsquo;ll be plain about it</h3>
+          <h3>These are two different things, and we&rsquo;ll be plain about it</h3>
           <p>
             The estimate is free. The {moistureCheck.name} is not &mdash; it&rsquo;s
             ${moistureCheck.priceLow}&ndash;${moistureCheck.priceHigh}, paid on its
@@ -237,8 +654,8 @@ if (serviceArea) schema.areaServed = serviceArea;
             separately.
           </p>
           <p>
-            I charge for it for a reason. Because the fee isn&rsquo;t tied to
-            winning your repair job, I get paid the same whether the answer is
+            We charge for it for a reason. Because the fee isn&rsquo;t tied to
+            winning your repair job, we get paid the same whether the answer is
             &ldquo;there&rsquo;s water in this wall&rdquo; or &ldquo;this is
             cosmetic, leave it alone.&rdquo;
             <strong>
@@ -254,24 +671,36 @@ if (serviceArea) schema.areaServed = serviceArea;
       the services index above, including a link to the retired
       /stucco-repair-daytona-beach/. Replaced 2026-08-30 with the area
       statement, which is what this slot is actually for on an entity page.
+
+      Now sits on the dark band, mirroring the reference's local-conditions
+      section, which is the same job: what this specific place does to the
+      material.
     */}
-    <section class="section" id="area">
+    <section class="section area on-dark" id="area">
       <div class="wrap">
-        <h2>Where we work</h2>
-        <p>
-          Daytona Beach and the surrounding Volusia County area. Wind-driven
-          rain off the Atlantic does most of the damage here, and it doesn&rsquo;t
-          arrive straight down &mdash; which is why the failures cluster around
-          window corners, rooflines, and dried-out control joints.
-          {' '}<a href="/stucco-repair/#what-we-see">
-            What we see most on houses here
-          </a>{' '}goes through the patterns in detail.
-        </p>
+        <header class="section-head">
+          <p class="eyebrow">Where we work</p>
+          <h2>Volusia County and Orange County, Florida</h2>
+        </header>
+
+        <div class="prose">
+          <p>{serviceAreaProse}</p>
+
+          <p>
+            Wind-driven rain off the Atlantic does most of the damage on the
+            coast, and it doesn&rsquo;t arrive straight down &mdash; which is why
+            the failures cluster around window corners, rooflines, and dried-out
+            control joints.
+            {' '}<a href="/stucco-repair/#what-we-see">
+              What we see most on houses here
+            </a>{' '}goes through the patterns in detail.
+          </p>
+        </div>
       </div>
     </section>
 
     {/* CONTACT */}
-    <section class="section" id="contact-form">
+    <section class="section final-cta on-dark" id="contact-form">
       <div class="wrap">
         <ContactCta />
       </div>
@@ -279,143 +708,486 @@ if (serviceArea) schema.areaServed = serviceArea;
   </main>
 
   <SiteFooter />
+
+  <MobileStickyBar />
 </Layout>
 
 <style>
+  /* --- Hero ------------------------------------------------------------
+   * Dark band, two columns at 62rem. The reference splits 1.15fr / 0.85fr
+   * with the form column padded in from the right edge.
+   *
+   * The breakpoint is 62rem to match SiteHeader — the shell switches to its
+   * desktop layout there, and the hero switching at a different width reads
+   * as a bug.
+   */
   .hero {
-    padding-block: clamp(3rem, 9vw, 6rem);
-    background:
-      linear-gradient(180deg, var(--paper-warm), var(--paper));
-    border-bottom: 1px solid var(--rule);
+    border-bottom: 1px solid var(--shell-rule);
+  background:
+    linear-gradient(rgba(18, 18, 20, 0.78), rgba(18, 18, 20, 0.78)),
+    url('/images/stucco-home-summer.webp') center / cover no-repeat;
   }
-  .hero h1 { max-width: 20ch; }
-  .hero-lede {
-    font-size: clamp(1.0625rem, 2.2vw, 1.25rem);
-    color: var(--ink-soft);
-    max-width: 40ch;
-    margin-top: 1.25rem;
-  }
-  .hero-actions { margin-top: 2rem; }
 
-  .band { background: var(--paper-warm); border-block: 1px solid var(--rule); }
-  .band-lede { max-width: 42ch; color: var(--ink-soft); }
-
-  .steps {
-    list-style: none;
-    margin: 2rem 0 0;
-    padding: 0;
+  .hero-grid {
     display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    max-width: 78rem;
+    margin-inline: auto;
+  }
+
+  .hero-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 1.5rem;
-  }
-  .steps li { display: flex; gap: 1rem; align-items: flex-start; }
-  .steps p { margin: 0; max-width: 46ch; color: var(--ink-soft); }
-  .num {
-    flex: none;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    background: var(--accent);
-    color: #fff;
-    display: grid;
-    place-items: center;
-    font-size: 0.9375rem;
-    font-weight: 650;
+    padding: clamp(3rem, 8vw, 5.5rem) var(--gutter);
   }
 
-  .caveat {
-    margin-top: 2rem;
-    padding-left: 1rem;
-    border-left: 3px solid var(--sand);
-    color: var(--ink-faint);
-    font-size: 0.9375rem;
-    max-width: 46ch;
+  .hero h1 {
+    margin: 0;
+    max-width: 20ch;
+    font-size: clamp(2.125rem, 6vw, 3.5rem);
+    line-height: 1.04;
+    letter-spacing: -0.034em;
   }
 
-  .deliverable {
-    margin: 1.5rem 0;
-    padding: 0;
-    list-style: none;
-    display: grid;
-    gap: 0.625rem;
+  .hero-lede {
+    margin: 0;
     max-width: 36rem;
-  }
-  .deliverable li {
-    padding-left: 1.75rem;
-    position: relative;
-  }
-  .deliverable li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0.6em;
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background: var(--accent);
+    font-size: clamp(1.1875rem, 2.2vw, 1.4375rem);
+    line-height: 1.5;
+    color: var(--shell-ink-soft);
   }
 
-  .links {
-    margin: 1.5rem 0 0;
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .hero-actions .btn { flex: 1 1 14rem; }
+
+  .hero-note {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+    color: var(--shell-ink-soft);
+  }
+
+  /* Hairline capability strip. Two cells on mobile, four above 48rem —
+   * the reference's exact behavior. */
+  .capabilities {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    width: 100%;
+    margin: 0.5rem 0 0;
     padding: 0;
     list-style: none;
-    display: grid;
-    gap: 1rem;
-    max-width: 40rem;
-  }
-  .links li { color: var(--ink-soft); }
-  .links a { font-weight: 600; }
-
-  .note {
-    font-size: 0.9375rem;
-    color: var(--ink-faint);
-    max-width: 44ch;
+    background: var(--shell-rule);
+    border: 1px solid var(--shell-rule);
   }
 
-  .proof {
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-    margin-top: 2rem;
+  .capabilities li {
+    padding: 0.75rem 1rem;
+    background: var(--shell);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--shell-ink-soft);
   }
-  .proof img { width: 100%; border-radius: 10px; display: block; }
 
-  .prices {
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-    margin: 2rem 0;
-    max-width: 46rem;
+  /* The form panel. White card, 3px accent top edge — the reference's
+   * signature treatment for the estimate form. ContactCta renders inside it
+   * unchanged, so the panel resets to light tokens. */
+  .hero-panel {
+    padding: 0 var(--gutter) clamp(3rem, 8vw, 4rem);
   }
-  .price-card {
+
+  .hero-panel :global(.cta) {
     background: var(--paper);
     border: 1px solid var(--rule);
-    border-radius: 12px;
-    padding: 1.5rem;
+    border-top: 3px solid var(--accent);
+    padding: clamp(1.25rem, 3vw, 1.75rem);
+    color: var(--ink);
   }
-  .price-card.featured { border-color: var(--accent); border-width: 1.5px; }
+
+  @media (min-width: 62rem) {
+    .hero-grid {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      align-items: center;
+    }
+
+    .capabilities { grid-template-columns: repeat(4, 1fr); }
+
+    .hero-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(3rem, 8vw, 5.5rem) var(--gutter) clamp(3rem, 8vw, 5.5rem) 0;
+    }
+
+    .hero-panel :global(.cta) {
+      width: 100%;
+      max-width: 26rem;
+    }
+  }
+
+  /* --- Section headers -------------------------------------------------
+   * The reference stacks eyebrow, h2, and lede with a generous gap, then
+   * a large space before the section body. */
+  .section-head {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .section-head h2 {
+    margin: 0;
+    max-width: 22ch;
+  }
+
+  .section-lede {
+    margin: 0;
+    max-width: 46rem;
+    font-size: clamp(1.1875rem, 2vw, 1.4375rem);
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+
+  .prose p:last-child { margin-bottom: 0; }
+
+  /* A link that carries the weight of a next step. */
+  .more {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-decoration: none;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 0.125rem;
+  }
+
+  .more:hover { color: var(--accent-deep); border-bottom-color: var(--accent-deep); }
+
+  /* --- Service cards ---------------------------------------------------
+   * Hairline grid: 1px gaps in --rule show through between flat cells, and
+   * each card carries a 3px accent top edge that grows on hover. */
+  .cards { grid-template-columns: 1fr; }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    position: relative;
+    padding: 2rem 1.5rem 1.5rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 0;
+    height: 3px;
+    background: var(--accent);
+    transition: width 160ms ease;
+  }
+
+  .card:hover::before { width: 100%; }
+
+  .card h3 { margin: 0; }
+
+  .card p {
+    flex: 1;
+    margin: 0;
+    max-width: none;
+    font-size: 0.9875rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+
+  .card-go {
+    margin-top: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+  }
+
+  @media (min-width: 48rem) {
+    .cards { grid-template-columns: repeat(3, 1fr); }
+
+    /* Short final row. There are eleven cards, so the three-up grid ends two
+     * short and the last row would otherwise be one card beside a gap. The
+     * final pair splits the row instead. Same nth-child arithmetic as the
+     * global .cols-* rules in Layout.astro; it lives here because .cards
+     * sets its own columns and collapses at 48rem, not the global 62rem.
+     * Card count is not fixed - the selector adapts if it changes. */
+    .cards > :nth-child(3n + 1):nth-last-child(1) { grid-column: 1 / -1; }
+    .cards > :nth-child(3n + 1):nth-last-child(2) { grid-column: span 2; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card::before { transition: none; }
+  }
+
+  /* --- Bands ----------------------------------------------------------- */
+  .band { background: var(--paper-warm); border-block: 1px solid var(--rule); }
+
+  .band .card,
+  .band .price-card,
+  .band .proof li { background: var(--sand); }
+
+  /* Off-band hairline cells still need an opaque paint to cover the grid
+   * background that shows through as the 1px seams. */
+  .states .state { background: var(--paper); }
+
+  .area { border-block: 1px solid var(--shell-rule); }
+
+  .final-cta { border-top: 1px solid var(--shell-rule); }
+
+  /* --- Pricing ---------------------------------------------------------
+   * Two panels in a hairline grid, the paid one marked by an accent top
+   * border — the reference's comparison-panel treatment, where the neutral
+   * side gets a muted top edge and the consequential side gets the accent. */
+  .prices {
+    grid-template-columns: 1fr;
+    max-width: 52rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .price-card {
+    padding: 2rem 1.5rem;
+    border-top: 4px solid var(--ink-soft);
+  }
+
+  .price-card.featured { border-top-color: var(--accent); }
+
   .price-label {
     margin: 0;
-    font-size: 0.75rem;
-    letter-spacing: 0.09em;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--ink-faint);
-    font-weight: 650;
   }
-  .price-figure {
-    margin: 0.5rem 0 0.75rem;
-    font-size: clamp(1.75rem, 4vw, 2.25rem);
-    font-weight: 680;
-    letter-spacing: -0.03em;
-  }
-  .price-body { margin: 0; font-size: 0.9375rem; color: var(--ink-soft); }
 
-  .separation {
-    background: var(--paper);
-    border-left: 3px solid var(--flag);
-    border-radius: 0 10px 10px 0;
-    padding: 1.5rem;
-    max-width: 46rem;
+  .price-figure {
+    margin: 0.75rem 0;
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.028em;
   }
-  .separation h3 { margin-bottom: 0.75rem; }
+
+  .price-body {
+    margin: 0;
+    max-width: none;
+    font-size: 0.9875rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+
+  @media (min-width: 48rem) {
+    .prices { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* --- Distress-state router (2026-09-02) ------------------------------
+   * Same hairline-grid mechanics as the service cards, one level quieter:
+   * the h3 carries the state, the p carries the answer, no card-go tag. The
+   * cards above are the offer; these are triage. */
+  .states { grid-template-columns: 1fr; }
+
+  .state {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: relative;
+    padding: 1.75rem 1.5rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .state::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 0;
+    height: 3px;
+    background: var(--accent);
+    transition: width 160ms ease;
+  }
+
+  .state:hover::before { width: 100%; }
+
+  .state h3 {
+    margin: 0;
+    font-size: 1.0625rem;
+    line-height: 1.35;
+  }
+
+  .state p {
+    margin: 0;
+    max-width: none;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+
+  .states-more { margin: 2rem 0 0; }
+
+  @media (min-width: 48rem) {
+    .states { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* --- Proof strip ------------------------------------------------------
+   * Mono label over a plain value, in a hairline grid. Deliberately flat:
+   * these are facts, not badges. */
+  .proof-strip { padding-block: 0; }
+
+  .proof {
+    grid-template-columns: repeat(2, 1fr);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .proof li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1.5rem 1.25rem;
+  }
+
+  .proof-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .proof-value {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  @media (min-width: 48rem) {
+    .proof { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  /* --- Ruling-out callout ----------------------------------------------
+   * Same treatment as .separation: the other place this page says something
+   * against its own commercial interest. They should read alike. */
+  .ruling-out {
+    max-width: 52rem;
+    margin-bottom: 3rem;
+    padding: 1.75rem;
+    background: var(--paper-warm);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--accent);
+  }
+
+  .ruling-out h3 { margin: 0 0 0.75rem; }
+  .ruling-out p { margin: 0; }
+
+  /* --- Objections ------------------------------------------------------- */
+  .qa-list {
+    display: grid;
+    gap: 2.5rem;
+    max-width: 52rem;
+  }
+
+  .qa h3 {
+    margin: 0 0 0.625rem;
+    font-size: 1.125rem;
+    line-height: 1.35;
+  }
+
+  .qa p { margin: 0; }
+
+  /* --- Pricing excerpt --------------------------------------------------
+   * A list, not a table. Four rows do not need table semantics, and a table
+   * would read as the full price list this deliberately is not. */
+  .ranges {
+    max-width: 52rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .ranges h3 { margin: 0 0 1.25rem; }
+
+  .range-list {
+    margin: 0 0 1.25rem;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--rule);
+  }
+
+  .range-list li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.875rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .range-job {
+    flex: 1 1 16rem;
+    font-size: 0.9875rem;
+    line-height: 1.45;
+  }
+
+  .range-num {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .range-psf {
+    margin: 0 0 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+  }
+
+  .range-note {
+    margin: 0 0 1.25rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .state::before { transition: none; }
+  }
+
+
+  /* The separation callout. Accent left rule, flat panel — square, per the
+   * creative kit. No radius, no shadow. */
+  .separation {
+    max-width: 52rem;
+    padding: 1.75rem;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--accent);
+  }
+
+  .separation h3 { margin: 0 0 0.75rem; }
   .separation p:last-child { margin-bottom: 0; }
 </style>

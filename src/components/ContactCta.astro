@@ -3,11 +3,29 @@
  * The single conversion point.
  *
  * PHONE HANDLING: `phone` in src/config/site.ts is null until the client
- * supplies the real number. While null, this renders the email/photo path and
+ * supplies the real number. While null, this renders the email path and
  * NO call affordance at all — no tel: link, no "call us", no stand-in digits.
  * Setting `phone` to the real string is the only change needed; the call
  * button, the tel: link, and the LocalBusiness telephone field all light up
  * automatically. Do not hardcode a number anywhere else.
+ *
+ * NO PHOTO UPLOAD THROUGH THE FORM — corrected 2026-09-02.
+ * `/api/contact` posts JSON and forwards no attachments, and the form at
+ * /contact/ deliberately carries no file input (see the note in
+ * src/pages/contact/index.astro). This component previously read "Send a
+ * photo of the wall" with a button labelled "Send a photo", both of which
+ * pointed at that form — promising an upload it silently cannot accept.
+ *
+ * Photos ARE possible, by email: the lead arrives with Reply-To set to the
+ * visitor, so a reply with attachments comes straight back. So the photo ask
+ * now lives on the mailto: path, where it is true, and the form button says
+ * what the form does. If attachment handling is ever built, this is the place
+ * to move the ask back.
+ *
+ * KNOWN REMAINING MISMATCH (not fixable from inside this component):
+ * thirteen pages pass a `heading` prop that itself says "Send me a photo…".
+ * A heading prop overrides nothing here — it renders verbatim above this copy,
+ * so those pages still promise an upload. They need editing individually.
  */
 import { phone, email, moistureCheck } from '../config/site';
 
@@ -16,7 +34,7 @@ interface Props {
   heading?: string;
 }
 
-const { variant = 'panel', heading = 'Tell me what you’re looking at' } = Astro.props;
+const { variant = 'panel', heading = 'Tell us what you’re looking at' } = Astro.props;
 
 /**
  * The contact form lives at /contact/#contact-form. On the contact page
@@ -31,10 +49,10 @@ const formHref = onContactPage ? '#contact-form' : '/contact/#contact-form';
   <h2>{heading}</h2>
 
   <p class="lede">
-    Send a photo of the wall and I&rsquo;ll tell you straight what you&rsquo;re
-    looking at. If it&rsquo;s cosmetic, I&rsquo;ll say so. If it needs a{' '}
-    {moistureCheck.name}, I&rsquo;ll tell you that too, and what it costs before
-    you commit to anything.
+    Tell us what the wall is doing and we&rsquo;ll tell you straight what
+    you&rsquo;re looking at. If it&rsquo;s cosmetic, we&rsquo;ll say so. If it
+    needs a {moistureCheck.name}, we&rsquo;ll tell you that too, and what it
+    costs before you commit to anything.
   </p>
 
   <div class="actions">
@@ -44,10 +62,12 @@ const formHref = onContactPage ? '#contact-form' : '/contact/#contact-form';
       </a>
     )}
 
-    <a class="btn secondary" href={formHref}>Send a photo</a>
+    <a class="btn secondary" href={formHref}>Describe the problem</a>
 
     {email && (
-      <a class="btn quiet" href={`mailto:${email}`}>Or email {email}</a>
+      <a class="btn quiet" href={`mailto:${email}`}>
+        Or email photos to {email}
+      </a>
     )}
   </div>
 
@@ -59,7 +79,8 @@ const formHref = onContactPage ? '#contact-form' : '/contact/#contact-form';
   {!phone && (
     <p class="pending">
       The phone line isn&rsquo;t published yet. The form and the email above
-      both reach me directly.
+      both reach us directly &mdash; and if you have photos, email is the way
+      to send them.
     </p>
   )}
 </div>
@@ -112,7 +133,9 @@ const formHref = onContactPage ? '#contact-form' : '/contact/#contact-form';
     box-shadow: inset 0 0 0 1.5px color-mix(in srgb, #fff 55%, transparent);
   }
 
-  .inline .primary { background: var(--accent); color: #fff; }
+  /* Deep-red CTA token, matching the .btn-primary treatment in
+   * Layout.astro. Renders only once `phone` is non-null. */
+  .inline .primary { background: var(--cta); color: var(--cta-ink); }
   .inline .secondary {
     background: transparent;
     color: var(--accent);

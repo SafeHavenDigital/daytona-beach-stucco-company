@@ -1,0 +1,466 @@
+---
+/**
+ * /problems/hurricane-storm-stucco-damage/ — SUPPORTING problem page.
+ * keyword-plan:256 PROBLEMS cluster, built 2026-08-31. Brief:
+ * ./campaigns/content-plan/hurricane-storm-stucco-damage.md
+ *
+ * Target: `hurricane damage stucco`, `storm damage stucco`, `stucco
+ * cracks after hurricane`, `did the storm damage my stucco`,
+ * `new or old stucco cracks after storm`.
+ * Intent: INFORMATIONAL, high urgency, with a live financial decision
+ * attached (whether to file a claim).
+ *
+ * ------------------------------------------------------------------
+ * THIS IS NOT A SERVICE PAGE. Schema is Article, NOT Service.
+ * WORD CEILING: 1,000-1,500 rendered words inside <main> (owner
+ * direction). Chrome adds ~700-790 words; measure inside <main>.
+ *
+ * LINKING MODEL (keyword-plan:314): UP to exactly one money page
+ * (/stucco-water-damage-repair/), ACROSS to /stucco-repair/#pricing.
+ *
+ * CANNIBALIZATION CONTROL — THE INSURANCE BOUNDARY IS THE WHOLE RISK.
+ * Two live money pages already carry insurance sections and this page
+ * MUST NOT rebuild either:
+ *   - /stucco-water-damage-repair/#insurance OWNS the sudden-vs-gradual
+ *     explainer, the Florida exclusions, and "document the wall before
+ *     anyone closes it up."
+ *   - /stucco-repair/#insurance OWNS "a lot of these claims go nowhere"
+ *     and "be wary of any contractor who says they can [tell you what
+ *     your policy covers]."
+ * THE SPLIT: those pages answer "how does coverage work." This page
+ * answers the question BEFORE it — "which of this damage is actually
+ * new, and what do I do in the next few days." Sudden-vs-gradual is
+ * NAMED here only as the reason the new-vs-old question matters, in one
+ * sentence, then LINKED. If this page grows a coverage explainer, an
+ * exclusions list, or claim guidance, that is the cannibalization.
+ *
+ * /problems/cracks-in-stucco/ owns crack patterns, widths, and "Why
+ * walls crack differently on this coast" (which already covers
+ * wind-driven water). /problems/water-stains-on-stucco/ owns stains and
+ * efflorescence. /problems/soft-spots-hollow-stucco/ owns hollow vs
+ * soft and the tap-test interpretation. /stucco-moisture-testing/ owns
+ * readings and the storm-timing nuance. Link to all; rebuild none.
+ *
+ * THE OWNABLE ANSWER — and note WHY it is ownable here.
+ * Most post-storm stucco damage is not new. The storm revealed,
+ * widened, or wetted something already present. Page one does not say
+ * this because page one includes public adjusters and claim attorneys
+ * who are paid when damage is ruled sudden, and restoration firms paid
+ * when it is repaired. Every ranking party has a reason to want the
+ * answer to be yes. THIS BUSINESS HAS NO STAKE IN THE CLAIM, which is
+ * precisely what makes the honest answer available to it — and the page
+ * says so out loud, including about itself.
+ * SECOND OWNABLE POINT: the evidence is perishable. A wall patched and
+ * painted before it is documented has destroyed the only record either
+ * answer depended on.
+ *
+ * OWNER-STATED CONSTRAINTS FOR THIS BUILD, all held:
+ *   - NO insurance-adjusting service, claim filing/handling, or advice
+ *     on a policy. General information only, contractors not adjusters.
+ *   - NO roofing, flashing, gutter, or roof-access work. UNVERIFIED.
+ *   - NO storm-response turnaround, emergency service, availability,
+ *     lead time, or crew size. UNVERIFIED. The page deliberately gives
+ *     NO "call us first" urgency hook, which is the category norm.
+ *   - NO height, storey, lift, scaffold, or reach claim. UNVERIFIED —
+ *     TENTH build running. Storm damage is frequently high on a wall,
+ *     so the omission is conspicuous here. Not routed around: the page
+ *     simply never states what can be reached.
+ *   - NO tarping, board-up, extraction, or restoration claim.
+ * PLUS standing brand constraints: no thermal imaging as proof of
+ * moisture; NOT a home inspection (FL licenses inspectors separately);
+ * no structural or engineering assessment; no wind rating, ASTM, or
+ * impact-resistance spec; no warranty, licence number, or phone.
+ * NO PRICE RANGE renders, so `pricingDisclaimer` is NOT imported.
+ *
+ * OMITTED — blocked, absent rather than stubbed:
+ *   - [STORM DAMAGE PHOTO SET] — no such array. Proof block gated on
+ *     `openWallPhotos`, renders when real photos land. FIFTH page
+ *     waiting. Do NOT substitute stock or AI imagery as project
+ *     documentation.
+ *   - [PHONE] — null. CTA routes to /contact/ via ContactCta.
+ *   - [LICENSE #], [WARRANTY TERM] — null. No credential module.
+ * ------------------------------------------------------------------
+ *
+ * VISUAL SYSTEM (redesigned 2026-09-02): migrated from this page's own local
+ * hero/band/FAQ CSS onto the shared Orlando interior-page components -
+ * PageHero, SectionHead, FaqList, Breadcrumbs - and the global utilities in
+ * Layout.astro (.section, .slab, .joint, .grid-hairline, .on-dark). COPY,
+ * FACTS, SCHEMA, URLS, HEADING TEXT, ANCHOR IDS AND INTERNAL LINKS ARE
+ * UNCHANGED by that migration; only the markup carrying them moved.
+ * The new-versus-revealed distinction and the insurance caveat stay exactly as written.
+ * This page keeps its informational register - single-column hero, no aside
+ * CTA - and is NOT homogenized toward the service money pages. Do not re-add
+ * a local hero or band rule here.
+ */
+import LeadForm from '../../../components/LeadForm.astro';
+import Layout from '../../../layouts/Layout.astro';
+import SiteHeader from '../../../components/SiteHeader.astro';
+import SiteFooter from '../../../components/SiteFooter.astro';
+import MobileStickyBar from '../../../components/MobileStickyBar.astro';
+import ContactCta from '../../../components/ContactCta.astro';
+import PageHero from '../../../components/PageHero.astro';
+import SectionHead from '../../../components/SectionHead.astro';
+import FaqList from '../../../components/FaqList.astro';
+import { business, serviceArea, openWallPhotos } from '../../../config/site';
+
+const title =
+  'Storm and Hurricane Damage to Stucco: What Is Actually New | Daytona Beach';
+const description =
+  'After a storm, the useful question is not what is wrong with the wall but which of it is new. Here is how to tell, and what to do in the first few days.';
+
+/**
+ * Organized by whether the finding is genuinely new. This ordering IS
+ * the differentiator — every ranking competitor sorts by severity,
+ * which quietly assumes the storm caused everything on the list.
+ */
+const findings = [
+  {
+    name: 'Fine cracking that follows the same lines as before',
+    verdict: 'Almost certainly was already there',
+    tone: 'calm',
+    body: 'Hairline cracks tracking the corners of windows and doors, or running with the wall, look worse after a storm because they are wet and dirt has collected in them. A crack that has weathered edges and grime inside it has been open a while. Genuinely new cracks are clean inside.',
+  },
+  {
+    name: 'A crack that is clean and bright along its full length',
+    verdict: 'New, or newly widened',
+    tone: 'watch',
+    body: 'Freshly broken stucco is a lighter colour than the weathered face around it, and the inside of the crack has no dirt in it. This is the single most reliable way to date a crack without a photograph of the wall from before.',
+  },
+  {
+    name: 'A distinct impact mark, chip, or gouge',
+    verdict: 'New',
+    tone: 'watch',
+    body: 'Something hit the wall. Debris marks are usually roughly circular with broken edges and sometimes have cracks radiating out from them. Unlike almost everything else on this list, these are hard to mistake for age.',
+  },
+  {
+    name: 'Damp patches or darkening that has not dried after a week',
+    verdict: 'New water, whatever the cause',
+    tone: 'flag',
+    body: 'A wall on this coast should shed a storm and dry out over the following days. An area still dark when the rest of the elevation has dried means water is getting in somewhere and staying. This matters more than any crack you can see.',
+  },
+  {
+    name: 'Loose, bulging, or hollow-sounding areas near the damage',
+    verdict: 'New or newly worsened — either way it matters',
+    tone: 'flag',
+    body: 'Material that moves, sounds hollow, or has separated from the wall around an impact or a new crack. This one is worth acting on regardless of when it started, because the finish is no longer attached and water now has a direct route in.',
+  },
+  {
+    name: 'Staining that appeared indoors after the storm',
+    verdict: 'New, and it is telling you where',
+    tone: 'flag',
+    body: 'Marks on an interior wall or ceiling that were not there before locate the problem better than anything visible outside. Water arriving inside means it crossed the whole assembly, and the outside evidence may be small or somewhere unexpected.',
+  },
+];
+
+/**
+ * The free, time-sensitive actions. Deliberately none of these require
+ * hiring anyone, including us — which is the point of the page.
+ */
+const firstDays = [
+  {
+    factor: 'Photograph everything before anything is touched',
+    body: 'Wide shots that show which wall and which elevation, then close-ups with something for scale next to each crack. Do it before any repair, any patching, and any painting. Once a wall has been made good, the record of what it looked like is gone and cannot be recovered by anyone.',
+  },
+  {
+    factor: 'Write down the date, and what the weather did',
+    body: 'A short note of when you first saw each thing is worth more later than you would expect. Memory blurs across a season with more than one storm in it, and a dated list written in the same week is far harder to argue with than a recollection months later.',
+  },
+  {
+    factor: 'Look for what is missing from the story',
+    body: 'Check the ground for pieces of stucco, and check whether anything above the damage came loose. If a wall is cracked but nothing fell and nothing above it moved, that is worth knowing. It does not rule the storm out, but it is the kind of detail that gets asked about.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Can a hurricane actually cause stucco cracks?',
+    a: 'Yes, though less often than the amount written about it suggests. Wind pressure flexes a wall, debris strikes it, and driven rain forces water into openings that shed it fine in ordinary weather. What is far more common is a storm making existing cracks obvious, wider, or wet for the first time. Both are real. They are not the same finding, and it is worth knowing which one you are looking at before anyone tells you.',
+  },
+  {
+    q: 'How do I know if a crack was there before the storm?',
+    a: 'Look inside it. A crack that has been open for a while has dirt in it and weathered, rounded edges, and the exposed material has dulled to roughly the colour of the wall. A new break is clean, sharp-edged, and noticeably lighter inside than the face around it. It is not perfect evidence, but it is free, it takes a minute, and it is more than most people have.',
+  },
+  {
+    q: 'Should I get the damage repaired straight away?',
+    a: 'Photograph it straight away. Repair is a separate decision, and rushing it is how people lose the record of what happened. The exception is anything actively letting water into the building, which is worth stopping sooner rather than later, because a wall that stays wet gets more expensive every week it stays that way.',
+  },
+  {
+    q: 'Do I need an inspection before I can file a claim?',
+    a: 'That is between you and your carrier, and we are not the right people to answer it. What we would say is that you do not need to pay anyone to do the photographs and the dated notes, and those are the part that is time-sensitive. Whatever you decide about a claim, having documented the wall while the damage was still visible puts you in a better position than not having done it.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+/**
+ * Article, not Service. Sells nothing; Service markup would blur the
+ * boundary against /stucco-water-damage-repair/ that keeps this page
+ * defensible.
+ */
+const articleSchema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Storm and Hurricane Damage to Stucco: What Is Actually New',
+  description,
+  author: { '@type': 'Organization', name: business.name },
+  publisher: { '@type': 'Organization', name: business.name },
+};
+if (serviceArea) articleSchema.about = serviceArea;
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <SiteHeader current="/problems/hurricane-storm-stucco-damage/" />
+
+  <main id="main">
+    {/*
+      HERO. Dark PageHero, single column - no aside. This is an informational
+      page, not a money page: the conversion affordance is the ContactCta at
+      the foot. Eyebrow, h1 and lede are the same three strings the old local
+      hero rendered. Breadcrumbs are new markup only and emit BreadcrumbList
+      schema from Breadcrumbs.astro.
+    */}
+    <PageHero
+      crumbs={[
+        { href: '/problems/', label: 'Stucco problems' },
+        { href: '/problems/hurricane-storm-stucco-damage/', label: 'Storm & hurricane damage' },
+      ]}
+      eyebrow="Stucco problems · Daytona Beach & Volusia County"
+      title="Storm and hurricane damage to stucco"
+      lede="After a storm, most people look at a wall and ask what is wrong with it. The more useful question, and the harder one, is which of it is actually new."
+      actions={[
+        { href: '/contact/', label: 'Request an estimate' },
+        { href: '/problems/cracks-in-stucco/', label: 'Which cracks matter', variant: 'secondary' },
+      ]}
+    />
+
+<section class="section">
+  <div class="wrap">
+    <LeadForm />
+  </div>
+</section>
+
+    {/* QUICK ANSWER — snippet-shaped */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="The short version"
+          title="The short version"
+          lede="Look inside the crack. If it is clean and lighter in colour than the wall around it, it is new. If there is dirt in it and the edges have weathered, it was there before the storm and you are seeing it properly for the first time."
+        />
+        <p class="lede">
+          Then photograph everything before anyone repairs anything. That is
+          the part that is genuinely time-sensitive, and it costs nothing.
+        </p>
+      </div>
+    </section>
+
+    {/* THE FIELD GUIDE — sorted by new vs pre-existing, not by severity */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="New or revealed"
+          title="Telling new damage from damage the storm revealed"
+          lede="Sorted by how likely each one is to be genuinely new, rather than by how alarming it looks."
+        />
+        <div class="grid-hairline cols-2 entries">
+          {findings.map((f) => (
+            <div class={`entry tone-${f.tone}`}>
+              <h3>{f.name}</h3>
+              <p class="verdict">{f.verdict}</p>
+              <p>{f.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* THE FIRST FEW DAYS */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="First few days"
+          title="What to do in the first few days"
+          lede="None of this requires hiring anybody, and all of it gets harder the longer it waits."
+        />
+        <div class="grid-hairline cols-3 entries">
+          {firstDays.map((d) => (
+            <div class="entry">
+              <h3>{d.factor}</h3>
+              <p>{d.body}</p>
+            </div>
+          ))}
+        </div>
+        <div class="caveat">
+          <p>
+            <strong>
+              A wall that has been patched and painted has lost the only
+              record of what the storm did to it.
+            </strong>{' '}
+            Whatever you decide afterwards, photographs taken before the
+            repair are the one thing nobody can reconstruct later.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* PROOF — null-gated */}
+    {openWallPhotos && openWallPhotos.length > 0 && (
+      <section class="section" id="proof">
+        <div class="wrap">
+          <SectionHead eyebrow="Proof" title="What it looks like behind the finish" />
+          <div class="proof">
+            {openWallPhotos.map((src) => (
+              <img
+                src={src}
+                alt="Stucco opened during repair, showing the condition of the wall behind the finish"
+                loading="lazy"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {/* WHY THE ANSWERS YOU FIND ARE SLANTED — the ownable disclosure */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Why the story differs"
+          title="Why almost everyone tells you it was the storm"
+          lede="Search this after a hurricane and nearly every answer assumes the storm caused what you are looking at. Worth knowing who is writing them. Public adjusters and claim attorneys are paid when damage is treated as sudden. Restoration companies are paid when it is repaired. None of that makes them wrong, and storms do damage stucco. But not one of those parties has a reason to tell you the crack was probably already there."
+        />
+        <p class="band-lede">
+          It matters because policies here generally treat sudden damage
+          differently from gradual water intrusion, so new-versus-old is not
+          an academic distinction &mdash; it is the distinction the whole
+          question turns on. How that works is set out on our{' '}
+          <a href="/stucco-water-damage-repair/#insurance">
+            water damage page
+          </a>, as general information rather than advice on your policy. We
+          are contractors, not adjusters, and your carrier decides coverage.
+        </p>
+        <p class="band-lede">
+          Which applies to us as well. We repair stucco, so read what is above
+          knowing that, and go and look inside the crack yourself.
+        </p>
+      </div>
+    </section>
+
+    {/* WHAT TO DO — two-link slot plus symptom handoffs */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead eyebrow="Next step" title="Where to go from here" />
+        <p class="lede">
+          If water got in and stayed &mdash; a patch still dark a week later,
+          a mark that appeared indoors, material that has come loose &mdash;
+          that is{' '}
+          <a href="/stucco-water-damage-repair/">stucco water damage repair</a>,
+          and it is the part worth dealing with sooner rather than later.
+          Repair costs are on the{' '}
+          <a href="/stucco-repair/#pricing">price ranges</a>.
+        </p>
+        <p class="lede">
+          If you are not sure whether a wall is holding water, a{' '}
+          <a href="/stucco-moisture-testing/">Stucco Moisture Check</a>{' '}
+          answers that with meter readings, and timing matters to how they
+          read: a number taken days after a storm means something different
+          from the same number in a dry month. The findings are yours either
+          way.
+        </p>
+        <p class="lede">
+          For what the cracks themselves mean once you know which are new,
+          there is{' '}
+          <a href="/problems/cracks-in-stucco/">
+            a field guide to crack patterns
+          </a>. Marks and discolouration are{' '}
+          <a href="/problems/water-stains-on-stucco/">
+            what the stains are telling you
+          </a>, and anything that sounds hollow or gives under hand pressure
+          is{' '}
+          <a href="/problems/soft-spots-hollow-stucco/">
+            a separate finding with its own answer
+          </a>.
+        </p>
+        <p class="note">
+          One thing worth saying plainly: do not let anyone repair or repaint
+          storm damage before it has been photographed, however keen they are
+          to start. That advice costs us work and it is still the right
+          advice.
+        </p>
+      </div>
+    </section>
+
+    {/* FAQ */}
+    <section class="section slab joint" id="faq" aria-labelledby="faq-head">
+      <div class="wrap">
+        <SectionHead id="faq-head" eyebrow="FAQ" title="Frequently asked questions" />
+        <FaqList items={faqs} />
+      </div>
+    </section>
+
+    <section class="section on-dark">
+      <div class="wrap">
+        <ContactCta heading="Tell us what the wall looks like and we will tell you what looks new" />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  /*
+   * PAGE-SPECIFIC ONLY. The hero, bands, section heads, cell grid, FAQ rows
+   * and breadcrumbs come from the shared components and the global utilities
+   * in Layout.astro; those rules were deleted here rather than duplicated.
+   * What remains is this page's own furniture.
+   */
+  .band-lede { max-width: 60ch; color: var(--ink-soft); }
+  .lede { max-width: 60ch; color: var(--ink-soft); }
+  .note { color: var(--ink-soft); font-size: 0.9375rem; max-width: 60ch; }
+
+  .caveat {
+    border-left: 3px solid var(--flag);
+    padding-left: 1.25rem;
+    max-width: 60ch;
+  }
+  .caveat p { margin: 0; color: var(--ink-soft); }
+
+  .entry h3 { margin: 0 0 0.5rem; font-size: 1.0625rem; }
+  .entry p { margin: 0; color: var(--ink-soft); }
+
+  .verdict {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.375rem !important;
+    color: var(--ink-soft);
+  }
+  .tone-watch .verdict { color: var(--ink); }
+  .tone-flag .verdict { color: var(--flag); }
+
+  .proof {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .proof img { width: 100%; height: auto; border-radius: 4px; }
+
+  .faq { margin: 1.5rem 0 0; max-width: 44rem; }
+  .qa + .qa { margin-top: 1.5rem; }
+</style>

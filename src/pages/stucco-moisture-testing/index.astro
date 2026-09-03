@@ -37,7 +37,9 @@
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
+import MobileStickyBar from '../../components/MobileStickyBar.astro';
 import ContactCta from '../../components/ContactCta.astro';
+import LeadForm from '../../components/LeadForm.astro';
 import {
   business,
   moistureCheck,
@@ -69,7 +71,7 @@ const readingBands = [
 const worthTesting = [
   'There are <strong>stains</strong> on the wall, or on the inside of that same wall',
   'Paint is <strong>bubbling or peeling</strong> in a patch rather than across the whole elevation',
-  'A spot sounds <strong>hollow</strong> or gives slightly under hand pressure',
+  'A spot sounds <strong>hollow</strong> or gives slightly under hand pressure (<a href="/problems/soft-spots-hollow-stucco/">what that actually means</a>)',
   'A crack <strong>keeps coming back</strong> after it has been repaired',
   'Cracks radiate from <strong>window or door corners</strong>, especially with staining below',
   'An <strong>inspection flagged</strong> the stucco, or you are selling and want to know before a buyer’s inspector does',
@@ -166,7 +168,7 @@ const faqSchema = {
 
   <SiteHeader current="/stucco-moisture-testing/" />
 
-  <main>
+  <main id="main">
     {/* HERO */}
     <section class="hero">
       <div class="wrap">
@@ -183,7 +185,7 @@ const faqSchema = {
         </p>
 
         <div class="hero-actions">
-          <ContactCta variant="inline" heading="" />
+          <LeadForm />
         </div>
       </div>
     </section>
@@ -280,6 +282,15 @@ const faqSchema = {
           crack in an otherwise dry wall.</strong> Save your money.
         </p>
 
+        <p class="band-lede">
+          The same goes for a stain. Plenty of them wash off and never come
+          back, and{' '}
+          <a href="/problems/water-stains-on-stucco/">
+            which stains actually mean water
+          </a>{' '}
+          will tell you whether yours is one of them before you pay anyone.
+        </p>
+
         <p>It&rsquo;s worth testing when:</p>
 
         <ul class="signals">
@@ -339,6 +350,14 @@ const faqSchema = {
         </p>
 
         <p>
+          If a storm is the reason you are reading this, it is worth being
+          clear first about{' '}
+          <a href="/problems/hurricane-storm-stucco-damage/">
+            which of the damage is actually new
+          </a>, because that changes what a reading is telling you.
+        </p>
+
+        <p>
           What we do with them is tell you straight: here&rsquo;s what we read,
           here&rsquo;s where, here&rsquo;s what we think it means, here&rsquo;s
           what we&rsquo;d do about it.
@@ -373,6 +392,10 @@ const faqSchema = {
         <p>
           Where the finding points to repair work, that&rsquo;s a separate
           quote: see{' '}
+          <a href="/stucco-water-damage-repair/">
+            stucco water damage repair
+          </a>{' '}
+          for what that job involves when water is the cause, or{' '}
           <a href="/stucco-repair/">stucco repair and what it costs</a>. The
           mechanism behind a crack that keeps returning is covered in{' '}
           <a href="/blog/why-stucco-cracks-come-back/">
@@ -402,6 +425,8 @@ const faqSchema = {
   </main>
 
   <SiteFooter />
+
+  <MobileStickyBar />
 </Layout>
 
 <style>

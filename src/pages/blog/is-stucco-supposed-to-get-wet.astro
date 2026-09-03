@@ -1,0 +1,448 @@
+---
+/**
+ * /blog/is-stucco-supposed-to-get-wet/ — informational mechanism article.
+ *
+ * PAGE TYPE: Blog / educational resource. NOT a service page, NOT a problem
+ * page. Under the learnings.md:102 rule ("a page that explains a mechanism is
+ * a blog article; a page that catches a symptom search and routes to a service
+ * is a problem page") this is unambiguously blog territory: it explains an
+ * assembly, it catches no symptom, and it sells nothing.
+ *
+ * APPROVED 2026-09-01 via /keyword-research Refresh Mode. Splitting test
+ * scored 4 OF 4 — the first candidate on this site to clear all four gates.
+ * Full test and the six live SERPs behind it: keyword-plan.md, "Phase 3e —
+ * Live SERP validation, BLOG territory (2026-09-01)".
+ *
+ * Brief: campaigns/content-plan/is-stucco-supposed-to-get-wet.md
+ *
+ * Target: `is stucco waterproof`, `does stucco absorb water`,
+ * `is stucco supposed to get wet`, `stucco weep screed`,
+ * `how does stucco drain water`, `should I seal my stucco`.
+ *
+ * ------------------------------------------------------------------
+ * THE ANGLE, AND WHY IT IS DEFENSIBLE. Every result ranking for this query
+ * answers for a WOOD-FRAMED wall with a drainage cavity. Most Florida coastal
+ * housing is CONCRETE BLOCK, where stucco is applied directly and the wall is
+ * a BARRIER (face-sealed) system: no drainage cavity, no code-required weep
+ * screed, and a weep screed would not function as one if fitted. Confirmed
+ * 2026-09-01 from howtolookatahouse.com (citing IRC R703.2.1) and corroborated
+ * by flapb.com technical bulletins, the SMA guide spec, and InspectApedia.
+ * Naming which wall the reader has is the whole differentiator.
+ *
+ * THE CODE FIGURES ARE ATTRIBUTED, NEVER OURS. FBC/IRC R703.7.2.1 requires a
+ * weep screed not less than 4 in. above earth and 2 in. above paved areas —
+ * ON EXTERIOR STUD WALLS. That qualifier is load-bearing and must never be
+ * dropped: without it the article is confidently wrong for most of its
+ * Florida readers. These are code requirements, cited as such. They are not
+ * our standard, our promise, or a claim about our work.
+ *
+ * ------------------------------------------------------------------
+ * !! HIGHEST-RISK CONSTRAINT ON THIS PAGE !!
+ * `standaloneWaterproofing: false` in site.ts — waterproofing and sealing are
+ * VERIFIED NOT OFFERED as a standalone service. This article discusses sealing
+ * at length because the SERP is dominated by coating manufacturers whose
+ * advice ("seal it") can trap moisture in a wall. Sealing is therefore treated
+ * STRICTLY AS A MECHANISM TO UNDERSTAND, never as work we sell, recommend as a
+ * purchase, or offer BY ADJACENCY. The section deliberately routes toward
+ * /stucco-painting/ (verified TRUE) for coating questions and toward the
+ * moisture check for diagnosis. Do not let a future edit turn this into a
+ * waterproofing offer.
+ *
+ * OTHER STANDING CONSTRAINTS, all held:
+ *   - NO PRICE renders, so `pricingDisclaimer` is deliberately NOT imported.
+ *     Cost lives at /stucco-repair/#pricing.
+ *   - NOT A HOME INSPECTION (FL licenses inspectors separately). No
+ *     "we inspect", no "inspector" self-reference.
+ *   - NO THERMAL-IMAGING claim. Not raised.
+ *   - NO STRUCTURAL/ENGINEERING assessment.
+ *   - concreteSpallingRepair: false — not raised, not by adjacency.
+ *   - NO project history, job count, crew size, customer story, review count,
+ *     warranty term, response time, or turnaround.
+ *   - [PHONE], [LICENSE #] null — omitted entirely, never stubbed.
+ *   - No exclamation points. No emoji.
+ *
+ * CANNIBALIZATION CONTROL — this page is UPSTREAM of everything it links to:
+ *   - /stucco-water-damage-repair/ OWNS where water gets in and how it is
+ *     found. Referenced, never rebuilt.
+ *   - /stucco-moisture-testing/ OWNS the paid diagnostic. Named as the next
+ *     step, never re-described.
+ *   - /blog/why-stucco-cracks-come-back/ OWNS recurrence after a repair. This
+ *     page explains how the wall works; that one explains why a repair failed.
+ *   - /problems/* OWN symptoms. This page names none as a headline.
+ * ------------------------------------------------------------------
+ */
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import MobileStickyBar from '../../components/MobileStickyBar.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import { business, moistureCheck } from '../../config/site';
+
+const title = 'Is Stucco Supposed to Get Wet? | Daytona Beach Stucco';
+const description =
+  'Stucco is not waterproof, and it was never meant to be. How a stucco wall is designed to get wet and dry out — and why that depends on which wall you have.';
+
+const published = '2026-09-01';
+
+const canonical = Astro.site
+  ? new URL('/blog/is-stucco-supposed-to-get-wet/', Astro.site).toString()
+  : '/blog/is-stucco-supposed-to-get-wet/';
+
+/**
+ * The two wall systems. This table IS the article's differentiator — no
+ * ranking competitor makes the distinction, and getting it wrong is how a
+ * homeowner ends up sealing a wall that needed to breathe.
+ */
+const systems = [
+  {
+    name: 'Concrete block, stucco applied directly',
+    common: 'Most Florida coastal housing',
+    how: 'A barrier system, sometimes called face-sealed. There is no gap behind the stucco, because the stucco is bonded straight to the block. The wall resists water at its face and dries in both directions.',
+    weep: 'No drainage cavity, so no code-required weep screed — and one would have nothing to drain if it were fitted.',
+  },
+  {
+    name: 'Wood frame, lath over a barrier',
+    common: 'Additions, framed second storeys, some newer builds',
+    how: 'A drainage system. Lath holds the stucco slightly off a water-resistive barrier, leaving a path. Water that gets through the stucco runs down that barrier instead of reaching the framing.',
+    weep: 'Needs a weep screed at the base to let that water out. This is the wall the building code is written about.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Is stucco waterproof?',
+    a: 'No. Stucco is water-resistant, not waterproof, and it was never designed to be waterproof. It is a porous cement product that takes on water when it rains and gives it back up as it dries. A wall that gets wet in a storm and dries out afterwards is a wall doing exactly what it was built to do.',
+  },
+  {
+    q: 'Does stucco absorb water?',
+    a: 'Yes, by design. Stucco is sometimes called a reservoir cladding because it holds rainwater in its own thickness and releases it later by evaporation. The problem is never that stucco got wet. The problem is when it cannot dry, or when water gets past it to something that rots or rusts.',
+  },
+  {
+    q: 'What is a weep screed, and does my house have one?',
+    a: 'It is a metal flashing at the base of a stucco wall that gives trapped water a way out. It belongs on wood-framed stucco walls, where the code calls for it to sit not less than four inches above earth or two inches above paved surfaces. Stucco applied directly to concrete block has no drainage cavity behind it, so it generally has no weep screed and does not need one.',
+  },
+  {
+    q: 'What happens if the weep screed is buried?',
+    a: 'On a framed wall, burying it closes the only exit the wall has. Soil, mulch, a raised patio or a poured slab against the base of the wall can all do it, and the result is water held in the assembly with nowhere to go. Staining, rusted lath, soft sheathing and cracking low on the wall are the usual signs.',
+  },
+  {
+    q: 'Should I seal or waterproof my stucco?',
+    a: 'Be careful here, because the advice you find is mostly written by companies selling coatings. Stucco needs to release water vapour. A coating that is not vapour-permeable can hold moisture inside the wall rather than keeping it out, and that does more damage than the water it was meant to stop. If a wall is being coated, permeability is the property that matters.',
+  },
+  {
+    q: 'When is a wet stucco wall actually a problem?',
+    a: 'When it stays wet. Wet after rain and dry a day later is normal. Damp that persists in dry weather, a patch that is always darker than the wall around it, chalky white deposits, bubbling paint or a hollow or soft area all suggest water is getting in and not leaving.',
+  },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Is Stucco Supposed to Get Wet?',
+  description,
+  datePublished: published,
+  dateModified: published,
+  author: { '@type': 'Organization', name: business.name },
+  publisher: { '@type': 'Organization', name: business.name },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+  about: [
+    { '@type': 'Thing', name: 'Stucco' },
+    { '@type': 'Thing', name: 'Moisture intrusion' },
+    { '@type': 'Thing', name: 'Weep screed' },
+  ],
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <SiteHeader current="/blog/is-stucco-supposed-to-get-wet/" />
+
+  <main id="main">
+    <article>
+      <section class="hero">
+        <div class="wrap">
+          <p class="eyebrow">Stucco, explained</p>
+          <h1>Is stucco supposed to get wet?</h1>
+          <p class="hero-lede">
+            Yes. That is the part almost nobody says out loud. Stucco is not
+            waterproof, it was never meant to be waterproof, and a wall that
+            gets wet in a storm and dries out afterwards is working correctly.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="wrap">
+          <h2>The short answer</h2>
+          <p>
+            Stucco is water-<em>resistant</em>. It takes on water when it rains
+            and gives it back as it dries. Getting wet is not the failure. The
+            failure is water that cannot leave, or water that reaches something
+            behind the wall that rusts or rots.
+          </p>
+          <p>
+            So the useful question is not "is my stucco wet." It is "can this
+            wall dry, and is the water getting somewhere it should not be."
+          </p>
+        </div>
+      </section>
+
+      <section class="section band">
+        <div class="wrap">
+          <h2>Stucco is a reservoir cladding</h2>
+          <p>
+            The trade term is worth knowing, because it explains the whole
+            behaviour. A reservoir cladding is a material that stores rainwater
+            in its own thickness and releases it later by evaporation. Brick
+            does it. Stucco does it. Cement is porous, water moves into it by
+            capillary action, and then it comes back out.
+          </p>
+          <p>
+            This is why a stucco wall can look two shades darker after a storm
+            and be perfectly sound. It is holding water. Give it a dry day and
+            it gives the water back.
+          </p>
+          <p>
+            It also explains why the wall behind the stucco matters more than
+            the stucco itself &mdash; and that is where most houses differ from
+            each other.
+          </p>
+        </div>
+      </section>
+
+      {/* THE DIFFERENTIATOR */}
+      <section class="section">
+        <div class="wrap">
+          <h2>Two different walls, two different systems</h2>
+          <p class="lede">
+            Here is the thing that most articles on this question get wrong.
+            They answer for one kind of wall, and a lot of Florida houses have
+            the other kind.
+          </p>
+          <div class="entries">
+            {systems.map((s) => (
+              <div class="entry">
+                <p class="who">{s.common}</p>
+                <h3>{s.name}</h3>
+                <p>{s.how}</p>
+                <p class="weep">{s.weep}</p>
+              </div>
+            ))}
+          </div>
+          <p>
+            Both are legitimate. Neither is a defect. But they fail differently
+            and they dry differently, so advice written for one can be actively
+            wrong for the other. If you have a block house and you read that
+            your wall drains behind the stucco, that advice was not written for
+            your wall.
+          </p>
+        </div>
+      </section>
+
+      <section class="section band">
+        <div class="wrap">
+          <h2>What a weep screed does, and what buries it</h2>
+          <p>
+            On a framed stucco wall, the weep screed is the exit. It is a metal
+            flashing at the base that lets water which got behind the stucco
+            run out at the bottom instead of sitting in the wall.
+          </p>
+          <p>
+            Building code sets it a specific height off the ground for a
+            reason. The requirement is a weep screed placed not less than four
+            inches above earth, or two inches above paved areas &mdash; and
+            that requirement is written for exterior <em>stud</em> walls, which
+            is the distinction that matters if your house is block.
+          </p>
+          <p class="caveat">
+            The common failure is not a bad weep screed. It is a good one that
+            got buried later. Soil built up over the years, a mulch bed raised
+            against the wall, a patio slab poured up to the stucco, a driveway
+            resurfaced a little higher than the last one. The exit closes, and
+            the wall has nowhere to put the water. Staining low on the wall,
+            rusted lath, soft sheathing and cracking near the base are what
+            that looks like from outside.
+          </p>
+          <p>
+            It is worth walking the base of your walls and looking. If the
+            bottom edge of the stucco disappears into dirt or concrete rather
+            than stopping visibly above it, that is worth someone's attention.
+          </p>
+        </div>
+      </section>
+
+      {/* HIGH-RISK SECTION — mechanism only, no service offered */}
+      <section class="section">
+        <div class="wrap">
+          <h2>Why sealing it can make things worse</h2>
+          <p>
+            Search this question and most of what comes back tells you to seal
+            or waterproof the stucco. Look at who wrote it. Nearly all of it is
+            published by companies that sell coatings.
+          </p>
+          <p>
+            The mechanism they leave out is vapour permeability. Stucco has to
+            let water vapour out. A coating that blocks vapour does not just
+            keep rain from getting in &mdash; it keeps moisture already in the
+            wall from getting out. Seal a wall that was drying normally and you
+            can convert a wall that handled water into a wall that stores it.
+            The damage then shows up as bubbling and peeling of the coating
+            itself, and as deterioration behind it.
+          </p>
+          <p>
+            None of which means never coat stucco. Paint and coatings are
+            normal maintenance, and in this climate they take a beating from UV
+            and driven rain. It means permeability is the property that
+            decides whether a coating helps or hurts. If you are thinking about
+            recoating a wall, that is a
+            <a href="/stucco-painting/">stucco painting</a> question, and the
+            honest version of it starts with whether the wall is dry
+            underneath.
+          </p>
+        </div>
+      </section>
+
+      <section class="section band">
+        <div class="wrap">
+          <h2>When getting wet is actually a problem</h2>
+          <p>
+            Wet after rain, dry a day or two later: normal, and not worth
+            worrying about. What is worth attention is water that does not
+            leave.
+          </p>
+          <ul class="signs">
+            <li>Damp that persists through dry weather</li>
+            <li>A patch that stays darker than the wall around it</li>
+            <li>Chalky white deposits coming through the surface</li>
+            <li>Paint bubbling or peeling away in sheets</li>
+            <li>An area that sounds hollow or gives under thumb pressure</li>
+            <li>Staining low on the wall, near the base</li>
+          </ul>
+          <p>
+            Any of those means water is getting in somewhere and not getting
+            out. What that costs to put right depends entirely on how long it
+            has been going on, which is the argument for looking early rather
+            than late. If you are seeing one of these,
+            <a href="/problems/">what your stucco is telling you</a> takes each
+            symptom in turn, and
+            <a href="/stucco-water-damage-repair/">water damage repair</a>
+            covers where water usually gets in and what the repair involves.
+          </p>
+          <p>
+            If you want to know rather than guess, the
+            <a href="/stucco-moisture-testing/">{moistureCheck.name}</a> is a
+            paid diagnostic that answers the question with readings instead of
+            opinion. And if you have had a crack repaired that came back,
+            <a href="/blog/why-stucco-cracks-come-back/">that has its own
+            explanation</a> &mdash; usually the same one.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="wrap">
+          <h2>Common questions</h2>
+          <div class="faqs">
+            {faqs.map((f) => (
+              <div class="faq">
+                <h3>{f.q}</h3>
+                <p>{f.a}</p>
+              </div>
+            ))}
+          </div>
+          <p class="note">
+            Weep screed clearances above are the requirements of the Florida
+            and International Residential Codes for exterior stud walls
+            (R703.7.2.1 / R703.2.1), cited here as published code. They are not
+            our own standard and not a statement about any particular house.
+            Whether a specific wall complies is a question for the authority
+            having jurisdiction.
+          </p>
+        </div>
+      </section>
+
+      <ContactCta heading="Not sure whether your wall is drying out" />
+    </article>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  .wrap { max-width: 60rem; margin: 0 auto; padding-inline: 1.25rem; }
+
+  .hero { padding-block: 3rem 1.5rem; }
+  .eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin: 0 0 0.75rem;
+  }
+  h1 { margin: 0 0 1rem; max-width: 20ch; }
+  .hero-lede {
+    font-size: 1.125rem;
+    color: var(--ink-soft);
+    max-width: 56ch;
+    margin: 0;
+  }
+
+  .section { padding-block: 1.75rem; }
+  .band { background: var(--paper-warm); }
+  h2 { margin: 0 0 0.875rem; }
+  p { max-width: 62ch; }
+  .lede { color: var(--ink-soft); }
+
+  .entries {
+    display: grid;
+    gap: 1.25rem;
+    margin: 1.5rem 0;
+    max-width: 44rem;
+  }
+  .entry h3 { margin: 0 0 0.5rem; font-size: 1rem; }
+  .entry p { margin: 0 0 0.5rem; color: var(--ink-soft); }
+  .entry p:last-child { margin-bottom: 0; }
+  .who {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink-faint) !important;
+  }
+  .weep { border-left: 2px solid var(--rule); padding-left: 0.875rem; }
+
+  .caveat {
+    border-left: 3px solid var(--flag);
+    padding-left: 1rem;
+    max-width: 48ch;
+  }
+
+  .signs { max-width: 52ch; padding-left: 1.125rem; color: var(--ink-soft); }
+  .signs li { margin-bottom: 0.375rem; }
+
+  .faqs { display: grid; gap: 1.25rem; margin-top: 1.25rem; max-width: 46rem; }
+  .faq h3 { margin: 0 0 0.375rem; font-size: 1rem; }
+  .faq p { margin: 0; color: var(--ink-soft); }
+
+  .note {
+    margin-top: 1.5rem;
+    font-size: 0.875rem;
+    color: var(--ink-faint);
+    max-width: 58ch;
+  }
+</style>

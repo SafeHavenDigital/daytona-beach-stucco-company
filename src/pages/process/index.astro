@@ -1,0 +1,460 @@
+---
+/**
+ * /process/ — TRUST PAGE. Built 2026-09-01.
+ *
+ * APPROVAL: brand/keyword-plan.md:279 (trust tier) and :349, where /process/
+ * is listed alongside /about/ as "still to build" in Wave 1. Never rejected.
+ *
+ * ------------------------------------------------------------------
+ * WHY THIS PAGE EXISTS: every page on the site terminates at a CTA, and no
+ * page describes what the CTA leads to. /contact/ lists reasons to get in
+ * touch; nothing says what happens after you do. This page answers the
+ * question a reader holds at the moment they decide whether to send the
+ * message — what actually happens if I contact these people — and it is
+ * the only page whose job is the SEQUENCE rather than the work.
+ *
+ * TARGETS NO KEYWORD. Trust tier, same as /contact/. Its measure is
+ * conversion, not ranking.
+ *
+ * VOICE: company "we" throughout, per brand/voice-profile.md (Voice Test
+ * Loop passed and owner-approved 2026-09-01). No "I", no named individual,
+ * no signature. NOTE FOR A LATER PASS, NOT ACTIONED HERE: ContactCta.astro
+ * and several older pages still speak as "I" — they predate that decision
+ * and were out of scope for this build. Flagged to the owner.
+ *
+ * ------------------------------------------------------------------
+ * CANNIBALIZATION CONTROL — the whole risk on this page, because it sits
+ * between two pages that already describe the same service.
+ *
+ *   /stucco-moisture-testing/ OWNS: what the Stucco Moisture Check is, the
+ *     three steps in detail, what the readings mean, the three shapes a
+ *     finding takes, when it is worth paying for. This page names the Check
+ *     and says WHERE IT SITS IN THE SEQUENCE, then links. It does not
+ *     re-explain the method and does not reproduce the deliverable list as
+ *     a feature block.
+ *   /stucco-repair/#pricing OWNS: what things cost, the three-price
+ *     separation as a priced comparison, what moves the number, why three
+ *     contractors gave three numbers. This page states the free/paid
+ *     DISTINCTION as a step-ordering fact — which comes first and why —
+ *     and links. NO price range renders here, so `pricingDisclaimer` is
+ *     deliberately NOT imported.
+ *   /stucco-crack-triage/ OWNS: how to read your own crack before calling.
+ *   /contact/ OWNS: the form, what to put in a photo message.
+ *
+ * THE SPLIT: those pages answer WHAT THE WORK IS and WHAT IT COSTS. This
+ * page answers WHAT ORDER IT HAPPENS IN and WHERE THE DECISION POINTS ARE.
+ *
+ * ------------------------------------------------------------------
+ * OMITTED — not verified, so the block is ABSENT rather than stubbed. Every
+ * one of these is a thing a process page structurally invites, which is why
+ * they are listed:
+ *   [RESPONSE TIME] — no measured figure exists. The page never says how
+ *     fast anyone replies. `OUTSTANDING` names this explicitly: "never
+ *     publish an unmeasured guess."
+ *   [HEIGHT / ACCESS / STOREY / LIFT / SCAFFOLD] — UNVERIFIED, and this is
+ *     the ELEVENTH build running without it. A process page invites "what
+ *     if it is on the second story" more directly than any page so far.
+ *     Not routed around with a vague reassurance: the page simply never
+ *     states what can be reached. Access appears ONLY as a thing that
+ *     affects a quote, which is already verified in `pricingVariables`.
+ *   [TIMELINE / LEAD TIME / TURNAROUND / SCHEDULING] — unverified. The page
+ *     does not say how long a job takes or how soon it can start.
+ *   [CREW SIZE] — unverified.
+ *   [LICENSE #] — null, client declined. "Licensed and insured" is verified
+ *     and lives in the footer; no number, and no permit or code-compliance
+ *     claim anywhere.
+ *   [WARRANTY] — `warrantyTerms` null. No guarantee language of any kind.
+ *   [SERVICE AREA] municipalities — null.
+ *   [PROJECT HISTORY / JOB COUNT / REVIEWS] — unverified. No "we have done
+ *     N of these", no testimonial, no rating.
+ *   [PHOTOS] — `openWallPhotos` null. SIXTH page now waiting on the photo
+ *     set. Do NOT substitute stock or AI imagery.
+ *   [PAYMENT TERMS / DEPOSIT] — never verified, never asked. A process page
+ *     invites this and it is not answerable, so it is absent.
+ *
+ * PLUS standing brand constraints, all held:
+ *   - Thermal imaging is a SCREENING AID, conditional, never proof of
+ *     moisture on its own. It is named once, hedged, inside the sequence.
+ *   - NOT a home inspection. Florida licenses home inspectors as a separate
+ *     profession. No "inspect"/"inspector"/"inspection" framing.
+ *   - No standalone waterproofing or sealing (verified FALSE).
+ *   - No concrete spalling, including by adjacency (verified FALSE).
+ *   - No emoji. No exclamation points.
+ * ------------------------------------------------------------------
+ */
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import MobileStickyBar from '../../components/MobileStickyBar.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import { business, moistureCheck } from '../../config/site';
+
+const title = 'How we work | Daytona Beach Stucco Company';
+const description =
+  'What happens after you get in touch: a straight answer first, a free repair estimate where the cause is clear, and a paid Stucco Moisture Check only where the wall needs testing before anyone prices a repair.';
+
+/**
+ * HowTo schema is deliberately NOT used — it describes instructions the
+ * reader performs themselves, and this is a description of a service
+ * engagement. WebPage + FAQPage only. No Service node: every service page
+ * already carries its own, and duplicating one here would put this page in
+ * competition with the pages it exists to feed.
+ *
+ * No aggregateRating, no telephone, no address, no openingHours — all null
+ * or unverified.
+ */
+const faqs = [
+  {
+    q: 'Does it cost anything to have someone look at my wall?',
+    a: `No. Our repair estimates are free, the same as they are with most contractors. The ${moistureCheck.name} is the one paid thing, it is a separate service, and it only comes up where the wall needs testing before a repair can be priced honestly. Nobody pays for it without being told first what it is and what it costs.`,
+  },
+  {
+    q: 'Why would I pay for testing when the estimate is free?',
+    a: 'Because they answer different questions. A free estimate prices work whose cause is already clear from looking. Testing is for the wall where it is not — where the visible damage might be the whole story or might be a symptom, and guessing wrong means either paying for a repair you did not need or paying twice for one that comes back. Where we can tell by looking, we say so and you do not spend the money.',
+  },
+  {
+    q: 'Does the cost of the Moisture Check come off the repair bill?',
+    a: 'No, and we would rather say that plainly here than at invoice time. It is a separate paid service and it is never credited toward repair work. Crediting it would mean the finding is worth less if we do not get the job, which is exactly the incentive that makes a diagnosis untrustworthy.',
+  },
+  {
+    q: 'What if you find nothing?',
+    a: `Then that is the finding, and it is worth having. A wall that tests dry means the damage in front of you is what you are dealing with, and it can be repaired as what it is. You get the documented findings, the readings from the areas tested, and an explanation either way — the ${moistureCheck.name} is not priced on whether it finds a problem.`,
+  },
+  {
+    q: 'Do I have to use you for the repair?',
+    a: 'No. The findings are yours. If you want to take them to another contractor, or sit on them, or do nothing for now, that is a legitimate outcome and the page you are reading is not going to pretend otherwise.',
+  },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: title,
+  description,
+  isPartOf: {
+    '@type': 'WebSite',
+    name: business.name,
+  },
+  mainEntity: {
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+};
+
+/**
+ * The sequence. Five steps, and the ORDER is the argument: the diagnosis
+ * decision sits at step three, before anyone prices anything, which is the
+ * whole of FIND THE WATER FIRST expressed as a sequence rather than a claim.
+ *
+ * Every `body` is sourced from a verified fact — the moistureCheck object,
+ * the verified free/paid separation, or pricingVariables. No step states a
+ * duration, a response time, or a capability.
+ */
+const steps = [
+  {
+    n: '01',
+    title: 'You tell us what the wall is doing',
+    body: 'The form on the contact page is text only. Photos help a lot and go by email — a wide shot showing where the damage sits on the house, and a close one of the damage itself. Where it sits tells us more than the crack does: a crack under a window sill and the same crack in the middle of an open wall are usually two different problems.',
+  },
+  {
+    n: '02',
+    title: 'We tell you what we think you are looking at',
+    body: 'Before anyone comes out, and before any money is discussed. Sometimes the honest answer is that it looks cosmetic and you should keep an eye on it. We would rather say that than book a visit, and saying it costs us a job we did not deserve.',
+  },
+  {
+    n: '03',
+    title: 'We work out whether the cause is visible or hidden',
+    body: 'This is the decision the rest of the job hangs on. If the cause is clear from looking at the wall, the next step is a free estimate for the repair. If the visible damage might be a symptom of water behind the wall, testing comes before pricing — because a repair priced on a guess about what is behind the stucco is a repair that comes back.',
+  },
+  {
+    n: '04',
+    title: 'Either a free repair estimate, or a paid Moisture Check',
+    body: 'One or the other, and you are told which and why before anything is agreed. The estimate is free with no obligation. The Check is a separate paid service with its own price, quoted before it starts.',
+  },
+  {
+    n: '05',
+    title: 'You get findings you can act on, with us or without us',
+    body: 'A quote you can compare, or documented findings with the readings and photos behind them. Either way it is yours to take elsewhere. Nothing here is priced on you saying yes afterwards.',
+  },
+];
+
+/** Sourced verbatim in substance from moistureCheck.deliverable in site.ts. */
+const deliverable = moistureCheck.deliverable;
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+  <SiteHeader current="/process/" />
+
+  <main id="main">
+    {/* HERO */}
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">How we work</p>
+
+        <h1>What happens after you get in touch</h1>
+
+        <p class="lede">
+          Most of the cost of a stucco repair is decided before anyone picks up
+          a trowel &mdash; in whether the person quoting it worked out what
+          caused the damage, or just priced what they could see. This is the
+          order we do things in, and where the decisions sit.
+        </p>
+      </div>
+    </section>
+
+    {/* THE SEQUENCE */}
+    <section class="section">
+      <div class="wrap">
+        <h2>The order things happen in</h2>
+
+        <ol class="steps">
+          {steps.map((s) => (
+            <li class="step">
+              <p class="step-n">{s.n}</p>
+              <div>
+                <h3>{s.title}</h3>
+                <p>{s.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    {/* THE DECISION POINT */}
+    <section class="section alt">
+      <div class="wrap narrow">
+        <h2>The free estimate and the paid check are not the same thing</h2>
+
+        <p>
+          This is the part worth being unambiguous about, because it is where
+          most people expect a catch.
+        </p>
+
+        <p>
+          <strong>Repair estimates are free.</strong> If you have damage whose
+          cause is clear &mdash; impact damage, an old patch that has let go, a
+          run of cracking in a wall that is otherwise sound &mdash; we look at
+          it, and you get a price for the work. No charge, no obligation. That
+          is ordinary, and most contractors do the same.
+        </p>
+
+        <p>
+          <strong>
+            The {moistureCheck.name} is a separate paid service.
+          </strong>{' '}
+          It is for the wall where looking is not enough: where the damage in
+          front of you might be the whole problem, or might be what water
+          behind the stucco is doing to the surface. It is priced{' '}
+          {moistureCheck.priceNote}, it is quoted before it starts, and it is
+          not part of the free estimate.
+        </p>
+
+        <p>
+          <strong>It is never credited toward repair work.</strong> Not as a
+          discount, not as a rebate if you hire us. That sounds less generous
+          than the alternative, and it is deliberate: the moment a diagnosis is
+          worth less to us when it does not lead to a repair, we have a reason
+          to find a problem. Keeping the two separate is what lets the finding
+          be believed &mdash; including when the finding is that your wall is
+          fine.
+        </p>
+
+        <p class="aside">
+          What the Check involves, what the readings mean and when it is worth
+          paying for are covered on{' '}
+          <a href="/stucco-moisture-testing/">stucco moisture testing</a>. What
+          repairs themselves cost, and the six things that move the number, are
+          on{' '}
+          <a href="/stucco-repair/#pricing">
+            what stucco repair costs
+          </a>.
+        </p>
+      </div>
+    </section>
+
+    {/* WHAT YOU END UP HOLDING */}
+    <section class="section">
+      <div class="wrap narrow">
+        <h2>What you end up holding</h2>
+
+        <p>
+          Where the wall gets tested, the {moistureCheck.name} produces
+          something you keep:
+        </p>
+
+        <ul class="deliverable">
+          {deliverable.map((d) => (
+            <li>{d}</li>
+          ))}
+        </ul>
+
+        <p>
+          The readings are from the areas we actually tested, and the write-up
+          says which those were. Where a thermal camera is used at all, it is
+          used to decide where to test &mdash; it is a way of narrowing down
+          the wall, and nothing it shows is reported as a finding on its own.
+          Anything written down as a finding was measured.
+        </p>
+
+        <p>
+          One thing this is not: it is not a home inspection. Florida licenses
+          home inspectors as a separate profession, and this is a stucco
+          moisture assessment carried out by a stucco contractor. It looks at
+          the wall, not at the house.
+        </p>
+      </div>
+    </section>
+
+    {/* WHY THIS ORDER */}
+    <section class="section alt">
+      <div class="wrap narrow">
+        <h2>Why the diagnosis comes before the price</h2>
+
+        <p>
+          A crack is a symptom. It is the wall telling you something moved,
+          got wet, or came loose &mdash; and the crack itself does not say
+          which. Fill it without answering that and you have covered up the
+          evidence, not fixed the problem, which is why so many people are
+          looking at the same crack for the second or third time.
+        </p>
+
+        <p>
+          It is also the question that moves the price furthest. Repairing a
+          sound wall and repairing one that has been wet behind the surface are
+          not the same scope, and nobody can tell which one you have by looking
+          at the finish. A quote given before that is settled is a guess with a
+          number attached.
+        </p>
+
+        <p>
+          So the order is not a formality. Working out the cause first is what
+          makes the number afterwards mean anything.
+        </p>
+
+        <p class="aside">
+          The mechanism behind a crack that keeps returning is set out in{' '}
+          <a href="/blog/why-stucco-cracks-come-back/">
+            why stucco cracks come back
+          </a>. If you want to read your own wall before contacting anyone,{' '}
+          <a href="/stucco-crack-triage/">
+            what your stucco crack is telling you
+          </a>{' '}
+          walks through it.
+        </p>
+      </div>
+    </section>
+
+    {/* FAQ */}
+    <section class="section">
+      <div class="wrap narrow">
+        <h2>Questions people ask before getting in touch</h2>
+
+        <dl class="faq">
+          {faqs.map((f) => (
+            <>
+              <dt>{f.q}</dt>
+              <dd>{f.a}</dd>
+            </>
+          ))}
+        </dl>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <ContactCta />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  .hero { padding-block: clamp(2.5rem, 7vw, 4.5rem) 1rem; }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8125rem;
+    font-weight: 650;
+    color: var(--accent);
+    margin: 0 0 0.75rem;
+  }
+
+  h1 { max-width: 20ch; }
+
+  .lede {
+    font-size: 1.1875rem;
+    color: var(--ink-soft);
+    max-width: 46rem;
+  }
+
+  .section { padding-block: clamp(2rem, 5vw, 3.25rem); }
+  .section.alt { background: var(--surface-alt, #f6f6f4); }
+  .narrow { max-width: 44rem; }
+
+  .steps {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .step {
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .step:last-child { border-bottom: 0; padding-bottom: 0; }
+
+  .step-n {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+    font-weight: 650;
+    font-size: 0.9375rem;
+    color: var(--accent);
+    min-width: 2.25rem;
+    padding-top: 0.2rem;
+  }
+
+  .step h3 { margin: 0 0 0.4rem; font-size: 1.125rem; }
+  .step p { margin: 0; color: var(--ink-soft); }
+
+  .deliverable {
+    margin: 1rem 0 1.5rem;
+    padding-left: 1.15rem;
+    display: grid;
+    gap: 0.4rem;
+    color: var(--ink-soft);
+  }
+
+  .aside {
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
+    border-left: 2px solid var(--rule);
+    padding-left: 1rem;
+  }
+
+  .faq { margin: 1.5rem 0 0; }
+  .faq dt { font-weight: 650; margin-top: 1.5rem; }
+  .faq dt:first-child { margin-top: 0; }
+  .faq dd { margin: 0.5rem 0 0; color: var(--ink-soft); }
+
+  @media (max-width: 34rem) {
+    .step { gap: 0.9rem; }
+  }
+</style>

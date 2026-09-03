@@ -1,0 +1,398 @@
+---
+/**
+ * /about/ — TRUST PAGE. Built 2026-09-01.
+ *
+ * APPROVAL: brand/keyword-plan.md:279 (trust tier) and :349, listed with
+ * /process/ as "still to build" in Wave 1. Never rejected.
+ *
+ * UNBLOCKED 2026-09-01. This page was deferred on 2026-08-31 as "genuinely
+ * thin" because the company could state almost nothing verified about
+ * itself. Three owner-supplied facts changed that: in business since 2018,
+ * licensed and insured, and a service area covering all of Volusia County
+ * and Orange County including Greater Orlando. `serviceArea` in
+ * src/config/site.ts moved from null to a verified two-county array in the
+ * same change that produced this page.
+ *
+ * TARGETS NO KEYWORD. Trust tier, same as /contact/ and /process/.
+ *
+ * ------------------------------------------------------------------
+ * WHAT THIS PAGE MAY SAY, AND THE EXACT SOURCE OF EACH CLAIM. Nothing on
+ * this page is asserted from any other basis:
+ *   - "since 2018"            → business.founded (re-verified 2026-09-01)
+ *   - "licensed and insured"  → business.licensedAndInsured, no number
+ *   - service area            → serviceArea + serviceAreaProse (verified)
+ *   - what we do              → verifiedServices, flag by flag
+ *   - the Moisture Check      → moistureCheck (verified 2026-08-28)
+ *   - free estimate / paid check separation → verified offer separation
+ *
+ * OMITTED — not verified, so ABSENT rather than softened. An About page
+ * invites every single one of these, which is why they are enumerated:
+ *   [FOUNDER NAME / BIO / PHOTO] · [EMPLOYEE NAMES] · [CREW SIZE] ·
+ *   [YEARS OF EXPERIENCE as a number — founded year only, never computed] ·
+ *   [CERTIFICATIONS / TRAINING / MANUFACTURER APPROVAL] · [LICENSE #] ·
+ *   [INSURANCE CARRIER OR LIMITS] · [PROJECT COUNT / JOB HISTORY] ·
+ *   [REVIEW COUNT / RATING / TESTIMONIALS] · [AWARDS / ASSOCIATIONS] ·
+ *   [WARRANTY] · [RESPONSE TIME] · [CUSTOMER STORIES] · [PHOTOS —
+ *   openWallPhotos null, SEVENTH page waiting] · [PHONE — null] ·
+ *   [HOURS] · [ADDRESS] · [HEIGHT / ACCESS / LIFT / SCAFFOLD — UNVERIFIED,
+ *   TWELFTH build running] · [CREW/SUBCONTRACTOR STRUCTURE] ·
+ *   [MUNICIPALITY LIST — county-level coverage was verified, not a city
+ *   roster; expanding it would invent detail]
+ *
+ * THE FOUNDING-YEAR RULE, stated because it is the easiest slip on this
+ * page: the year renders, the arithmetic does not. No "over seven years",
+ * no "nearly a decade". `yearsExperience` is null and stays null.
+ *
+ * ------------------------------------------------------------------
+ * CANNIBALIZATION CONTROL:
+ *   /services/ OWNS the service roster with per-page descriptions. This
+ *     page names WHAT KIND of work the company does in one grouped
+ *     paragraph and links there. It does not reproduce the eleven-entry
+ *     list, and it carries no per-service description.
+ *   /process/ OWNS the sequence — what happens after you make contact,
+ *     step by step, and the free/paid ordering. This page states the
+ *     PRINCIPLE behind that order (why diagnosis precedes pricing) in
+ *     brief and links. It does not re-run the five steps.
+ *   /stucco-moisture-testing/ OWNS the Check's method and readings.
+ *   /stucco-repair/#pricing OWNS costs. NO price renders here, so
+ *     `pricingDisclaimer` is deliberately NOT imported.
+ *   /stucco-repair/#licensing OWNS the "licensed and insured is table
+ *     stakes" argument. Named once here, differently, and linked.
+ *
+ * THE SPLIT: other pages answer what the work is, what it costs, and what
+ * order it happens in. This page answers WHO IS DOING IT and WHAT THEY
+ * WILL AND WILL NOT DO — the only page whose subject is the company.
+ *
+ * PLUS standing brand constraints: thermal imaging is a screening aid, not
+ * proof; NOT a home inspection (FL licenses inspectors separately); no
+ * standalone waterproofing or sealing (verified FALSE); no concrete
+ * spalling, including by adjacency (verified FALSE); no emoji; no
+ * exclamation points; company "we" voice throughout per the approved
+ * voice profile.
+ * ------------------------------------------------------------------
+ */
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import MobileStickyBar from '../../components/MobileStickyBar.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import {
+  business,
+  serviceArea,
+  serviceAreaProse,
+  moistureCheck,
+  licenseNumber,
+} from '../../config/site';
+
+const title = `About | ${business.name}`;
+const description = `Stucco repair, replacement, and installation across Volusia and Orange County, Florida. Licensed and insured, working here since ${business.founded}. We find out why the wall failed before we price the repair.`;
+
+/**
+ * AboutPage + Organization. Only verified fields are emitted: name,
+ * foundingDate, areaServed. No telephone, no address, no aggregateRating,
+ * no award, no employee, no numberOfEmployees — all unverified.
+ */
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: title,
+  description,
+  mainEntity: {
+    '@type': 'HomeAndConstructionBusiness',
+    name: business.name,
+    description:
+      'Stucco repair, water damage repair, replacement, resurfacing, and new installation across Volusia and Orange County, Florida.',
+    foundingDate: String(business.founded),
+    areaServed: serviceArea.map((a) => ({ '@type': 'AdministrativeArea', name: a })),
+  },
+};
+
+/**
+ * The three commitments. Each is a restatement of something already
+ * verified and already practised elsewhere on the site — not a new promise.
+ * Deliberately phrased as things we DO and DON'T do, not as guarantees:
+ * `warrantyTerms` is null and no guarantee language may appear.
+ */
+const commitments = [
+  {
+    title: 'We tell you when it is cosmetic',
+    body: 'Not every crack is a job. Where the honest answer is that a wall needs watching rather than work, that is the answer you get, and it costs us the work we would have had by saying otherwise.',
+  },
+  {
+    title: 'We keep the diagnosis separate from the sale',
+    body: `Repair estimates are free. The ${moistureCheck.name} is a separate paid service, and it is never credited toward repair work — because a diagnosis worth less to us when it finds nothing is a diagnosis you cannot trust.`,
+  },
+  {
+    title: 'We give you the findings either way',
+    body: 'Readings, photos, and what they mean, written down. They are yours whether or not you hire us for the repair, and they are specific enough to hand to somebody else.',
+  },
+];
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+  <SiteHeader current="/about/" />
+
+  <main id="main">
+    {/* HERO */}
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">About us</p>
+
+        <h1>A stucco company that looks behind the wall first</h1>
+
+        <p class="lede">
+          {business.name} has been repairing and installing stucco in Florida
+          since {business.founded}. We are licensed and insured, we work across
+          Volusia and Orange County, and the thing that makes us worth calling
+          is what we do before we quote: find out why the wall failed.
+        </p>
+      </div>
+    </section>
+
+    {/* WHO WE ARE */}
+    <section class="section">
+      <div class="wrap narrow">
+        <h2>Who we are</h2>
+
+        <p>
+          We are a stucco contractor working in Daytona Beach and across
+          Central Florida, in business since {business.founded}. Stucco is what
+          we do &mdash; repair, water damage, replacement, resurfacing, new
+          installation and the finish work around them. It is not a sideline to
+          general contracting or painting.
+        </p>
+
+        <p>
+          We are licensed and insured. So is every other stucco contractor
+          worth hiring, which is why we mention it here and do not build a
+          headline out of it. It is the box that has to be ticked before a
+          conversation starts, not a reason to pick anyone.{' '}
+          {!licenseNumber && (
+            <>
+              What is worth judging us on is the part further down this page
+              &mdash; what we do before we give you a number.
+            </>
+          )}
+        </p>
+
+        <p>
+          Florida is hard on stucco in a specific way. The rain arrives sideways
+          and in volume, the humidity never really leaves, and a wall that lets
+          water in does not dry out again the way it might elsewhere. Most of
+          the failures we are called to are not really stucco failures. They are
+          water problems wearing a stucco symptom.
+        </p>
+      </div>
+    </section>
+
+    {/* WHAT WE DO */}
+    <section class="section alt">
+      <div class="wrap narrow">
+        <h2>What we do</h2>
+
+        <p>
+          Our work falls into three broad groups. Repair is most of it &mdash;
+          cracking, patching, water-damaged stucco, and the areas that fail
+          first, like the joints around windows and doors, chimneys, soffits
+          and decorative bands. Then larger-scale work: replacement and
+          resurfacing, where patching a wall is no longer the sensible answer.
+          And new stucco, on new construction and additions.
+        </p>
+
+        <p>
+          We repair both traditional hard-coat stucco and EIFS, the synthetic
+          system, which behave differently enough that telling them apart
+          matters before anyone starts. We also paint stucco. Each of these has
+          its own page setting out what the work involves &mdash; the full list
+          is on{' '}
+          <a href="/services/">our services page</a>.
+        </p>
+
+        <p>
+          Two things we do not do, stated plainly because both get asked. We do
+          not sell waterproofing or sealing as a standalone job; sealing may
+          form part of a repair, but it is not something to buy on its own to
+          fix a wet wall. And we do not do concrete spalling repair &mdash; the
+          rusting-rebar failures seen on balconies and stair landings are a
+          different trade, and you want somebody who does that work rather than
+          somebody adjacent to it.
+        </p>
+      </div>
+    </section>
+
+    {/* HOW WE THINK ABOUT THE WORK */}
+    <section class="section">
+      <div class="wrap narrow">
+        <h2>How we think about the work</h2>
+
+        <p>
+          Stucco is a surface, and a damaged surface is usually reporting on
+          something that is not the surface. That belief is the whole of how we
+          work: we would rather spend the first part of a job establishing what
+          went wrong than spend the last part of it explaining why the repair
+          did not hold.
+        </p>
+
+        <p>
+          In practice that means we settle the cause before we put a number on
+          the work. Often the wall makes it obvious and a free estimate is the
+          end of it. Where it is not obvious &mdash; where what you can see
+          might be the whole problem, or might be what trapped water is doing
+          to the outside of a wall &mdash; we test before we price. The{' '}
+          <a href="/stucco-moisture-testing/">{moistureCheck.name}</a> is how
+          we do that, and it exists so that nobody has to buy a repair on a
+          theory.
+        </p>
+
+        <p>
+          We are careful about what counts as evidence. A thermal camera tells
+          us where to test and nothing more, so what it shows never reaches you
+          as a finding on its own &mdash; what we hand over was measured. And
+          what we do has a specific name and a specific limit: it is a stucco
+          moisture assessment by a stucco contractor. Home inspection is a
+          separately licensed profession in Florida and a different job, and we
+          do not present ours as one.
+        </p>
+
+        <p class="aside">
+          The order this happens in, from first message to finished work, is
+          set out on <a href="/process/">how we work</a>.
+        </p>
+      </div>
+    </section>
+
+    {/* WHAT YOU CAN HOLD US TO */}
+    <section class="section alt">
+      <div class="wrap">
+        <h2>What you can hold us to</h2>
+
+        <div class="commitments">
+          {commitments.map((c) => (
+            <div class="commitment">
+              <h3>{c.title}</h3>
+              <p>{c.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* WHERE WE WORK */}
+    <section class="section">
+      <div class="wrap narrow">
+        <h2>Where we work</h2>
+
+        <p>{serviceAreaProse}</p>
+
+        <ul class="areas">
+          {serviceArea.map((a) => (
+            <li>{a}</li>
+          ))}
+        </ul>
+
+        <p>
+          That covers the coast through Daytona Beach and the rest of Volusia
+          County, and west into Orange County and the Greater Orlando area. The
+          failure patterns are consistent enough across this stretch of Florida
+          that a wall in one part of it usually fails for the same reasons as a
+          wall in another.
+        </p>
+
+        <p>
+          If you are just outside it, ask anyway rather than guessing from this
+          page &mdash; the counties above are what we have committed to in
+          writing, not the limit of what is worth a conversation.
+        </p>
+      </div>
+    </section>
+
+    {/* WHY CALL US */}
+    <section class="section alt">
+      <div class="wrap narrow">
+        <h2>Why call us</h2>
+
+        <p>
+          Because the cheapest version of this job is the one that gets done
+          once. A repair aimed at the wrong cause is not a saving, however
+          keenly it was priced &mdash; it is the same wall again in two years,
+          plus what you already spent on it.
+        </p>
+
+        <p>
+          You do not have to commit to anything to start. Tell us what the
+          wall is doing &mdash; or email photos of it &mdash; and you get a
+          straight answer about what you are probably looking at, including the
+          answer that it looks cosmetic and needs nothing. If it needs more
+          than that, we will say what and why before any money is discussed.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <ContactCta />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  .hero { padding-block: clamp(2.5rem, 7vw, 4.5rem) 1rem; }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8125rem;
+    font-weight: 650;
+    color: var(--accent);
+    margin: 0 0 0.75rem;
+  }
+
+  h1 { max-width: 22ch; }
+
+  .lede {
+    font-size: 1.1875rem;
+    color: var(--ink-soft);
+    max-width: 46rem;
+  }
+
+  .section { padding-block: clamp(2rem, 5vw, 3.25rem); }
+  .section.alt { background: var(--surface-alt, #f6f6f4); }
+  .narrow { max-width: 44rem; }
+
+  .commitments {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  }
+
+  .commitment {
+    border-top: 2px solid var(--accent);
+    padding-top: 1rem;
+  }
+
+  .commitment h3 { margin: 0 0 0.5rem; font-size: 1.0625rem; }
+  .commitment p { margin: 0; color: var(--ink-soft); }
+
+  .areas {
+    margin: 1rem 0 1.5rem;
+    padding-left: 1.15rem;
+    display: grid;
+    gap: 0.35rem;
+    color: var(--ink-soft);
+  }
+
+  .aside {
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
+    border-left: 2px solid var(--rule);
+    padding-left: 1rem;
+  }
+</style>

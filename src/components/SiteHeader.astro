@@ -5,8 +5,23 @@
  *
  * PHONE: null in src/config/site.ts until the client supplies it. While null,
  * no call affordance renders at all. Do not hardcode a number here.
+ *
+ * VISUAL SYSTEM (2026-09-01): ported from the Orlando Concrete Contractors
+ * reference. The masthead is a DARK band — it sits on --shell via .on-dark,
+ * which rebinds the light tokens so nested markup needs no dark variant.
+ * Structure: sticky bar, logo lockup left, desktop nav centre, actions right,
+ * hamburger under the md breakpoint opening a full disclosure panel.
+ *
+ * The nav is DATA-DRIVEN off `nav` below. Items with `children` render a
+ * disclosure in the mobile panel and a plain link on desktop — the reference
+ * has desktop dropdowns, but they need JS and a focus-trap to do accessibly,
+ * and the parent pages (/services/, /problems/) are real hub pages that
+ * already list their children. A link that goes somewhere useful beats a
+ * menu that traps keyboard users.
  */
-import { business, phone } from '../config/site';
+import { Image } from 'astro:assets';
+import logo from '../assets/images/daytona-beach-stucco-company-logo.webp';
+import { business, phone, email } from '../config/site';
 
 interface Props {
   /** Current path, used to mark the active nav item. */
@@ -18,75 +33,629 @@ const { current = '' } = Astro.props;
 // The 'Daytona Beach' item was removed 2026-08-30: that page now 301s to
 // /stucco-repair/, so the link would have been a redirect to a page already
 // in this nav. Geo intent is carried on /stucco-repair/ itself.
+//
+// Labels are unchanged from the pre-redesign nav. The redesign was a visual
+// port, not an IA rewrite. The one IA change since is the Commercial item
+// added 2026-09-02 (see its note below).
 const nav = [
-  { href: '/stucco-repair/', label: 'Stucco repair & costs' },
-  { href: '/stucco-crack-triage/', label: 'When to worry' },
-  { href: '/stucco-moisture-testing/', label: 'Moisture testing' },
-  { href: '/blog/why-stucco-cracks-come-back/', label: 'Why cracks come back' },
+  { href: '/', label: 'Home' },
+  {
+    href: '/services/',
+    label: 'Services',
+    children: [
+      { href: '/stucco-repair/', label: 'Stucco Repair & Costs' },
+      { href: '/stucco-water-damage-repair/', label: 'Water Damage Repair' },
+      { href: '/eifs-repair/', label: 'EIFS Repair' },
+      { href: '/stucco-resurfacing/', label: 'Stucco Resurfacing' },
+      { href: '/stucco-replacement/', label: 'Stucco Replacement' },
+      { href: '/new-stucco-installation/', label: 'New Stucco Installation' },
+      { href: '/stucco-painting/', label: 'Stucco Painting' },
+      { href: '/stucco-repair-around-windows/', label: 'Repair Around Windows' },
+      { href: '/stucco-chimney-repair/', label: 'Chimney Repair' },
+      { href: '/stucco-soffit-and-band-repair/', label: 'Soffit & Band Repair' },
+      { href: '/stucco-moisture-testing/', label: 'Moisture Testing' },
+    ],
+    allLabel: 'All services',
+  },
+  {
+    href: '/problems/',
+    label: 'Stucco Problems',
+    children: [
+      { href: '/problems/cracks-in-stucco/', label: 'Cracks in Stucco' },
+      { href: '/problems/water-stains-on-stucco/', label: 'Water Stains' },
+      { href: '/problems/soft-spots-hollow-stucco/', label: 'Soft or Hollow Spots' },
+      { href: '/problems/bubbling-peeling-paint-stucco/', label: 'Bubbling or Peeling Paint' },
+      { href: '/problems/hurricane-storm-stucco-damage/', label: 'Storm Damage' },
+    ],
+    allLabel: 'All problems',
+  },
+  {
+    href: '/blog/',
+    label: 'Blog',
+    children: [
+      { href: '/stucco-crack-triage/', label: 'When to Worry' },
+      { href: '/blog/why-stucco-cracks-come-back/', label: 'Why Stucco Cracks Come Back' },
+    ],
+    allLabel: 'All articles',
+  },
+  // COMMERCIAL — added 2026-09-02, top-level and deliberately NOT a twelfth
+  // child of Services. Services is the homeowner funnel; folding procurement
+  // language into that list is the message-blending the commercial firewall
+  // exists to prevent, and it would make a board hunt past eleven residential
+  // repair types. A separate item is a FORK, which is what a two-buyer site
+  // needs, and it costs the homeowner nothing because they do not open it.
+  //
+  // This adds an INBOUND link to the cluster from every page. That does not
+  // breach the firewall: the firewall governs where commercial pages point
+  // OUTWARD (no links into homeowner content), not what may point at them.
+  {
+    href: '/commercial-stucco/',
+    label: 'Commercial',
+    children: [
+      { href: '/commercial-stucco/milestone-inspection-repairs/', label: 'Milestone Inspection Repairs' },
+      { href: '/commercial-stucco/condo-hoa-stucco-repair/', label: 'Condo & HOA Stucco Repair' },
+    ],
+    allLabel: 'Commercial overview',
+  },
   { href: '/contact/', label: 'Contact' },
 ];
+
+const telHref = phone ? `tel:${phone.replace(/[^0-9+]/g, '')}` : null;
 ---
 
-<header class="masthead">
-  <div class="wrap bar">
-    <a class="mark" href="/">{business.name}</a>
+<a class="skip-link" href="#main">Skip to content</a>
 
-    <nav aria-label="Main">
-      {nav.map((item) => (
-        <a
-          href={item.href}
-          aria-current={current === item.href ? 'page' : undefined}
-        >
-          {item.label}
-        </a>
-      ))}
+<header class="masthead on-dark">
+  <div class="bar">
+    <a class="mark" href="/" aria-label={`${business.name} — home`}>
+      <Image
+        class="site-logo"
+        src={logo}
+        alt={business.name}
+        loading="eager"
+      />
+    </a>
+
+    <nav class="nav-desktop" aria-label="Main">
+      <ul>
+        {nav.map((item) => (
+          <li class={item.children ? 'has-dropdown' : undefined}>
+            <div class="nav-parent">
+              <a
+                href={item.href}
+                aria-current={current === item.href ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+
+              {item.children && (
+                <span class="nav-chevron" aria-hidden="true"></span>
+              )}
+            </div>
+
+            {item.children && (
+              <div class="dropdown">
+                <ul>
+                  {item.children.map((child) => (
+                    <li>
+                      <a
+                        href={child.href}
+                        aria-current={current === child.href ? 'page' : undefined}
+                      >
+                        {child.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+
+                <a class="dropdown-all" href={item.href}>
+                  {item.allLabel} <span aria-hidden="true">→</span>
+                </a>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
     </nav>
 
-    {phone && (
-      <a class="mast-call" href={`tel:${phone.replace(/[^0-9+]/g, '')}`}>{phone}</a>
-    )}
+    <div class="actions">
+      {phone && telHref && (
+        <a class="call" href={telHref}>
+          <span class="call-label">Call</span>
+          <span class="call-number">{phone}</span>
+        </a>
+      )}
+      <a class="btn btn-primary btn-compact" href="/contact/">Request an estimate</a>
+    </div>
+
+    <button
+      type="button"
+      class="menu-toggle"
+      aria-expanded="false"
+      aria-controls="site-menu"
+      aria-label="Open menu"
+      data-menu-toggle
+    >
+      <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>
+    </button>
+  </div>
+
+  <div class="nav-mobile" id="site-menu" hidden data-menu-panel>
+    <ul class="m-list">
+      {nav.map((item) => (
+        <li>
+          <div class="m-row">
+            <a
+              href={item.href}
+              aria-current={current === item.href ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+            {item.children && (
+              <button
+                type="button"
+                class="m-expand"
+                aria-expanded="false"
+                aria-label={`Show ${item.label} pages`}
+                data-submenu-toggle
+              >
+                <span class="chev" aria-hidden="true"></span>
+              </button>
+            )}
+          </div>
+          {item.children && (
+            <div class="m-sub" hidden data-submenu>
+              <ul>
+                {item.children.map((child) => (
+                  <li>
+                    <a href={child.href}>{child.label}</a>
+                  </li>
+                ))}
+              </ul>
+              <a class="m-all" href={item.href}>{item.allLabel} <span aria-hidden="true">&rarr;</span></a>
+            </div>
+          )}
+        </li>
+      ))}
+    </ul>
+
+    <div class="m-actions">
+      <a class="btn btn-primary" href="/contact/">Request an estimate</a>
+      {phone && telHref ? (
+        <a class="btn btn-secondary" href={telHref}>Call {phone}</a>
+      ) : (
+        email && <a class="btn btn-secondary" href={`mailto:${email}`}>Email us</a>
+      )}
+    </div>
   </div>
 </header>
 
+<script>
+  // Progressive enhancement: the panel and submenus are plain [hidden]
+  // elements, so with JS off every nav destination is still reachable
+  // through the links that remain in the DOM.
+  const toggle = document.querySelector('[data-menu-toggle]');
+  const panel = document.querySelector('[data-menu-panel]');
+
+  if (toggle instanceof HTMLElement && panel instanceof HTMLElement) {
+    toggle.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!open));
+      toggle.setAttribute('aria-label', open ? 'Open menu' : 'Close menu');
+      panel.hidden = open;
+      document.documentElement.classList.toggle('menu-open', !open);
+    });
+  }
+
+  document.querySelectorAll('[data-submenu-toggle]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const open = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', String(!open));
+      const sub = button.closest('li')?.querySelector('[data-submenu]');
+      if (sub instanceof HTMLElement) sub.hidden = open;
+    });
+  });
+</script>
+
 <style>
-  .masthead { border-bottom: 1px solid var(--rule); }
+  /* Skip link — hidden until focused, then pinned over the masthead. */
+  .skip-link {
+    position: absolute;
+    top: -100px;
+    left: 1rem;
+    z-index: 200;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+  }
+
+  .skip-link:focus { top: 0.5rem; }
+
+  .masthead {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--shell-rule);
+  }
 
   .bar {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 0.5rem 1.25rem;
-    min-height: 4rem;
-    padding-block: 0.75rem;
+    gap: 2rem;
+    width: 100%;
+    max-width: 78rem;
+    min-height: 5rem;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
   }
 
+  /* --- Brand lockup --------------------------------------------------
+   * Two stacked lines: extrabold uppercase wordmark over a mono locality
+   * strapline. No logo file exists (brand/creative-kit.md: wordmark-only,
+   * and a mark must not be fabricated), so the reference's icon slot is
+   * simply absent rather than filled with a placeholder. */
   .mark {
-    font-weight: 650;
-    letter-spacing: -0.01em;
-    color: var(--ink);
-    text-decoration: none;
-    margin-right: auto;
-  }
-
-  nav {
     display: flex;
-    flex-wrap: wrap;
-    gap: 1.25rem;
-  }
-
-  nav a {
-    font-size: 0.9375rem;
-    font-weight: 550;
+        margin-right: auto;
+    align-items: center;
+  padding-block: 0.35rem;
     text-decoration: none;
-    color: var(--ink-soft);
+    color: var(--shell-ink);
   }
 
-  nav a:hover { color: var(--accent); }
+  .site-logo {
+  display: block;
+  width: clamp(10rem, 16vw, 13rem);
+  height: auto;
+  max-height: 3.25rem;
+  object-fit: contain;
+}
 
-  nav a[aria-current='page'] {
+.mark-name {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+
+  .mark-place {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--shell-ink-soft);
+  }
+
+  /* --- Desktop nav ---------------------------------------------------
+   * The active/hover marker is a 2px accent underline, matching the
+   * reference. Nav has seven long labels, so it only appears at the wide
+   * breakpoint; everything below gets the disclosure panel. */
+  .nav-desktop { display: none; }
+
+  .nav-desktop ul {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .nav-desktop a {
+    display: block;
+    padding-block: 0.5rem;
+    border-bottom: 2px solid transparent;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.35;
+    text-decoration: none;
+    color: var(--shell-ink);
+  }
+
+  .nav-desktop a:hover { border-bottom-color: var(--accent); }
+
+  .nav-desktop a[aria-current='page'] {
+    border-bottom-color: var(--accent);
+    font-weight: 700;
+  }
+
+  .actions {
+    display: none;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .call {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    text-decoration: none;
+    color: var(--shell-ink);
+  }
+
+  .call-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--shell-ink-soft);
+  }
+
+  .call-number {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+
+  /* Header button runs shorter than the global .btn so the bar holds 80px. */
+  .btn-compact {
+    min-height: 2.875rem;
+    padding: 0.6875rem 1.5rem;
+    font-size: 0.9375rem;
+  }
+
+  /* --- Hamburger ----------------------------------------------------- */
+  .menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 3rem;
+    height: 3rem;
+    margin-left: auto;
+    padding: 0;
+    background: transparent;
+    border: 1px solid #3f3f46;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+
+  .bars {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 1.25rem;
+  }
+
+  .bars i {
+    display: block;
+    height: 2px;
+    background: var(--shell-ink);
+  }
+
+  /* --- Mobile panel --------------------------------------------------- */
+  .nav-mobile {
+    border-top: 1px solid var(--shell-rule);
+    max-height: min(75vh, 920px);
+    overflow-y: auto;
+    padding: 1rem var(--gutter) 2rem;
+  }
+
+  .m-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .m-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--shell-rule);
+  }
+
+  .m-row > a {
+    flex: 1;
+    padding-block: 1rem;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.35;
+    text-decoration: none;
+    color: var(--shell-ink);
+  }
+
+  /* Current page carries an inset accent bar, as in the reference. */
+  .m-row > a[aria-current='page'] {
+    box-shadow: inset 3px 0 0 0 var(--accent);
+    padding-left: 0.75rem;
+  }
+
+  .m-expand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 3rem;
+    height: 3rem;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .chev {
+    display: block;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-right: 2px solid var(--shell-ink-soft);
+    border-bottom: 2px solid var(--shell-ink-soft);
+    transform: translateY(-2px) rotate(45deg);
+  }
+
+  .m-expand[aria-expanded='true'] .chev {
+    transform: translateY(2px) rotate(225deg);
+  }
+
+  .m-sub {
+    border-left: 2px solid var(--shell-rule);
+    border-bottom: 1px solid var(--shell-rule);
+    padding: 0.5rem 0 1rem 1rem;
+  }
+
+  .m-sub ul {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .m-sub a {
+    display: block;
+    padding-block: 0.75rem;
+    font-size: 1.0625rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--shell-ink-soft);
+  }
+
+  .m-all {
+    display: block;
+    margin-top: 0.75rem;
+    padding-block: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
     color: var(--accent);
-    font-weight: 650;
   }
 
-  .mast-call { font-weight: 600; text-decoration: none; }
+  .m-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .m-actions .btn { width: 100%; }
+
+  /* --- Breakpoint -----------------------------------------------------
+   * 62rem, not the reference's 48rem: seven long labels plus the phone
+   * lockup and a button do not fit a tablet width. */
+  @media (min-width: 62rem) {
+    .nav-desktop { display: block; }
+    .actions { display: flex; }
+    .menu-toggle { display: none; }
+    .nav-mobile { display: none; }
+  }
+</style>
+
+<style is:global>
+  /* Lock scroll behind the open panel. Global because it targets <html>. */
+  html.menu-open { overflow: hidden; }
+
+  /* Desktop dropdown navigation */
+  .nav-desktop > ul > .has-dropdown {
+    position: relative;
+  }
+
+  .nav-parent {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .nav-chevron {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: translateY(-0.15rem) rotate(45deg);
+    transition: transform 180ms ease;
+    pointer-events: none;
+  }
+
+  .has-dropdown:hover .nav-chevron,
+  .has-dropdown:focus-within .nav-chevron {
+    transform: translateY(0.1rem) rotate(225deg);
+  }
+
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 120;
+    min-width: 16rem;
+    padding-top: 0;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(0);
+    pointer-events: none;
+    transition:
+      opacity 160ms ease,
+      visibility 160ms ease;
+  }
+
+  .dropdown > ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    background: var(--shell);
+    border: 1px solid var(--shell-rule);
+    border-top: 0;
+  }
+
+  .dropdown li {
+    display: block;
+  }
+
+  .dropdown li a {
+    display: block;
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border-bottom: 0;
+    color: var(--shell-ink);
+    white-space: normal;
+  }
+
+  .dropdown li a:hover,
+  .dropdown li a:focus-visible,
+  .dropdown li a[aria-current="page"] {
+    color: #fff;
+    background: var(--shell-rule);
+    border-bottom: 0;
+  }
+
+  .dropdown-all {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 1rem;
+    background: var(--accent);
+    color: #fff !important;
+    font-family: var(--font-display);
+    font-weight: 700;
+    border: 0 !important;
+  }
+
+  .dropdown-all:hover,
+  .dropdown-all:focus-visible {
+    background: var(--accent-deep);
+  }
+
+  .has-dropdown:hover > .dropdown,
+  .has-dropdown:focus-within > .dropdown {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
 </style>

@@ -1,0 +1,62 @@
+---
+/**
+ * Section header: eyebrow, h2, lede. Ported from the Orlando `.sh` block,
+ * which opens every interior section with this exact stack.
+ *
+ * Replaces the ad-hoc `<h2>` + `.band-lede` pairs currently repeated in each
+ * interior page's local <style>. The `align` prop covers the reference's
+ * .sh--center variant, used only on centered CTA-style sections.
+ */
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  align?: 'start' | 'center';
+  /** Heading level. Use 3 for a subsection inside an existing h2. */
+  level?: 2 | 3;
+  /** Set an id on the heading so aria-labelledby can point at it. */
+  id?: string;
+}
+
+const {
+  eyebrow,
+  title,
+  lede,
+  align = 'start',
+  level = 2,
+  id,
+} = Astro.props;
+
+const Heading = `h${level}` as 'h2' | 'h3';
+---
+
+<div class:list={['sec-head', align === 'center' && 'is-center']}>
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <Heading id={id}>{title}</Heading>
+  {lede && <p class="lede">{lede}</p>}
+</div>
+
+<style>
+  .sec-head { margin-bottom: 2.5rem; }
+
+  .sec-head :global(h2),
+  .sec-head :global(h3) { max-width: 22ch; }
+
+  .sec-head .lede { margin-top: 1.25rem; margin-bottom: 0; }
+
+  .is-center {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .is-center :global(h2),
+  .is-center :global(h3) { max-width: 26ch; }
+
+  .is-center .eyebrow { justify-content: center; }
+
+  @media (min-width: 48rem) {
+    .sec-head { margin-bottom: 4rem; }
+  }
+</style>

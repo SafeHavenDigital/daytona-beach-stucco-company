@@ -1,0 +1,596 @@
+---
+/**
+ * /stucco-resurfacing/ — service money page (keyword-plan §C, HELD → CLEARED).
+ *
+ * Target: `stucco resurfacing`, `stucco recoating`, `stucco refinishing`,
+ * `resurface stucco house`, `stucco over existing stucco`,
+ * `stucco color coat`, `restucco house florida`.
+ * Intent: commercial, but a DIFFERENT BUYER STATE from every other service
+ * page on this site. Nothing is leaking. Nothing is falling off. The wall is
+ * tired, patchy, and mismatched, and the owner wants the house to look
+ * whole again. This is a curb-appeal purchase, not a distress purchase, and
+ * the page must not be written in the voice of an emergency.
+ *
+ * ------------------------------------------------------------------
+ * SERVICE VERIFICATION: `verifiedServices.resurfacing` in src/config/site.ts,
+ * confirmed by the client 2026-08-31 in answer to: "Do you resurface stucco —
+ * recoating a whole wall or elevation rather than patching?" That confirms the
+ * SERVICE ONLY. It does NOT authorize any claim about products, systems,
+ * manufacturer approval, warranty, crew size, or past resurfacing projects.
+ *
+ * THE GATE, AND WHY IT IS CLEARED. keyword-plan:692 held this URL on
+ * `[IS RESURFACING OFFERED AS A DISTINCT JOB?]`, with the specific failure
+ * condition: "if the client treats this as 'we re-stucco it', it merges into
+ * /stucco-replacement/ and must not get a URL." The confirmed answer draws
+ * the line exactly where the plan wanted it:
+ *   - /stucco-replacement/  — the wall FAILED. Tear off, rebuild.
+ *   - /stucco-resurfacing/  — the wall is SOUND but tired. Recoat over it.
+ * Different buyer state, different work, different price model. That is 3 of
+ * 4 on the splitting test before SERP separation is even counted. URL earned.
+ *
+ * TERMINOLOGY COLLISION — resolved deliberately. The trade does not agree
+ * with itself here, and the SERP proves it: several ranking pages use
+ * "refinishing" to mean PAINTING, while the keyword cluster groups
+ * refinishing WITH resurfacing. Live SERP 2026-08-31 is split down the
+ * middle. This page therefore OWNS the distinction rather than picking a
+ * side quietly: a coating is paint, a resurface adds real material. Say it
+ * in the buyer's terms, early, because the whole decision turns on it.
+ *
+ * CANNIBALIZATION CONTROL. The boundary is the CONDITION OF THE WALL:
+ *   - Sound-but-tired wall, whole elevation, cosmetic outcome → HERE.
+ *   - Individual cracks and patches in an otherwise fine wall →
+ *     /stucco-repair/ and /stucco-crack-triage/. Link, do not restate. This
+ *     page must NOT re-explain crack causes or the three-cause framing.
+ *   - Water already behind the wall → /stucco-water-damage-repair/.
+ *   - Is the base sound at all → /stucco-moisture-testing/. The Moisture
+ *     Check process is explained ONLY there.
+ *   - Failed wall needing tear-off → /stucco-replacement/ (not yet built;
+ *     do NOT link until it exists — see INBOUND/OUTBOUND below).
+ *   - Paint as its own service → /stucco-painting/ (BUILT 2026-08-31).
+ *     This page KEEPS the painting-vs-resurfacing comparison; the painting
+ *     page links here for it rather than restating it.
+ *
+ * THE OWNABLE ANSWER. Live SERP 2026-08-31 across three queries: every
+ * ranking result states some version of "the existing stucco must be sound
+ * before you resurface." Not one of them tells the homeowner HOW TO KNOW
+ * WHETHER THEIRS IS. That is the entire decision, it is handed back to the
+ * reader unanswered, and it happens to be the exact question this company
+ * already has a service for. The page gives away the four checks that
+ * separate a cosmetic problem from a structural one — and tells people
+ * plainly when NOT to buy this, because resurfacing over a wet or
+ * delaminated wall is the single most expensive mistake in this category.
+ *
+ * WHAT WE DO NOT SAY:
+ *   - We do NOT promise resurfacing prevents future cracking. It reduces
+ *     and evens out cosmetic cracking; it does not change what the building
+ *     does. Overclaiming here is how this exact job generates callbacks.
+ *   - We do NOT sell resurfacing as waterproofing.
+ *     `verifiedServices.standaloneWaterproofing` is FALSE — the company does
+ *     not sell sealing as a standalone job, and this page must not smuggle
+ *     it back in as a benefit claim.
+ *   - We do NOT name products, systems, or manufacturers. None verified.
+ *   - We do NOT quote a lifespan for our own work. The SERP throws around
+ *     "20-25 years" freely. `warrantyTerms` is null and no durability claim
+ *     about this company's work is authorized.
+ *   - We do NOT claim thermal imaging proves moisture. Brand constraint.
+ *
+ * NOT A HOME INSPECTION: Florida licenses home inspectors separately.
+ *
+ * OMITTED — blocked on missing prerequisites, absent rather than stubbed:
+ *   - [BEFORE/AFTER SET] — the highest-value missing asset for THIS page
+ *     specifically. Resurfacing is a visual purchase and we are selling it
+ *     with words only. `openWallPhotos` is null and is the wrong asset
+ *     anyway. Do NOT substitute stock or AI imagery.
+ *   - [WARRANTY TERM] — `warrantyTerms` is null. No guarantee module, and
+ *     no lifespan claim.
+ *   - [LICENSE #], [PHONE] — null in site.ts. Omitted, not stubbed.
+ *   - Texture-matching capability — not verified. The page speaks about
+ *     texture as a decision the owner makes, never as a skill we claim.
+ * ------------------------------------------------------------------
+ *
+ * VISUAL SYSTEM (redesigned 2026-09-02): migrated from this page's own local
+ * hero/band/FAQ CSS onto the shared Orlando interior-page components -
+ * PageHero, SectionHead, FaqList, Breadcrumbs - and the global utilities in
+ * Layout.astro (.section, .slab, .joint, .grid-hairline, .prose, .on-dark).
+ * COPY, FACTS, PRICING, SCHEMA, URLS, HEADING TEXT, ANCHOR IDS AND INTERNAL
+ * LINKS ARE UNCHANGED by that migration; only the markup carrying them moved.
+ * The buyer state this page is written for is still the calm one - tired wall,
+ * curb-appeal purchase - and the shared components do not change that. Its
+ * copy is NOT homogenized toward the distress-purchase service pages. Do not
+ * re-add a local hero or band rule here.
+ */
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import MobileStickyBar from '../../components/MobileStickyBar.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import FaqList from '../../components/FaqList.astro';
+import {
+  business,
+  serviceArea,
+  repairPriceRanges,
+  repairPerSquareFoot,
+  pricingDisclaimer,
+} from '../../config/site';
+
+const title =
+  'Stucco Resurfacing & Recoating | Daytona Beach & Volusia County';
+const description =
+  'Whole-wall stucco resurfacing for sound but tired stucco. How to tell whether your wall is a candidate, the difference between a coating and a real resurface, and when patching or replacement is the better answer.';
+
+const usd = (n: number) => '$' + n.toLocaleString('en-US');
+
+const resurfaceRange = repairPriceRanges.find(
+  (r) => r.job === 'Full resurfacing or extensive re-stucco',
+);
+const crackRange = repairPriceRanges.find(
+  (r) => r.job === 'Minor crack repair',
+);
+
+/**
+ * THE GIVEAWAY. Every ranking page says "the base must be sound" and then
+ * stops. These are the four checks that answer it, all of which the owner
+ * can do in an afternoon with no tools. Publishing them costs us the jobs
+ * we should not be taking anyway.
+ */
+const soundnessChecks = [
+  {
+    check: 'Tap across the whole wall',
+    label: 'The one that matters most',
+    body: 'Work a knuckle across the elevation, not just the spots that look bad. Solid stucco sounds dense and consistent. A hollow, drummy patch means the stucco has let go of what is behind it, and coating over that area buys you nothing — the new material is only as attached as the old material it is stuck to.',
+  },
+  {
+    check: 'Push on the ugly parts',
+    label: 'Cosmetic or structural',
+    body: 'Press firmly where the wall looks worst. Sound stucco does not move at all. Anything that flexes, crunches, or shifts under a hand is not a surface problem, and it will not become one by being covered up.',
+  },
+  {
+    check: 'Look for staining that is not dirt',
+    label: 'The disqualifier',
+    body: 'Rust-coloured streaks, dark patches that stay dark after a dry week, or a chalky white bloom pushing through the surface all mean water is moving through the wall. That is a leak to be found, not a surface to be recoated. This is the finding that should stop a resurfacing job before it starts.',
+  },
+  {
+    check: 'Check the bottom two feet',
+    label: 'Where it shows up first',
+    body: 'The base of a wall fails before the middle of it does — it is where water collects, where sprinklers hit, and where the system terminates. If the bottom edge is crumbling, soft, or missing material while the rest looks fine, that bottom section needs real repair first regardless of what happens above it.',
+  },
+];
+
+/**
+ * The terminology collision, settled in the buyer's terms. This is the
+ * comparison the SERP muddles, and getting it straight is most of the
+ * value this page delivers.
+ */
+const options = [
+  {
+    kind: 'A coating',
+    aka: 'Paint or elastomeric',
+    body: 'A liquid finish rolled or sprayed onto the wall. It changes the colour and evens out how the wall reads from the street, and it is the cheaper and faster of the two. What it does not do is add thickness or hide texture — whatever the surface is doing now, it will still be doing under a new colour, just in a different shade.',
+  },
+  {
+    kind: 'A resurface',
+    aka: 'A new stucco layer',
+    body: 'A genuine layer of stucco material applied over the prepared wall, adding real thickness. Because it is material rather than colour, it can even out worn texture, bury the map of old patches, and change the texture of the house outright. It costs more, takes longer, and needs a wall in good enough condition to bond to.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Can you stucco over existing stucco?',
+    a: 'Yes, as long as the existing stucco is sound and properly prepared. The wall has to be clean, still firmly bonded to what is behind it, and free of active moisture. Cracks get opened and repaired first rather than covered. The one thing that reliably fails is going over stucco that has already let go of the wall — the new layer is only as attached as the old layer underneath it, so a hollow patch stays a hollow patch with a fresh face on it.',
+  },
+  {
+    q: 'How do I know if my stucco can be resurfaced?',
+    a: 'Tap across the whole elevation with a knuckle and listen for hollow, drummy areas — those mean the stucco has separated from the wall behind it. Press on the parts that look worst; sound stucco does not move. Look for rust-coloured streaks, patches that stay dark after a dry week, or chalky white bloom, all of which mean water is moving through the wall rather than sitting on it. And check the bottom two feet, which fail first. A wall that passes all four is a good candidate. A wall that fails any of them needs the underlying problem handled first.',
+  },
+  {
+    q: 'What is the difference between resurfacing and painting stucco?',
+    a: 'Paint is a coating — it changes colour and evens out appearance, but adds no thickness, so the existing texture and surface condition still read through it. Resurfacing applies a genuine layer of stucco material, which adds thickness and can even out worn texture, bury a map of old patch marks, or change the texture of the house entirely. Painting is cheaper and faster. Resurfacing is the answer when the problem is the surface itself rather than its colour. The words get used loosely in this trade, including by contractors, so it is worth confirming which one is actually being quoted.',
+  },
+  {
+    q: 'Will resurfacing stop my stucco from cracking?',
+    a: 'It will not stop cracking, and anyone promising that is overselling it. Resurfacing gives you a fresh, even surface and generally reduces the fine cosmetic cracking that comes with an aged finish. What it does not do is change what the building underneath is doing. Stucco cracks because of movement, and a new layer does not stop a house from moving. If cracks are opening in the same places repeatedly, that is a reason to find out why before resurfacing, not a reason to resurface.',
+  },
+  {
+    q: 'Should I resurface or just repair the cracks?',
+    a: 'It comes down to how much of the wall is involved and what is bothering you. A limited run of cracking in an otherwise good wall is a repair, and resurfacing a whole elevation for it is spending a great deal of money on a small problem. Resurfacing earns its cost when the surface itself has gone — worn texture across the whole elevation, a visible history of mismatched patches, or a wall where fixing each spot individually would still leave you with a patchwork.',
+  },
+  {
+    q: 'How much does stucco resurfacing cost?',
+    a: resurfaceRange
+      ? `Researched market ranges for this area put full resurfacing or extensive re-stucco work at roughly ${usd(resurfaceRange.low)} to ${usd(resurfaceRange.high)}${resurfaceRange.openEnded ? ' and up' : ''}, priced mainly by the size of the house. Broader stucco work in this market runs about ${usd(repairPerSquareFoot.low)} to ${usd(repairPerSquareFoot.high)} per square foot ${repairPerSquareFoot.note}. Those are area ranges rather than a quote from us. Resurfacing is priced by area and access rather than by damage, which makes it more predictable than repair work — but any repair the wall needs first is a separate line and has to be settled before the price means anything.`
+      : 'Resurfacing is priced by the area of wall and how easy it is to reach, rather than by the amount of damage, which makes it more predictable than repair work. Any repair the wall needs first is separate.',
+  },
+  {
+    q: 'Can I change the texture of my stucco when it is resurfaced?',
+    a: 'Yes, and it is one of the better reasons to do it. Because a resurface adds a real layer of material rather than a coating, the finish texture is chosen when it goes on. Houses with a heavy dated texture are often resurfaced smoother for that reason alone. Worth knowing: the more the new texture differs from the old one, the more preparation the wall needs, so a change of texture is a decision to make before the quote rather than after it.',
+  },
+  {
+    q: 'How long does resurfacing a house take?',
+    a: 'It depends on the size of the house, how much repair the wall needs first, and the weather. The part people underestimate is preparation — cleaning, opening and repairing cracks, and letting repairs cure — which usually takes longer than applying the new surface does. Florida humidity and afternoon storms affect cure times, so a schedule given in advance is an estimate rather than a promise.',
+  },
+];
+
+const serviceSchema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Stucco resurfacing and recoating',
+  serviceType: 'Stucco resurfacing',
+  description:
+    'Whole-wall and whole-elevation stucco resurfacing for sound but weathered stucco. The wall is assessed for soundness and moisture, cleaned, cracks and damaged areas are repaired, and a new stucco layer is applied and finished to the chosen texture.',
+  provider: { '@type': 'LocalBusiness', name: business.name },
+};
+if (serviceArea) serviceSchema.areaServed = serviceArea;
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <SiteHeader current="/stucco-resurfacing/" />
+
+  <main id="main">
+    {/*
+      HERO. Dark PageHero with ContactCta in the aside slot - the money-page
+      arrangement PageHero's own doc block describes. Eyebrow, h1 and lede are
+      the same three strings the old local hero rendered. Breadcrumbs are new
+      markup only and emit BreadcrumbList schema from Breadcrumbs.astro.
+      No `actions` array: the aside CTA is the conversion affordance here.
+    */}
+    <PageHero
+      crumbs={[
+        { href: '/services/', label: 'Services' },
+        { href: '/stucco-resurfacing/', label: 'Resurfacing' },
+      ]}
+      eyebrow="Stucco services · Daytona Beach & Volusia County"
+      title="Stucco resurfacing and recoating"
+      lede="For a house where nothing is exactly broken, but the walls have stopped looking like one house — worn texture, a visible map of old patches, and a finish that has simply had enough sun."
+      actions={[
+        { href: '/contact/', label: 'Request an estimate' },
+        { href: '/stucco-repair/', label: 'Repair or resurface?', variant: 'secondary' },
+      ]}
+    >
+      <LeadForm />
+    </PageHero>
+
+    {/* THE OWNABLE ANSWER — how to know if your wall qualifies */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Is your wall a candidate"
+          title="First, whether your wall is a candidate"
+          lede="Every article on this subject says the same thing: the existing stucco has to be sound before you resurface it. Almost none of them tell you how to work out whether yours is. It is not complicated, and you can do it yourself in an afternoon."
+        />
+        <div class="prose">
+        <p>
+          If what prompted this was paint blistering or flaking off, start
+          with{' '}
+          <a href="/problems/bubbling-peeling-paint-stucco/">
+            what the peeling is telling you
+          </a>. It separates a coating that failed from a wall that is
+          holding water, and only one of those is a resurfacing question.
+        </p>
+        </div>
+
+        {/*
+          Four descriptive cells, not links - each is a check the owner runs,
+          not a route. Plain .grid-hairline rather than the .card-link variant.
+        */}
+        <div class="grid-hairline cols-2 entries">
+          {soundnessChecks.map((c) => (
+            <div class="entry">
+              <h3>{c.check} <span class="entry-label">{c.label}</span></h3>
+              <p>{c.body}</p>
+            </div>
+          ))}
+        </div>
+        <div class="caveat">
+          <p>
+            The reason this matters more than the price:{' '}
+            <strong>
+              resurfacing over a wall that is delaminated or wet is the most
+              expensive mistake in this category.
+            </strong>{' '}
+            You pay for a whole elevation, the underlying problem carries on
+            unchanged underneath it, and the new surface fails early over
+            exactly the areas that were already bad. A wall that fails one of
+            these checks is not disqualified for good &mdash; it means
+            something needs fixing first.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* THE TERMINOLOGY COLLISION */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Two different jobs"
+          title="A coating and a resurface are not the same thing"
+          lede="These two words get used interchangeably, including by people in this trade, and the difference is most of the cost. Worth being certain which one you are being quoted."
+        />
+
+        <div class="grid-hairline cols-2 entries">
+          {options.map((o) => (
+            <div class="entry">
+              <h3>{o.kind}</h3>
+              <p class="who">{o.aka}</p>
+              <p>{o.body}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="prose">
+        <p>
+          The short version: if the problem is the colour, you want a
+          coating. If the problem is the surface itself &mdash; texture worn
+          away, patches showing through, a finish that no longer holds paint
+          evenly &mdash; a coating will not fix it, and it is worth knowing
+          that before paying for one. If a coating is what you want, see{' '}
+          <a href="/stucco-painting/">stucco painting</a>.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* WHEN NOT TO BUY THIS */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Ruling it out"
+          title="When resurfacing is the wrong answer"
+          lede="This is a large job and it is not always the right one. Three situations where we would tell you to spend less, or to spend it somewhere else first."
+        />
+        <div class="prose">
+        <p>
+          <strong>The problem is a few cracks.</strong> A limited run of
+          cracking in an otherwise sound wall is a repair, and resurfacing an
+          entire elevation to deal with it is a great deal of money for a
+          small problem. What is behind those cracks matters more than how
+          they look &mdash;{' '}
+          <a href="/stucco-crack-triage/">how to read stucco cracks</a>{' '}
+          covers which ones are cosmetic and which are telling you something.
+        </p>
+        <p>
+          <strong>Water is already getting in.</strong> A new surface over a
+          wet wall hides the evidence and changes nothing about the cause.
+          The leak gets found and corrected first &mdash; that work is on{' '}
+          <a href="/stucco-water-damage-repair/">stucco water damage repair</a>,
+          and{' '}
+          <a href="/stucco-repair-around-windows/">windows and doors</a>{' '}
+          are where it usually starts.
+        </p>
+        <p>
+          <strong>The wall has genuinely failed.</strong> Where stucco has
+          come away from the structure across a large area, or the material
+          behind it has gone, there is nothing sound left to bond a new layer
+          to. That is a rebuild rather than a resurface, and it is a
+          different conversation with a different number.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* THE WORK */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Scope"
+          title="What the work involves"
+          lede="The wall gets assessed first — the same checks above, plus moisture readings anywhere staining or soft material suggests they are warranted. Anything found that way is dealt with as repair work and quoted separately, because covering it would defeat the point."
+        />
+        <div class="prose">
+        <p>
+          Then preparation, which is most of the job and most of the time.
+          The wall is cleaned so the new material has something to bond to.
+          Cracks are opened out and repaired rather than bridged. Damaged and
+          hollow areas are cut back to sound material and rebuilt. Repairs
+          are left to cure before anything goes over them.
+        </p>
+        <p>
+          After that the new stucco layer goes on and is finished to the
+          texture you have chosen, which is a decision worth making early
+          &mdash; a texture close to the existing one needs less preparation
+          than a change of texture does.
+        </p>
+        <p>
+          This is work over an existing wall. Stucco on an addition or new
+          construction, where there is no wall to go over, runs to a
+          different schedule &mdash;{' '}
+          <a href="/new-stucco-installation/">new stucco installation</a>{' '}
+          covers the cure windows that decide it.
+        </p>
+        <p>
+          And if the wall underneath is not sound, coating it is the wrong
+          job &mdash; the stucco has to come off and be rebuilt. See{' '}
+          <a href="/stucco-replacement/">stucco replacement</a>.
+        </p>
+        <p>
+          If the assessment turns up something that makes resurfacing a bad
+          use of your money, we will say so before the work is booked rather
+          than after it has started. On a job this size that conversation is
+          worth having early.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* DIAGNOSIS HANDOFF */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="A paid diagnostic service"
+          title="If you are not sure the wall is sound"
+        />
+        <div class="prose">
+        <p>
+          The checks at the top of this page will tell you whether you have a
+          surface problem or something underneath. Where they are ambiguous
+          &mdash; staining you cannot account for, a hollow area you cannot
+          place, a wall that has been patched repeatedly in the same spot
+          &mdash; readings settle it.
+        </p>
+        <p>
+          Our{' '}
+          <a href="/stucco-moisture-testing/">Stucco Moisture Check</a>{' '}
+          measures what the wall is actually doing, and you get the findings
+          either way. On a job priced by the whole elevation, that is worth
+          knowing before committing rather than after. For individual repairs
+          and general pricing, see{' '}
+          <a href="/stucco-repair/#pricing">stucco repair and pricing</a>. If
+          the walls turn out to be{' '}
+          <a href="/eifs-repair/">EIFS rather than hardcoat stucco</a>, the
+          finish is a different system and is not resurfaced this way.
+        </p>
+        <p>
+          This is our own assessment of your wall as the contractor who does
+          the work. It is not a home inspection and it is not an independent
+          inspection report.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* COST */}
+    <section class="section slab joint" id="cost">
+      <div class="wrap">
+        <SectionHead eyebrow="Cost" title="What it costs" />
+        {resurfaceRange ? (
+          <>
+            <p class="price">
+              Full resurfacing and extensive re-stucco work in this area runs
+              roughly{' '}
+              <strong>
+                {usd(resurfaceRange.low)}&ndash;{usd(resurfaceRange.high)}
+                {resurfaceRange.openEnded ? '+' : ''}
+              </strong>
+              , priced mainly by the size of the house.
+            </p>
+            <p class="cost-note">
+              Resurfacing prices differently from repair work. Repair is
+              priced by damage, which nobody can size accurately until the
+              wall is open. Resurfacing is priced by area and access, both of
+              which can be measured up front &mdash; so the quote tends to be
+              firmer, with one caveat: any repair the wall needs first is a
+              separate line, and it has to be settled before the total means
+              anything. For scale, a minor crack repair in this area runs
+              about{' '}
+              <strong>
+                {crackRange ? `${usd(crackRange.low)}–${usd(crackRange.high)}` : 'a few hundred dollars'}
+              </strong>
+              , which is why a few cracks rarely justify resurfacing.
+            </p>
+            <p class="disclaimer">{pricingDisclaimer}</p>
+          </>
+        ) : (
+          <p class="price">
+            Resurfacing is priced by the area of wall and how easy it is to
+            reach rather than by the amount of damage, so it prices more
+            predictably than repair work. Any repair needed first is quoted
+            separately.
+          </p>
+        )}
+      </div>
+    </section>
+
+    {/*
+      FAQ. The shared FaqList accordion, fed the SAME `faqs` array that builds
+      the FAQPage schema above - one source, so an answer can never drift from
+      its markup. FaqList deliberately emits no schema of its own (see its doc
+      block); the page keeps ownership of that.
+    */}
+    <section class="section" id="faq" aria-labelledby="faq-head">
+      <div class="wrap">
+        <SectionHead id="faq-head" eyebrow="FAQ" title="Frequently asked questions" />
+        <FaqList items={faqs} />
+      </div>
+    </section>
+
+    <section class="section on-dark">
+      <div class="wrap">
+        <ContactCta heading="Tell us what the finish looks like now" />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  /*
+   * PAGE-SPECIFIC ONLY. The hero, bands, section heads, prose column, card
+   * grid, FAQ rows and breadcrumbs come from the shared components and the
+   * global utilities in Layout.astro; those rules were deleted here rather
+   * than duplicated. What remains is this page's own furniture: the
+   * soundness-check cells, the coating-vs-resurface cells with their "also
+   * known as" line, the flag-ruled caveat, and the price line.
+   */
+
+  /* --- Cells: the four checks, and the two options ---------------------- */
+  .entry h3 { margin: 0 0 0.5rem; font-size: 1.0625rem; }
+  .entry p { margin: 0; color: var(--ink-soft); }
+
+  .entry-label {
+    display: block;
+    margin-top: 0.375rem;
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: 0.6875rem;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* "Paint or elastomeric" / "A new stucco layer" under each option. */
+  .who {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--flag);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem !important;
+  }
+
+  /* --- The "do not resurface a wet wall" aside -------------------------- */
+  .caveat {
+    border-left: 3px solid var(--flag);
+    padding-left: 1.25rem;
+    max-width: 60ch;
+  }
+  .caveat p { margin: 0; color: var(--ink-soft); }
+
+  /* --- Price line and its disclaimer ------------------------------------ */
+  .price {
+    font-family: var(--font-display);
+    font-size: clamp(1.125rem, 2.4vw, 1.375rem);
+    line-height: 1.45;
+    max-width: 52ch;
+  }
+  .price strong { color: var(--accent); }
+
+  .cost-note { color: var(--ink-soft); max-width: 60ch; }
+
+  .disclaimer {
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+    max-width: 60ch;
+    border-left: 3px solid var(--rule);
+    padding-left: 1.25rem;
+  }
+</style>

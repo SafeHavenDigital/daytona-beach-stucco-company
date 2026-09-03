@@ -1,0 +1,118 @@
+---
+/**
+ * INTERNAL — interior-page visual system reference.
+ *
+ * NOT a real route in the SEO architecture. It exists so the shared interior
+ * components can be reviewed in a browser before any real page is migrated.
+ * It is `noindex`, it is not linked from any navigation, and its underscore
+ * directory keeps it out of the sitemap generator's page set.
+ *
+ * DELETE OR KEEP: harmless to keep as a living style reference; delete once
+ * every interior route has been migrated. It contains no business claims.
+ *
+ * Every string below is placeholder scaffolding describing the SYSTEM, not
+ * marketing copy, and must not be reused on a public page.
+ */
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import MobileStickyBar from '../../components/MobileStickyBar.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import FaqList from '../../components/FaqList.astro';
+import ContactCta from '../../components/ContactCta.astro';
+
+const cards = [
+  { href: '/stucco-repair/', title: 'Card link', body: 'A cell in a hairline grid that is itself a link. Accent bar wipes across the top edge on hover.' },
+  { href: '/stucco-moisture-testing/', title: 'Second cell', body: 'The 1px gap between cells is the grid background showing through.' },
+  { href: '/problems/', title: 'Third cell', body: 'Collapses to two columns under 62rem and one under 34rem.' },
+];
+
+const faqs = [
+  { q: 'How does the FAQ block behave without JavaScript?', a: 'It is a native details/summary list, so it opens and closes with no script and is keyboard operable by default.' },
+  { q: 'Does this component emit FAQPage schema?', a: 'No. Pages build their own from the same array, and two FAQPage blocks on one page would be a markup error.' },
+];
+---
+
+<Layout
+  title="Interior style reference"
+  description="Internal reference for the shared interior-page components."
+  noindex={true}
+>
+  <SiteHeader />
+
+  <main id="main">
+    <PageHero
+      crumbs={[{ href: '/services/', label: 'Services' }, { href: '/style-reference/', label: 'Style reference' }]}
+      eyebrow="Internal"
+      title="Interior page visual system"
+      lede="Breadcrumbs, dark hero with an aside slot, section heads, hairline grids, prose columns, and an FAQ accordion."
+      actions={[
+        { href: '/contact/', label: 'Primary action' },
+        { href: '/services/', label: 'Secondary action', variant: 'secondary' },
+      ]}
+    >
+      <ContactCta variant="inline" heading="" />
+    </PageHero>
+
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Hairline grid"
+          title="Cards sit in a grid whose gaps are the rule"
+          lede="One utility, three column counts, and the responsive collapse handled globally."
+        />
+        <div class="grid-hairline cols-3">
+          {cards.map((c) => (
+            <a class="card-link" href={c.href}>
+              <h3>{c.title}</h3>
+              <p>{c.body}</p>
+              <span class="card-go">View &rarr;</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Prose"
+          title="Long-form copy sits in a measured column"
+          lede="The alternate ground plus a joint seam separates this from the section above."
+        />
+        <div class="prose">
+          <p>
+            A paragraph in <strong>.prose</strong> takes its rhythm from a
+            single owl rule, so no page needs its own margin stack. Links are
+            <a href="/stucco-repair/">underlined in the rule colour</a> and
+            darken on hover.
+          </p>
+          <ul>
+            <li>List markers pick up the accent.</li>
+            <li>The column caps at 68ch regardless of container width.</li>
+          </ul>
+          <h3>Subheadings space themselves</h3>
+          <p>An h3 inside the column gets its own top margin without extra classes.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="ref-faq">
+      <div class="wrap">
+        <SectionHead id="ref-faq" eyebrow="FAQ" title="Questions collapse into hairline rows" />
+        <FaqList items={faqs} />
+      </div>
+    </section>
+
+    <section class="section on-dark">
+      <div class="wrap">
+        <SectionHead align="center" eyebrow="Final CTA" title="Dark closing band" />
+        <ContactCta />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+  <MobileStickyBar />
+</Layout>

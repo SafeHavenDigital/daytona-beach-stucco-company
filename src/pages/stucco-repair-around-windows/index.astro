@@ -1,0 +1,540 @@
+---
+/**
+ * /stucco-repair-around-windows/ — service money page (keyword-plan
+ * "★ NEW 2", priority DO SECOND, verification needed: none).
+ *
+ * Target: `stucco repair around windows`, `stucco cracks around windows`,
+ * `stucco window leak repair`, `water intrusion around stucco windows`,
+ * `stucco repair around doors`, `stucco cracks around doors`.
+ * Intent: problem-specific commercial. The homeowner has already localized
+ * the leak to an opening and wants to know who fixes it and what it involves.
+ *
+ * ------------------------------------------------------------------
+ * MERGE (keyword-plan item 6): windows AND doors are ONE page. Same detail,
+ * same flashing, same failure. Do NOT build /stucco-repair-around-doors/.
+ * The title and body carry both nouns.
+ *
+ * CANNIBALIZATION CONTROL (keyword-plan item 7 — "moderate, the highest of
+ * the four"). This page is about the DETAIL, not the DAMAGE:
+ *   - The flashing/sealant/head-sill anatomy of an opening lives HERE.
+ *   - The general wet-wall case, the sign sequence, the tap test and the
+ *     entry-point survey live on /stucco-water-damage-repair/ — link up to
+ *     it, do not restate it.
+ *   - Cost detail and the full range table live on /stucco-repair/#pricing.
+ *   - The Moisture Check process lives ONLY on /stucco-moisture-testing/.
+ * If this page starts growing a general water-damage section, that is the
+ * cannibalization the brief warned about. Cut it and link instead.
+ *
+ * THE OWNABLE ANSWER (keyword-plan item 9): "who fixes it — the window
+ * company or the stucco contractor?" Live SERP 2026-08-31: every ranking
+ * result explains the mechanism, none answers this. The trades blame each
+ * other. The honest answer is that the cause decides, and you cannot know
+ * the cause until someone opens the head of the window — which is the same
+ * finding that routes into diagnosis. Do not soften this into "call us".
+ *
+ * NOT A HOME INSPECTION: Florida licenses home inspectors separately. This
+ * is our own assessment as the contractor who does the work.
+ *
+ * SEALANT: we name polyurethane and the ASTM C920 class because that is
+ * published trade standard, not a claim about a specific product we stock.
+ * Do not name a brand — we have not verified what the crew actually buys.
+ *
+ * OMITTED — blocked on missing prerequisites, absent rather than stubbed:
+ *   - [PHOTO SET] — keyword-plan item 8: "Any window-specific photo would
+ *     need [PHOTO SET]." `openWallPhotos` is null in src/config/site.ts and
+ *     no window-specific set exists. The proof block renders automatically
+ *     once the array is populated. Do NOT substitute stock or AI imagery:
+ *     presenting generated visuals as real project documentation is a hard
+ *     brand constraint.
+ *   - [WARRANTY TERM] — `warrantyTerms` is null. No guarantee module.
+ *   - [LICENSE #], [PHONE] — null in site.ts. Omitted, not stubbed.
+ * ------------------------------------------------------------------
+ *
+ * VISUAL SYSTEM (redesigned 2026-09-02): migrated from this page's own local
+ * hero/band/FAQ CSS onto the shared Orlando interior-page components -
+ * PageHero, SectionHead, FaqList, Breadcrumbs - and the global utilities in
+ * Layout.astro (.section, .slab, .joint, .grid-hairline, .prose, .on-dark).
+ * COPY, FACTS, PRICING, SCHEMA, URLS, HEADING TEXT, ANCHOR IDS AND INTERNAL
+ * LINKS ARE UNCHANGED by that migration; only the markup carrying them moved.
+ * The page keeps its own argument - the corner crack is probably fine, the
+ * anatomy of an opening, and the three-causes answer to "who fixes it" - and
+ * is NOT homogenized toward the other repair pages. Do not re-add a local
+ * hero or band rule here.
+ */
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import MobileStickyBar from '../../components/MobileStickyBar.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import FaqList from '../../components/FaqList.astro';
+import {
+  business,
+  serviceArea,
+  openWallPhotos,
+  repairPriceRanges,
+  pricingDisclaimer,
+} from '../../config/site';
+
+const title =
+  'Stucco Repair Around Windows & Doors | Daytona Beach & Volusia County';
+const description =
+  'Cracks and leaks at stucco window and door openings. Why they crack at the corners, what is actually behind the leak, and whether it is the window company or the stucco contractor who fixes it.';
+
+const usd = (n: number) => '$' + n.toLocaleString('en-US');
+
+const localizedRange = repairPriceRanges.find(
+  (r) => r.job === 'Larger localized repair',
+);
+const waterDamageRange = repairPriceRanges.find(
+  (r) => r.job === 'Water-damaged stucco repair',
+);
+
+/**
+ * The anatomy of an opening, top to bottom. This is the page's core
+ * differentiator — it is the detail nobody else on the SERP walks through
+ * in order.
+ */
+const anatomy = [
+  {
+    part: 'The head',
+    label: 'Above the window',
+    body: 'The single most important detail on the opening, and the one most often missing. Water running down the wall has to be caught above the window and sent back out over the face of the stucco. That is head flashing. If it was never installed, or if the building paper was lapped the wrong way behind it, the top of the window becomes a funnel pointing into the wall cavity.',
+  },
+  {
+    part: 'The jambs',
+    label: 'The sides',
+    body: 'The vertical sides shed water reasonably well on their own. They matter because they are where the corners are, and the corners are where the wall tells you something is wrong.',
+  },
+  {
+    part: 'The corners',
+    label: 'Where cracks start',
+    body: 'A window is a hole in a wall, and a hole concentrates stress at its corners. Stucco moves with heat, and it moves most where the wall is discontinuous. Diagonal cracks running out from a corner at roughly 45 degrees are the most common crack on any stucco house, and on their own they are usually cosmetic.',
+  },
+  {
+    part: 'The sill',
+    label: 'Below the window',
+    body: 'Where the evidence shows up. Staining below a corner, bubbling paint under the sill, or a tide-line that stays after the wall dries means water has been coming through above and running down inside.',
+  },
+  {
+    part: 'The perimeter joint',
+    label: 'Stucco to frame',
+    body: 'Stucco and a window frame are two different materials that expand at different rates, so they are never bonded — they are joined with a sealant that is meant to stretch. That joint has a service life. When it hardens and splits, it stops being a seal.',
+  },
+];
+
+/** The page's ownable answer, structured as a decision rather than a hedge. */
+const responsibility = [
+  {
+    cause: 'The window unit itself is leaking',
+    who: 'The window company',
+    body: 'Water is coming through the frame, the corners of the sash, or a failed seal in the unit. The stucco around it is intact and dry. This is a window problem and a stucco contractor cannot fix it.',
+  },
+  {
+    cause: 'The perimeter sealant has failed',
+    who: 'Either — it is small work',
+    body: 'The joint between the frame and the stucco has hardened, split, or pulled away. This is maintenance, not a repair, and it is the one case where the fix really is straightforward.',
+  },
+  {
+    cause: 'The flashing above the window failed, or was never there',
+    who: 'The stucco contractor',
+    body: 'Water is getting behind the stucco at the head and running down inside the wall. Reaching it means opening the stucco above the window, correcting the laps, re-lathing and rebuilding the finish. That is stucco work regardless of whose original mistake it was.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Why does stucco crack at window corners?',
+    a: 'Because a window is a hole in the wall, and a hole concentrates stress at its corners. Stucco expands and contracts with temperature, and it moves most where the wall is discontinuous. That is why the cracks run diagonally out from the corners at roughly 45 degrees. It is the most common crack pattern on any stucco house and on its own it is usually cosmetic.',
+  },
+  {
+    q: 'Is a crack at the window corner serious?',
+    a: 'Usually not by itself. What makes it serious is what comes with it. A hairline diagonal crack in a dry wall with no staining is ordinary. The same crack with a stain running down below it, bubbling paint under the sill, a soft or hollow spot, or a history of coming back after being patched is telling you water is getting in above. The crack is not the problem in that case — it is the symptom of a detail that failed higher up.',
+  },
+  {
+    q: 'Does the window have to come out to fix a stucco leak?',
+    a: 'Sometimes, and it depends entirely on where the water is entering. If the perimeter sealant failed, the window stays. If the flashing at the head failed or was never installed, reaching it means removing stucco above the window, and depending on how the window was originally installed, the unit may have to come out to correct the laps properly. Anyone who tells you before looking is guessing.',
+  },
+  {
+    q: 'Who fixes a leaking window in a stucco wall, the window company or the stucco contractor?',
+    a: 'It depends on where the water is actually getting in, which is why the two trades so often point at each other. If the unit itself is leaking through the frame or a failed seal, that is the window company. If the perimeter sealant has failed, it is small work either one can do. If the flashing above the window failed or was never installed, water is getting behind the stucco and reaching it is stucco work — opening the wall above the head, correcting the laps, re-lathing, rebuilding the finish. Nobody can tell you which of the three you have from the outside of a dry wall.',
+  },
+  {
+    q: 'Can I just caulk around the window to stop the leak?',
+    a: 'If the perimeter sealant is the only thing that failed, yes, that is the correct repair. If the flashing above the window failed, caulk will not fix it and can make things worse by sealing in water that is already inside the wall. There is one thing never to seal in either case: the small weep holes along the bottom of the window frame. They are the drainage path. Caulking, painting, or foaming them shut turns the frame into a bathtub.',
+  },
+  {
+    q: 'What does it cost to repair stucco around a window?',
+    a: localizedRange && waterDamageRange
+      ? `It depends on which of the three causes you have. Resealing a perimeter joint is minor work. Researched market ranges for this area put a larger localized repair at roughly ${usd(localizedRange.low)} to ${usd(localizedRange.high)}, and a repair where water has already gotten in behind the finish at roughly ${usd(waterDamageRange.low)} to ${usd(waterDamageRange.high)}. Those are area ranges rather than a quote from us. The gap between them is mostly a question of how long the water has been getting in.`
+      : 'It depends on which of the three causes you have, and mostly on how long water has been getting in behind the finish.',
+  },
+  {
+    q: 'Why does the crack at my window keep coming back after it is patched?',
+    a: 'Two reasons, and they are different problems. If the wall is dry, the crack is movement, and filling it with a rigid patch guarantees it reopens — the joint needs a material that stretches. If the wall is wet, the patch is sitting over the actual cause, and it will keep failing until the water is dealt with. Cracks that return after a proper repair are the strongest reason to test the wall before paying for a third patch.',
+  },
+];
+
+const serviceSchema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Stucco repair around windows and doors',
+  serviceType: 'Stucco repair around windows and doors',
+  description:
+    'Repair of cracked and leaking stucco at window and door openings. The entry point at the head, jamb, sill or perimeter joint is identified and corrected, affected material behind the stucco is addressed, and the finish is rebuilt and matched.',
+  provider: { '@type': 'LocalBusiness', name: business.name },
+};
+if (serviceArea) serviceSchema.areaServed = serviceArea;
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <SiteHeader current="/stucco-repair-around-windows/" />
+
+  <main id="main">
+    {/*
+      HERO. Dark PageHero with ContactCta in the aside slot - the money-page
+      arrangement PageHero's own doc block describes. Eyebrow, h1 and lede are
+      the same three strings the old local hero rendered. Breadcrumbs are new
+      markup only and emit BreadcrumbList schema from Breadcrumbs.astro.
+      No `actions` array: the aside CTA is the conversion affordance here.
+    */}
+    <PageHero
+      crumbs={[
+        { href: '/services/', label: 'Services' },
+        { href: '/stucco-repair-around-windows/', label: 'Windows and doors' },
+      ]}
+      eyebrow="Stucco repair · Daytona Beach & Volusia County"
+      title="Stucco repair around windows and doors"
+      lede="Almost every stucco house has cracks running out from the window corners. Most of them are nothing. The ones that matter have something else going on with them, and the difference is worth knowing before you pay anyone."
+      actions={[
+        { href: '/contact/', label: 'Request an estimate' },
+        { href: '/problems/cracks-in-stucco/', label: 'Which cracks matter', variant: 'secondary' },
+      ]}
+    >
+      <LeadForm />
+    </PageHero>
+
+    {/* THE CORNER CRACK — the reassurance that earns the rest */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Ruling it out"
+          title="First, the crack at the corner is probably fine"
+          lede="A window is a hole in a wall. Holes concentrate stress at their corners, stucco moves with heat, and it moves most where the wall is interrupted. That is why the cracks run out diagonally at roughly 45 degrees, and why they show up at every opening on the house rather than at one."
+        />
+        <div class="prose">
+        <p>
+          On its own, a hairline diagonal crack in a dry wall is the most
+          ordinary thing on a stucco house in Florida. It does not mean
+          water is behind the wall.
+        </p>
+        </div>
+        <div class="caveat">
+          <p>
+            <strong>What changes the answer</strong> is what comes with it.
+            A stain running down from the corner. Bubbling paint under the
+            sill. A soft or hollow spot when you tap it. Or the same crack
+            coming back after it was already repaired. Any one of those and
+            the crack has stopped being the problem — it is the symptom of
+            something that failed above it.
+          </p>
+        </div>
+        <div class="prose">
+        <p>
+          Cracking elsewhere on the house, away from the openings, is a
+          different question with its own answers:{' '}
+          <a href="/problems/cracks-in-stucco/">
+            which cracks matter and which do not
+          </a>.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* ANATOMY — the core differentiator */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Anatomy"
+          title="What is actually behind a window opening"
+          lede="Nearly every leak at an opening comes down to one of five parts. Working from the top down, because that is the direction water travels."
+        />
+
+        {/*
+          Five descriptive cells, not links - each names a part of the opening
+          assembly, not a route. Plain .grid-hairline rather than .card-link.
+        */}
+        <div class="grid-hairline cols-2 entries">
+          {anatomy.map((a) => (
+            <div class="entry">
+              <h3>{a.part} <span class="entry-label">{a.label}</span></h3>
+              <p>{a.body}</p>
+            </div>
+          ))}
+        </div>
+        <div class="prose">
+        <p>
+          Worth knowing: stucco is not waterproof, and it was never designed
+          to be. The layers behind it are what manage water. When an opening
+          leaks, something in that assembly failed, not the stucco surface
+          itself.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* THE OWNABLE ANSWER */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Whose job is it"
+          title="Who fixes it, the window company or the stucco contractor?"
+          lede="This is the question people actually call about, and the reason it is hard to get a straight answer is that both trades have a real incentive to say it is the other one. The honest answer is that the cause decides, and there are only three causes."
+        />
+
+        <div class="grid-hairline cols-3 entries">
+          {responsibility.map((r) => (
+            <div class="entry">
+              <h3>{r.cause}</h3>
+              <p class="who">{r.who}</p>
+              <p>{r.body}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="caveat">
+          <p>
+            Here is the part nobody wants to say out loud:{' '}
+            <strong>
+              you cannot tell which of the three you have by looking at the
+              outside of the wall.
+            </strong>{' '}
+            A failed head flashing and a failed perimeter joint can produce
+            exactly the same stain. That is why we would rather test the
+            wall than guess at it, and why we will tell you when the answer
+            is that you need a window company and not us.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* PROOF — null-gated, renders only when a real photo set exists */}
+    {openWallPhotos && openWallPhotos.length > 0 && (
+      <section class="section" id="proof">
+        <div class="wrap">
+          <SectionHead eyebrow="Proof" title="What it looks like behind the finish" />
+          <div class="proof">
+            {openWallPhotos.map((src) => (
+              <img src={src} alt="Stucco opened above a window during repair, showing the flashing and building paper behind the finish" loading="lazy" />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {/* THE REPAIR */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Scope"
+          title="What the repair involves"
+          lede="If it is the perimeter joint, this is short work. The old sealant is cut out rather than covered over, the joint is prepared to the right depth, and it is resealed with a material rated to stretch — a polyurethane sealant in the ASTM C920 class is the trade standard for this joint, because it has to move for years without splitting."
+        />
+        <div class="prose">
+        <p>
+          If it is the flashing, it is a real repair and there is no version
+          of it that stays on the surface. The stucco above the opening is
+          cut back far enough to reach the detail, the flashing and the
+          building paper behind it are corrected so every layer laps over
+          the one below it, new lath goes in, and the finish is rebuilt in
+          coats and textured to match the wall around it.
+        </p>
+        <p>
+          One thing that is never part of the repair: sealing the weep holes
+          along the bottom of the window frame. Those are the drainage path
+          for water that gets past the glass, which is normal and expected.
+          Caulking, painting, or foaming them shut is a common well-meant
+          mistake that turns the frame into a bathtub.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* DIAGNOSIS HANDOFF — links out rather than restating */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="A paid diagnostic service"
+          title="When the wall needs testing first"
+          lede="If there is staining, a soft spot, or a crack that has already been repaired once and came back, the useful question is not what the patch costs. It is whether water is sitting behind the wall right now, because closing that up is a repair you pay for twice."
+        />
+        <div class="prose">
+        <p>
+          Our{' '}
+          <a href="/stucco-moisture-testing/">Stucco Moisture Check</a>{' '}
+          answers that with meter readings rather than a guess, and you get
+          the findings whether or not you hire us for the repair. If water
+          has already gotten in behind the finish, what that job involves is
+          on{' '}
+          <a href="/stucco-water-damage-repair/">stucco water damage repair</a>.
+          For the repair side generally, and what it costs, see{' '}
+          <a href="/stucco-repair/#pricing">stucco repair and pricing</a>.
+        </p>
+        <p>
+          This is our own assessment of your stucco as the contractor who
+          does the work. It is not a home inspection and it is not an
+          independent inspection report.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* COST */}
+    <section class="section slab joint" id="cost">
+      <div class="wrap">
+        <SectionHead eyebrow="Cost" title="What it costs" />
+        {localizedRange && waterDamageRange ? (
+          <>
+            <p class="price">
+              Resealing a perimeter joint is minor work. A larger localized
+              repair around an opening runs roughly{' '}
+              <strong>
+                {usd(localizedRange.low)}&ndash;{usd(localizedRange.high)}
+              </strong>
+              , and a repair where water has already gotten in behind the
+              finish runs roughly{' '}
+              <strong>
+                {usd(waterDamageRange.low)}&ndash;{usd(waterDamageRange.high)}
+              </strong>
+              .
+            </p>
+            <p class="cost-note">
+              The gap between those two numbers is mostly a question of how
+              long the water has been getting in. That is the entire
+              argument for finding out early.
+            </p>
+            <p class="disclaimer">{pricingDisclaimer}</p>
+          </>
+        ) : (
+          <p class="price">
+            Cost depends on which of the three causes you have, and mostly on
+            how long water has been getting in behind the finish.
+          </p>
+        )}
+      </div>
+    </section>
+
+    {/*
+      FAQ. The shared FaqList accordion, fed the SAME `faqs` array that builds
+      the FAQPage schema above - one source, so an answer can never drift from
+      its markup. FaqList deliberately emits no schema of its own (see its doc
+      block); the page keeps ownership of that.
+    */}
+    <section class="section" id="faq" aria-labelledby="faq-head">
+      <div class="wrap">
+        <SectionHead id="faq-head" eyebrow="FAQ" title="Frequently asked questions" />
+        <FaqList items={faqs} />
+      </div>
+    </section>
+
+    <section class="section on-dark">
+      <div class="wrap">
+        <ContactCta heading="Tell us what the window is doing" />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  /*
+   * PAGE-SPECIFIC ONLY. The hero, bands, section heads, prose column, card
+   * grid, FAQ rows and breadcrumbs come from the shared components and the
+   * global utilities in Layout.astro; those rules were deleted here rather
+   * than duplicated. What remains is this page's own furniture: the anatomy
+   * cells with their position label, the three-causes cells with their trade
+   * label, the flag-ruled asides, the proof grid, and the price line.
+   */
+
+  /* --- Cells: the five parts of an opening, and the three causes -------- */
+  .entry h3 { margin: 0 0 0.5rem; font-size: 1.0625rem; }
+  .entry p { margin: 0; color: var(--ink-soft); }
+
+  /* Position label beside each part of the opening assembly. */
+  .entry-label {
+    display: block;
+    margin-top: 0.375rem;
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: 0.6875rem;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* Which trade owns each of the three causes. */
+  .who {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--flag);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem !important;
+  }
+
+  /* --- The "what changes the answer" and "you cannot tell" asides ------- */
+  .caveat {
+    border-left: 3px solid var(--flag);
+    padding-left: 1.25rem;
+    max-width: 60ch;
+  }
+  .caveat p { margin: 0; color: var(--ink-soft); }
+
+  /* --- Proof grid, rendered only when real photos exist ----------------- */
+  .proof {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+  .proof img { width: 100%; height: auto; display: block; }
+
+  /* --- Price line and its disclaimer ------------------------------------ */
+  .price {
+    font-family: var(--font-display);
+    font-size: clamp(1.125rem, 2.4vw, 1.375rem);
+    line-height: 1.45;
+    max-width: 52ch;
+  }
+  .price strong { color: var(--accent); }
+
+  .cost-note { color: var(--ink-soft); max-width: 60ch; }
+
+  .disclaimer {
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+    max-width: 60ch;
+    border-left: 3px solid var(--rule);
+    padding-left: 1.25rem;
+  }
+</style>

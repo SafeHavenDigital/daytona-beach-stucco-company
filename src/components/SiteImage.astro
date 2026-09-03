@@ -1,0 +1,239 @@
+---
+/**
+ * SiteImage — the ONE image component for this site. Built 2026-09-02.
+ *
+ * ==================================================================
+ * THE IMAGES IN src/assets/images/ ARE AI-GENERATED ILLUSTRATIONS.
+ * THEY ARE NOT PHOTOGRAPHS OF THIS COMPANY'S WORK.
+ *
+ * There is no camera, no job, no address and no customer behind any
+ * of them. That is not disqualifying - an illustration of a repair
+ * method is the same category of thing as a diagram - but it is
+ * decisive about HOW they may be used.
+ *
+ * ALLOWED: showing what a repair looks like, what a symptom is, what
+ * a method involves. Illustrative use.
+ *
+ * FORBIDDEN, without exception:
+ *   - a gallery, portfolio, "our work" or "recent projects" section
+ *   - a before/after pair, in any layout
+ *   - anything beside a testimonial, review or project count
+ *   - any framing that presents the image as proof of work performed
+ *
+ * That would be inventing project history, which this project forbids
+ * outright, alongside inventing services, credentials, photos and
+ * locations.
+ *
+ * THIS COMPONENT HAS NO before/after MODE AND MUST NOT GAIN ONE. That
+ * is the structural guarantee: the system cannot express a proof
+ * claim, so no page can accidentally make one. Three of the source
+ * files ARE split-panel before/after composites; they are not placed,
+ * and if one ever is, only a single panel may be used, cropped to it.
+ *
+ * ALT TEXT AND CAPTIONS describe WHAT THE TECHNIQUE OR SYMPTOM IS,
+ * never what this company did.
+ *   WRITE:     "A stucco patch being floated over exposed metal lath."
+ *   NEVER:     "A repair we completed in Ormond Beach."
+ *              "One of our projects." Any customer, date or address.
+ *
+ * `alt` is a REQUIRED prop with no default, so omitting it fails the
+ * build. That is the correct failure mode: a decorative-by-accident
+ * image is worse than a broken build.
+ *
+ * There is deliberately NO visible "Illustration" disclosure rendered
+ * by default (owner decision, 2026-09-02). The honesty constraint is
+ * carried by the alt/caption rules above and by the absence of any
+ * proof-shaped layout - NOT by a label. Do not add one back as a
+ * default; a page that wants such a line can pass it as `caption`.
+ * ==================================================================
+ *
+ * WHY src/assets/ AND NOT public/
+ * These files used to sit in public/images/, which bypasses Astro's
+ * image pipeline entirely - no WebP conversion, no srcset, no
+ * intrinsic dimensions, and the five PNG masters shipped at 2.4-3.0MB
+ * each. Importing from src/assets/ hands all of that to the framework:
+ * `src` arrives as ImageMetadata carrying real pixel dimensions, and
+ * <Image> emits width/height plus a content-hashed WebP srcset.
+ *
+ * LAYOUT SHIFT is solved twice over. The .frame reserves its box from
+ * `aspect-ratio` in CSS before a byte of image arrives, AND <Image>
+ * emits intrinsic width/height from the import. CLS is zero at any
+ * network speed.
+ *
+ * The frame paints --paper-warm behind a 1px --rule box-shadow, which
+ * is exactly what .grid-hairline cells do (see Layout.astro). An image
+ * therefore reads as another cell in the same system rather than a
+ * foreign object, and the warm ground doubles as the placeholder while
+ * the image decodes. box-shadow costs no layout space, so it cannot
+ * shift anything - the same reason the hairline grid uses it.
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  /**
+   * Imported from src/assets/images/, e.g.
+   *   import shot from '../assets/images/name.webp';
+   * The import (not a string path) is what carries intrinsic
+   * dimensions into the build.
+   */
+  src: ImageMetadata;
+
+  /**
+   * REQUIRED. Describes the technique or symptom shown. Must not
+   * narrate a job, customer, location or completed project - see the
+   * block above. No default, deliberately.
+   */
+  alt: string;
+
+  /**
+   * Placement. Drives aspect ratio, rendered width, `sizes` and the
+   * loading strategy. Three variants because the image audit produced
+   * exactly three placement needs.
+   *   hero   16:9, full .wrap width - opens a page
+   *   inline 3:2, up to 60rem - mid-content explainer
+   *   aside  4:3, up to 34rem - narrow, beside body copy
+   */
+  variant?: 'hero' | 'inline' | 'aside';
+
+  /**
+   * Optional line under the frame, in <figcaption>. Same content rules
+   * as `alt`: describe the technique, never the job.
+   */
+  caption?: string;
+
+  /**
+   * Nudges the crop when a subject sits off-centre. Any CSS
+   * object-position value, e.g. "70% 40%". Needed by the two
+   * crop-sensitive images rather than editing the files.
+   */
+  focus?: string;
+
+  /**
+   * Set true ONLY for the single image above the fold on a page. It
+   * drops lazy-loading and asks the browser to prioritise the fetch.
+   * More than one per page defeats the purpose.
+   */
+  priority?: boolean;
+}
+
+const {
+  src,
+  alt,
+  variant = 'inline',
+  caption,
+  focus,
+  priority = false,
+} = Astro.props;
+
+/**
+ * `sizes` per variant, matching the global breakpoints in
+ * Layout.astro (.cols-* collapse to two-up at 62rem and one-up at
+ * 34rem). Below 62rem every variant is full-bleed within .wrap, so it
+ * asks for 100vw; above it, each asks for its own capped width.
+ * Getting this wrong is invisible on desktop and expensive on phones.
+ */
+const SIZES = {
+  hero: '(max-width: 62rem) 100vw, 1200px',
+  inline: '(max-width: 62rem) 100vw, 960px',
+  aside: '(max-width: 62rem) 100vw, 544px',
+} as const;
+
+/**
+ * Widths generated per image. The largest matches the widest rendered
+ * box (hero at 1200px CSS px); 1600 covers 2x on the narrower
+ * variants without generating a 2400px file nothing requests.
+ */
+const WIDTHS = [480, 800, 1200, 1600];
+---
+
+<figure class:list={['site-image', variant]}>
+  <div class="frame">
+    <Image
+      src={src}
+      alt={alt}
+      widths={WIDTHS}
+      sizes={SIZES[variant]}
+      format="webp"
+      quality={72}
+      loading={priority ? 'eager' : 'lazy'}
+      decoding={priority ? 'sync' : 'async'}
+      style={focus ? `object-position: ${focus};` : undefined}
+    />
+  </div>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  /* <figure> so the caption is programmatically tied to the image.
+   * Browser default margin removed - spacing is the section's job. */
+  .site-image {
+    margin: 0;
+  }
+
+  /* The frame reserves the box. aspect-ratio holds it open before the
+   * image loads; overflow clips the cover crop. --paper-warm shows
+   * through while decoding, so the space never flashes white. */
+  .frame {
+    position: relative;
+    overflow: hidden;
+    background: var(--paper-warm);
+    /* Same hairline the grid cells draw, and for the same reason:
+     * box-shadow occupies no layout space, so it cannot shift the box. */
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+
+  .site-image :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Overridden inline by `focus` when a subject sits off-centre. */
+    object-position: center;
+  }
+
+  /* --- Variants -------------------------------------------------
+   * Fixed ratios are what make this a system rather than a set of
+   * one-off placements. The sources are all roughly 16:9, so inline
+   * and aside crop via object-fit: cover. */
+
+  .hero .frame {
+    aspect-ratio: 16 / 9;
+  }
+
+  .inline {
+    max-width: 60rem;
+  }
+  .inline .frame {
+    aspect-ratio: 3 / 2;
+  }
+
+  .aside {
+    max-width: 34rem;
+  }
+  .aside .frame {
+    aspect-ratio: 4 / 3;
+  }
+
+  /* Below the one-column collapse, `aside` widens to 16:9. A 4:3 crop
+   * at phone width eats an unreasonable amount of vertical scroll
+   * before the reader reaches the copy it illustrates. Every other
+   * ratio holds at every width - consistent cropping is the point.
+   *
+   * NOTE: aside never floats. Text does not wrap around images
+   * anywhere on this site; below 62rem the variants are full-width
+   * within .wrap and stack above the copy they accompany. */
+  @media (max-width: 34rem) {
+    .aside .frame {
+      aspect-ratio: 16 / 9;
+    }
+  }
+
+  figcaption {
+    margin-top: 0.625rem;
+    color: var(--ink-faint);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    max-width: 60ch;
+  }
+</style>

@@ -1,0 +1,519 @@
+---
+/**
+ * /stucco-replacement/ — built 2026-08-31.
+ *
+ * THE GATE. There is no `verifiedServices.replacement` flag, and none is
+ * needed: replacement is not a separate service question. It is the top of
+ * the same repair scope the client already sells. `repairPriceRanges`
+ * contains two client-facing entries that ARE this work — "Large wall
+ * section or partial replacement" ($2,500-$6,000) and "Full resurfacing or
+ * extensive re-stucco" ($3,000-$8,000+) — plus "Major moisture and
+ * substrate restoration" ($4,000-$7,000+), whose note says outright that
+ * "the lath and sheathing are the real job." That is verified replacement
+ * work priced by the client. The URL is separately pre-approved at
+ * keyword-plan:713.
+ *
+ * SPLITTING TEST — passes 4 of 4.
+ *   1. Different work. Removing a wall to the sheathing and rebuilding it
+ *      is not patching it and is not coating it.
+ *   2. Different buyer state. This buyer has already been told, usually
+ *      more than once, that patching is not going to hold. They are not
+ *      deciding whether to act; they are deciding scope and cost.
+ *   3. SERP separation. Live SERP 2026-08-31: CDP Stucco, CR Benge
+ *      (repair-vs-replacement guide), Premier Stucco Repair Tampa (removal
+ *      checklist), Coastal Exteriors, Kenny Construction ("5 signs"),
+ *      Eby Exteriors and EE Contracting (remediation), Friel Plastering,
+ *      Gormley, J&L. SUPPLIER CHECK PASSES: every ranking result is a
+ *      contractor or remediation firm selling the removal-and-rebuild.
+ *      No suppliers, no material retailers, no DIY-tool intent. This is
+ *      the opposite of the foam-trim SERP that killed that URL.
+ *   4. Standalone substance.
+ *
+ * THE OWNABLE ANSWER. The category answers one question — "how do I know
+ * if I need replacement?" — and answers it the same way everywhere: a list
+ * of visible symptoms. Wide cracks, bulging, mould, age. Every ranking page
+ * is a variation on that list. What none of them tells the homeowner is
+ * that the list is not how the decision is actually made:
+ *   (a) Replacement is diagnosed by what is BEHIND the wall, not by what
+ *       the wall looks like. Two walls with identical cracking can need
+ *       completely different jobs depending on whether the lath, paper, and
+ *       sheathing behind them are intact. A symptom list cannot tell them
+ *       apart, which is why the honest answer to "do I need replacement?"
+ *       is almost always "not until someone has opened it."
+ *   (b) The scope is discovered during tear-off, not before it. The wall
+ *       comes off, and what is underneath is what it is. This is the single
+ *       most useful thing a homeowner can know before signing, because it
+ *       reframes a mid-job scope change from a contractor moving the goal
+ *       posts into the expected shape of this kind of work — and it tells
+ *       them to ask, in advance, how that gets handled.
+ *
+ * INTENT SEPARATION — the user's explicit instruction, enforced three ways:
+ *   - REPLACEMENT (this page): the existing wall has FAILED. Removal down
+ *     to the substrate, repair of what is found, new stucco built back.
+ *   - RESURFACING (/stucco-resurfacing/): the existing wall is SOUND. Recoat
+ *     over it. Nothing comes off. Linked out to, by name, in body copy.
+ *   - NEW INSTALLATION (/new-stucco-installation/): there is no wall yet.
+ *     New construction and additions. Linked out to, by name, in body copy.
+ * The page states the three-way distinction explicitly in its own section
+ * rather than leaving it to internal links, because the SERP shows buyers
+ * arrive here using all three words interchangeably.
+ *
+ * CANNIBALIZATION — the live risk on this build, and it is REAL, not
+ * theoretical. /stucco-repair/ already renders re-stucco cost content
+ * (:100, :115-117) and a services card titled "Re-stucco and replacement"
+ * (:197). That is the hub page ranking for the cost query and it KEEPS it:
+ *   - This page does NOT target `cost to re-stucco a house florida` or
+ *     `stucco repair price per square foot`. Those stay at
+ *     /stucco-repair/#pricing per the standing decision at keyword-plan
+ *     REJECTED ("A separate cost URL").
+ *   - The cost section here renders the two replacement-specific ranges
+ *     and then LINKS to /stucco-repair/#pricing for the full table rather
+ *     than reproducing it.
+ *   - /stucco-resurfacing/ owns the coating-vs-recoat distinction. This
+ *     page defers to it by name and does not argue the resurfacing case.
+ *   - /stucco-water-damage-repair/ owns water intrusion as a problem. This
+ *     page treats water only as one finding behind a failed wall.
+ *
+ * WHAT WE DO NOT SAY:
+ *   - NO removal method, tooling, containment, or debris process. The SERP
+ *     is full of chiselling/sawing/pressure-washing/chemical-stripping
+ *     detail. NONE of it is verified as this client's method.
+ *   - NO project duration, crew size, lead time, or turnaround. The SERP
+ *     offers "3-5 days", "5-10 days", "10-21 days". Not this client's
+ *     numbers. Timeline appears ONLY as the public cure standard already
+ *     established on /new-stucco-installation/, attributed as such.
+ *   - NO materials, lath type, paper, WRB, product names, or manufacturers.
+ *   - NO claim to do framing, sheathing replacement, structural repair, or
+ *     engineering. The SERP explicitly routes foundation cracks to a
+ *     structural engineer; this page says the same and routes AWAY.
+ *   - NO permit or inspection service claim.
+ *   - NO warranty term, license number, insurance carrier, or phone. All
+ *     null in site.ts.
+ *   - NO stucco lifespan figure. "50 to 70 years" appears on the SERP
+ *     unsourced and is not a standard we can attribute.
+ *   - NO height, storey, lift, or scaffold capability. UNVERIFIED — FOURTH
+ *     build running. Access appears only as a cost variable.
+ *   - NO concrete spalling, and no implication of it.
+ *     `concreteSpallingRepair` is VERIFIED FALSE. A failed wall over a
+ *     balcony or stair landing is the one place this could leak in, so the
+ *     page does not discuss those assemblies at all.
+ *   - NO standalone waterproofing offer. `standaloneWaterproofing` FALSE.
+ *
+ * OMITTED — absent rather than stubbed:
+ *   - [PHOTO SET] — `openWallPhotos` is null. This is the page where an
+ *     open-wall photo set would be worth the most of any on the site: the
+ *     entire ownable answer is about what is behind the wall, and we have
+ *     no image of it. Highest-value outstanding asset. No proof block ships.
+ *
+ * PRICING. `pricingDisclaimer` IS rendered here — unlike on
+ * /new-stucco-installation/, where it was withheld because that page
+ * published no ranges and the disclaimer's wording is repair vocabulary.
+ * Here both conditions are satisfied: ranges are published, and every
+ * variable the disclaimer names (size of the damage, whether water got in
+ * behind the wall, how hard the area is to reach, matching the finish,
+ * the condition of the material underneath) is literally what drives a
+ * replacement quote. It is the right element in the right place.
+ *
+ * VISUAL SYSTEM (redesigned 2026-09-02): migrated from this page's own local
+ * hero/band/FAQ CSS onto the shared Orlando interior-page components -
+ * PageHero, SectionHead, FaqList, Breadcrumbs - and the global utilities in
+ * Layout.astro (.section, .slab, .joint, .grid-hairline, .prose, .on-dark).
+ * COPY, FACTS, PRICING, SCHEMA, URLS, HEADING TEXT, ANCHOR IDS AND INTERNAL
+ * LINKS ARE UNCHANGED by that migration; only the markup carrying them moved.
+ * The ownable answer - diagnosis is behind the wall, scope is discovered
+ * during tear-off - is the page's own and is NOT homogenized toward the
+ * other service pages. Do not re-add a local hero or band rule here.
+ */
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import MobileStickyBar from '../../components/MobileStickyBar.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import FaqList from '../../components/FaqList.astro';
+import { business, serviceArea, repairPriceRanges, pricingDisclaimer } from '../../config/site';
+
+const title =
+  'Stucco Replacement | Removing and Rebuilding Failed Stucco | Daytona Beach';
+const description =
+  'Stucco replacement in Daytona Beach and Volusia County. Why the decision to replace is made by what is behind the wall rather than what it looks like, how scope gets discovered during tear-off, and where replacement differs from resurfacing.';
+
+const usd = (n: number) => `$${n.toLocaleString('en-US')}`;
+
+const sectionRange = repairPriceRanges.find(
+  (r) => r.job === 'Large wall section or partial replacement',
+);
+const wholeRange = repairPriceRanges.find(
+  (r) => r.job === 'Full resurfacing or extensive re-stucco',
+);
+const substrateRange = repairPriceRanges.find(
+  (r) => r.job === 'Major moisture and substrate restoration',
+);
+
+/** What actually decides replacement — behind the wall, not on it. */
+const findings = [
+  {
+    layer: 'The stucco itself',
+    label: 'What you can see',
+    body:
+      'Cracking, bulging, a hollow sound when tapped, sections come away from the wall. This tells you something is wrong, not how far it goes.',
+  },
+  {
+    layer: 'The lath and its fasteners',
+    label: 'First thing under it',
+    body:
+      'Stucco is only as sound as what it is keyed into. Where the lath has corroded or pulled loose, new stucco over it fails the same way the old one did — which is why patching a wall like this keeps not working.',
+  },
+  {
+    layer: 'The weather barrier',
+    label: 'The layer that decides everything',
+    body:
+      'The paper or membrane behind the lath is what actually keeps water out of the building. Stucco is not waterproof and was never meant to be. If that layer is compromised, replacing the stucco without addressing it just rebuilds the same problem in new material.',
+  },
+  {
+    layer: 'The sheathing and framing',
+    label: 'Where it stops being stucco work',
+    body:
+      'If water has been getting in long enough, the material underneath can be affected. Where that is structural, it is a structural question and needs the right trade before any new stucco goes on. We will tell you when we are looking at that rather than quote around it.',
+  },
+];
+
+/** The three jobs buyers arrive here confusing. */
+const distinctions = [
+  {
+    name: 'Replacement',
+    who: 'The wall has failed',
+    body:
+      'The existing stucco comes off, what is behind it gets dealt with, and new stucco is built back. This is the job when the wall can no longer be made sound by working on its surface.',
+  },
+  {
+    name: 'Resurfacing',
+    who: 'The wall is sound but tired',
+    body:
+      'Nothing comes off. A worn but structurally sound wall gets recoated. Much less disruptive and much less expensive — and the right answer more often than people expect.',
+  },
+  {
+    name: 'New installation',
+    who: 'There is no wall yet',
+    body:
+      'Stucco on new construction or an addition. A different sequence with cure time built into the middle of it, and a different set of things that decide whether you end up happy.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'How do I know if my stucco needs to be replaced or just repaired?',
+    a: 'Honestly, you usually cannot know from the outside, and neither can anyone else. Visible damage tells you there is a problem; it does not tell you whether the lath and the weather barrier behind it are intact. That is the thing that decides repair against replacement, and it is settled by opening a section of wall, not by looking at one.',
+  },
+  {
+    q: 'Should I replace stucco or resurface it?',
+    a: 'It depends entirely on whether the wall underneath is sound. If it is, resurfacing is far less disruptive and far less expensive, and it is the right answer more often than people assume. If the wall has failed behind the surface, resurfacing puts a new finish over a live problem. See stucco resurfacing for what that job involves.',
+  },
+  {
+    q: 'Do you have to remove all the stucco?',
+    a: 'Not always. Replacement is often one elevation or a defined section rather than an entire house — where the failure stops, the removal can stop. Whole-house removal happens when the underlying cause is present everywhere, which is a different finding from damage being visible everywhere.',
+  },
+  {
+    q: 'Can the scope change once the wall is opened?',
+    a: 'Yes, and this is worth understanding before you sign anything. What is behind the stucco is not fully known until the stucco is off. A quote given before removal is a quote on what is expected to be there. Ask any contractor how they handle it when what is found differs, and get the answer before work starts rather than after.',
+  },
+  {
+    q: 'Will replacing the stucco stop the water getting in?',
+    a: 'Only if the reason water was getting in is addressed at the same time. Stucco is a cladding, not a waterproof layer — the barrier behind it does that work. New stucco over an unresolved intrusion point looks like a solution for about a season.',
+  },
+  {
+    q: 'Does new stucco on a replacement need to cure like new construction does?',
+    a: 'Yes. It goes on in coats over new lath, and the coats have to cure in sequence — the same intervals the building code and ASTM C926 set for any new application. The material does not care that there used to be a wall there.',
+  },
+];
+
+const serviceSchema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Stucco replacement',
+  serviceType: 'Stucco replacement',
+  description:
+    'Removal of failed stucco, repair of the lath, weather barrier, and substrate found behind it, and application of new stucco. Distinct from resurfacing, which recoats a sound wall.',
+  provider: { '@type': 'LocalBusiness', name: business.name },
+};
+if (serviceArea) serviceSchema.areaServed = serviceArea;
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <SiteHeader current="/stucco-replacement/" />
+
+  <main id="main">
+    {/*
+      HERO. Dark PageHero with ContactCta in the aside slot - the money-page
+      arrangement PageHero's own doc block describes. Eyebrow, h1 and lede are
+      the same three strings the old local hero rendered. Breadcrumbs are new
+      markup only and emit BreadcrumbList schema from Breadcrumbs.astro.
+      No `actions` array: the aside CTA is the conversion affordance here.
+    */}
+    <PageHero
+      crumbs={[
+        { href: '/services/', label: 'Services' },
+        { href: '/stucco-replacement/', label: 'Replacement' },
+      ]}
+      eyebrow="Stucco · Daytona Beach & Volusia County"
+      title="Stucco replacement"
+      lede="When a wall has stopped being repairable, the stucco comes off, what is behind it gets dealt with, and new stucco goes back on. The part nobody explains first: that decision is made by what is behind the wall, not by what the wall looks like."
+      actions={[
+        { href: '/contact/', label: 'Request an estimate' },
+        { href: '/stucco-repair/', label: 'Repair vs. replacement', variant: 'secondary' },
+      ]}
+    >
+      <LeadForm />
+    </PageHero>
+
+    {/* THE OWNABLE ANSWER */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="What decides it"
+          title="Symptom lists cannot answer this question"
+          lede="Search this and you find the same article ten times: wide cracks, bulging, mould, age. Those are real signs that something is wrong. They are not how the repair-or-replace decision actually gets made, and treating them as a checklist is how people pay for the wrong job."
+        />
+        <div class="prose">
+        <p>
+          Two walls can crack identically and need completely different work.
+          Stucco is a system of layers, and the ones that decide the answer are
+          the ones you cannot see.
+        </p>
+        </div>
+
+        {/*
+          Four descriptive cells, not links - each names a layer of the wall,
+          and none is a route. Plain .grid-hairline rather than .card-link.
+        */}
+        <div class="grid-hairline cols-2 entries">
+          {findings.map((f) => (
+            <div class="entry">
+              <p class="who">{f.label}</p>
+              <h3>{f.layer}</h3>
+              <p>{f.body}</p>
+            </div>
+          ))}
+        </div>
+        <div class="caveat">
+          <p>
+            Which is why the honest answer to &ldquo;do I need replacement?&rdquo;
+            is usually{' '}
+            <strong>not until somebody has opened a section of the wall</strong>
+            {' '}&mdash; and why a contractor who can tell you from the kerb is
+            telling you something they do not know yet.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* SCOPE DISCOVERY — the second half of the ownable answer */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="The hinge"
+          title="The scope gets discovered during removal"
+          lede="This is the single most useful thing to understand before you sign anything for this kind of work. What is behind the stucco is not fully known until the stucco is off. Any quote given beforehand is a quote on what is expected to be there."
+        />
+        <div class="prose">
+        <p>
+          Most of the time expectations hold. Sometimes the damage stops sooner
+          than it looked and the job gets smaller. Sometimes it runs further.
+          That is not a contractor moving the goal posts; it is the shape of
+          work where the diagnosis and the job happen in the same visit.
+        </p>
+        <p>
+          The practical move: ask, before work starts, what happens if what is
+          found differs from what was quoted &mdash; how you get told, and how
+          it is priced. Any contractor worth hiring has a clear answer, and
+          getting it in advance is worth more than a lower number.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* THE THREE-WAY DISTINCTION */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Three different jobs"
+          title="Replacement, resurfacing, and new stucco are three different jobs"
+          lede="People use all three words interchangeably, and the gap between them is thousands of dollars."
+        />
+        <div class="grid-hairline cols-3 entries">
+          {distinctions.map((d) => (
+            <div class="entry">
+              <p class="who">{d.who}</p>
+              <h3>{d.name}</h3>
+              <p>{d.body}</p>
+            </div>
+          ))}
+        </div>
+        <div class="prose">
+        <p>
+          If the wall is sound and you want it looking new,{' '}
+          <a href="/stucco-resurfacing/">stucco resurfacing</a> is the page you
+          want. If there is no wall yet,{' '}
+          <a href="/new-stucco-installation/">new stucco installation</a>{' '}
+          covers that. And if you are not sure the damage is bad enough to be
+          either,{' '}
+          <a href="/stucco-crack-triage/">what your cracks are telling you</a>{' '}
+          is the place to start.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* WHAT GOES BACK ON */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Cure time"
+          title="What goes back on, and how long it takes to cure"
+        />
+        <div class="prose">
+        <p>
+          New stucco on a replacement is new stucco. It goes on in coats over
+          new lath, and each coat has to cure before the next can bond to it
+          &mdash; the same intervals the building code and ASTM C926 set for
+          any new application. Those are not house rules anyone can shorten for
+          you, and a schedule that ignores them shows up in the wall later.
+        </p>
+        <p>
+          The <a href="/new-stucco-installation/">new installation page</a> sets
+          out those cure windows in full, along with why new stucco commonly
+          develops fine hairline cracking in its first year without anything
+          being wrong. Both apply here.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* COST */}
+    <section class="section" id="pricing">
+      <div class="wrap">
+        <SectionHead eyebrow="Cost" title="What replacement costs" />
+        {sectionRange && wholeRange && (
+          <p class="price">
+            Researched market ranges for this area put taking back a full
+            elevation or a major section of one at roughly{' '}
+            <strong>{usd(sectionRange.low)} to {usd(sectionRange.high)}</strong>,
+            and whole-house or near-whole-house work at{' '}
+            <strong>
+              {usd(wholeRange.low)} to {usd(wholeRange.high)}
+              {wholeRange.openEnded ? ' and up' : ''}
+            </strong>, priced mainly by the size of the house.
+            {substrateRange && (
+              <>
+                {' '}Where the material behind the stucco turns out to be the
+                real job, that work runs about{' '}
+                <strong>
+                  {usd(substrateRange.low)} to {usd(substrateRange.high)}
+                  {substrateRange.openEnded ? ' and up' : ''}
+                </strong>
+                {' '}on its own.
+              </>
+            )}
+          </p>
+        )}
+        <p class="disclaimer">{pricingDisclaimer}</p>
+        <div class="prose">
+        <p>
+          The full range table for every size of stucco job, from a single
+          crack upward, is at{' '}
+          <a class="link-arrow" href="/stucco-repair/#pricing">stucco repair pricing</a>.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/*
+      FAQ. The shared FaqList accordion, fed the SAME `faqs` array that builds
+      the FAQPage schema above - one source, so an answer can never drift from
+      its markup. FaqList deliberately emits no schema of its own (see its doc
+      block); the page keeps ownership of that.
+    */}
+    <section class="section slab joint" id="faq" aria-labelledby="faq-head">
+      <div class="wrap">
+        <SectionHead id="faq-head" eyebrow="FAQ" title="Common questions" />
+        <FaqList items={faqs} />
+      </div>
+    </section>
+
+    <section class="section on-dark">
+      <div class="wrap">
+        <ContactCta heading="Tell us what the wall is doing" />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  /*
+   * PAGE-SPECIFIC ONLY. The hero, bands, section heads, prose column, card
+   * grid, FAQ rows and breadcrumbs come from the shared components and the
+   * global utilities in Layout.astro; those rules were deleted here rather
+   * than duplicated. What remains is this page's own furniture: the layer
+   * cells with their "what you can see" label, the flag-ruled caveat, and
+   * the price line.
+   */
+
+  /* --- Cells: the four layers, and the three-way distinction ------------ */
+  .entry h3 { margin: 0 0 0.5rem; font-size: 1.0625rem; }
+  .entry p { margin: 0; color: var(--ink-soft); }
+
+  /* Label above each layer / each of the three jobs. */
+  .who {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--flag);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem !important;
+  }
+
+  /* --- The "not until somebody has opened it" aside --------------------- */
+  .caveat {
+    border-left: 3px solid var(--flag);
+    padding-left: 1.25rem;
+    max-width: 60ch;
+  }
+  .caveat p { margin: 0; color: var(--ink-soft); }
+
+  /* --- Price line and its disclaimer ------------------------------------ */
+  .price {
+    font-family: var(--font-display);
+    font-size: clamp(1.125rem, 2.4vw, 1.375rem);
+    line-height: 1.45;
+    max-width: 52ch;
+  }
+  .price strong { color: var(--accent); }
+
+  .disclaimer {
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+    max-width: 60ch;
+    border-left: 3px solid var(--rule);
+    padding-left: 1.25rem;
+  }
+</style>

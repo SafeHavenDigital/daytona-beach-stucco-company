@@ -1,0 +1,465 @@
+---
+/**
+ * /problems/bubbling-peeling-paint-stucco/ — SUPPORTING problem/symptom page.
+ * keyword-plan Wave 4 item, built 2026-08-31. Brief:
+ * ./campaigns/content-plan/bubbling-peeling-paint-stucco.md
+ *
+ * Target: `bubbling paint on stucco`, `peeling paint stucco exterior`,
+ * `stucco paint blistering`, `why does my stucco paint keep peeling`,
+ * `can I paint over bubbling paint`.
+ * Intent: INFORMATIONAL with high commercial adjacency — this reader is
+ * often already collecting repaint quotes, which is what makes the
+ * "not yet" answer both honest and differentiated.
+ *
+ * ------------------------------------------------------------------
+ * THIS IS NOT A SERVICE PAGE. It diagnoses; /stucco-painting/ and
+ * /stucco-resurfacing/ sell. Schema is Article, NOT Service.
+ *
+ * WORD CEILING: 1,000-1,500 rendered words inside <main> (owner
+ * direction). Measure with the <main>-extraction method — header and
+ * footer chrome adds ~700-790 words.
+ *
+ * LINKING MODEL (keyword-plan:314): UP to exactly one money page
+ * (/stucco-painting/), ACROSS to /stucco-repair/#pricing.
+ *
+ * CANNIBALIZATION CONTROL — TIGHT, AND IN A NEW DIRECTION. This is the
+ * first supporting page whose money pages already carry "should you
+ * paint this wall" content. /stucco-painting/ OWNS, and this page MUST
+ * NOT rebuild:
+ *   - its `risks` array: "A wall that is already wet" / "Stucco that
+ *     has let go of the wall" / "Cracks that have not been dealt with"
+ *   - the whole PREPARATION argument (`prep` array)
+ *   - "When paint is not the right job" + the resurfacing comparison
+ *   - the breathability argument (coatings work in both directions)
+ * /stucco-resurfacing/ owns "whether your wall is a candidate."
+ * THE SPLIT: those pages answer "should you paint, and how." This page
+ * answers the question BEFORE it — "why is the paint I already have
+ * coming off, and what does that tell me about the wall." Diagnosis
+ * here, remedy there. If this page grows a prep sequence, a coating
+ * recommendation, or painting cost, that is the cannibalization.
+ *
+ * /problems/water-stains-on-stucco/ already flags bubbling paint in its
+ * `marks` array. Link to it; do not restate it. /problems/soft-spots-
+ * hollow-stucco/ owns hollow-vs-soft. /stucco-water-damage-repair/ owns
+ * the tap test. Reference and link; rebuild neither.
+ *
+ * THE TWO OWNABLE ANSWERS, both absent from the SERP:
+ *   1. WHERE it bubbles tells you what it is. A band or patch means
+ *      water arriving somewhere specific. Even scatter across a whole
+ *      sun-facing elevation is usually the coating letting go.
+ *   2. A WET BUBBLE AND A DRY BUBBLE ARE DIFFERENT FINDINGS. Soft and
+ *      water-backed is moisture. Brittle and flaking is adhesion
+ *      failure — AND THE WALL MAY BE ENTIRELY FINE. That reassuring
+ *      case is offered nowhere on the SERP.
+ * The SERP is split between stucco firms saying "moisture, get
+ * inspected" and painting contractors saying "bad prep, repaint."
+ * Nobody tells the owner how to tell which one they have.
+ *
+ * NO COATING BRAND, PRODUCT, LINE, OR SYSTEM. All UNVERIFIED. The SERP
+ * is full of elastomeric and "permeable masonry coating" product
+ * recommendations — do not name one or recommend the category as a fix.
+ * NO PAINT LIFESPAN OR REPAINT INTERVAL. Not claimed; `warrantyTerms`
+ * is null. The "how long should paint last" PAA is answered WITHOUT a
+ * number, deliberately.
+ * NO APPLICATION-METHOD CLAIM — spray/roll, prep system, coat schedule
+ * all unverified.
+ * NO THERMAL IMAGING. Conditional, a screening aid, irrelevant here.
+ * NOT A HOME INSPECTION — Florida licenses inspectors separately.
+ * NO STANDALONE WATERPROOFING BENEFIT — `standaloneWaterproofing` false.
+ * NO PRICE RANGE renders, so `pricingDisclaimer` is NOT imported.
+ *
+ * OMITTED — blocked, absent rather than stubbed:
+ *   - [BUBBLING PAINT PHOTO SET] — no such array exists. The proof
+ *     block is gated on `openWallPhotos` and renders once real photos
+ *     land. This is the FOURTH page waiting on a photo set. Do NOT
+ *     substitute stock or AI imagery as project documentation.
+ *   - [PHONE] — null. CTA routes to /contact/ via ContactCta.
+ *   - [LICENSE #], [WARRANTY TERM] — null. No credential module.
+ * ------------------------------------------------------------------
+ *
+ * VISUAL SYSTEM (redesigned 2026-09-02): migrated from this page's own local
+ * hero/band/FAQ CSS onto the shared Orlando interior-page components -
+ * PageHero, SectionHead, FaqList, Breadcrumbs - and the global utilities in
+ * Layout.astro (.section, .slab, .joint, .grid-hairline, .on-dark). COPY,
+ * FACTS, SCHEMA, URLS, HEADING TEXT, ANCHOR IDS AND INTERNAL LINKS ARE
+ * UNCHANGED by that migration; only the markup carrying them moved.
+ * The two-causes argument and the three settling checks stay exactly as written.
+ * This page keeps its informational register - single-column hero, no aside
+ * CTA - and is NOT homogenized toward the service money pages. Do not re-add
+ * a local hero or band rule here.
+ */
+import LeadForm from '../../../components/LeadForm.astro';
+import Layout from '../../../layouts/Layout.astro';
+import SiteHeader from '../../../components/SiteHeader.astro';
+import SiteFooter from '../../../components/SiteFooter.astro';
+import MobileStickyBar from '../../../components/MobileStickyBar.astro';
+import ContactCta from '../../../components/ContactCta.astro';
+import PageHero from '../../../components/PageHero.astro';
+import SectionHead from '../../../components/SectionHead.astro';
+import FaqList from '../../../components/FaqList.astro';
+import { business, serviceArea, openWallPhotos } from '../../../config/site';
+
+const title =
+  'Bubbling and Peeling Paint on Stucco: What It Means | Daytona Beach';
+const description =
+  'Bubbling paint on stucco is either water pushing out from behind or a coating that never bonded. Two free checks tell you which one you have before you pay for a repaint.';
+
+/**
+ * The page's organizing idea, and the answer the SERP does not give:
+ * WHERE the bubbling sits separates the two causes. Ordered so the
+ * reassuring pattern comes first — voice profile, never match the
+ * customer's panic.
+ */
+const patterns = [
+  {
+    name: 'Spread evenly across one whole elevation',
+    verdict: 'Usually the coating, not the wall',
+    tone: 'calm',
+    body: 'Small blisters scattered fairly uniformly over a large face, very often the one taking the most afternoon sun, concentrated nowhere in particular. This pattern points at the bond between paint and wall rather than at water, and it is the version people most often panic about.',
+  },
+  {
+    name: 'A band along the bottom two or three feet',
+    verdict: 'Water from below',
+    tone: 'watch',
+    body: 'Bubbling that stops at a fairly consistent height above the ground and leaves the rest of the wall alone. Splash-back off a hard surface, irrigation hitting the same strip every morning, or water wicking up from grade. The wall above being untouched is the useful clue.',
+  },
+  {
+    name: 'A patch under a window, sill, or roofline',
+    verdict: 'Something above it is letting water in',
+    tone: 'watch',
+    body: 'Blistering concentrated below a specific feature, often widest at the top and tapering down. Water is getting in at that junction and travelling. The paint is reporting the leak rather than causing it, and the thing to look at is the detail above the patch.',
+  },
+  {
+    name: 'Bubbles that are soft and give under a thumb',
+    verdict: 'Water is behind it now',
+    tone: 'flag',
+    body: 'A blister that feels spongy, dents, or weeps when pressed has liquid behind it. This is the one case where the appearance alone is decisive. It means moisture is in or against the wall today, not that it was at some point in the past.',
+  },
+  {
+    name: 'Peeling with a white chalky bloom underneath',
+    verdict: 'Salts, and they came from somewhere',
+    tone: 'flag',
+    body: 'Paint lifting to reveal a powdery white deposit. Water moved through the material carrying dissolved salts and left them behind the coating, where they expanded and pushed it off. It confirms water travelled through the wall — not that it still is.',
+  },
+  {
+    name: 'Bubbling with cracking, a hollow patch, or a smell inside',
+    verdict: 'The paint is the least of it',
+    tone: 'flag',
+    body: 'Any of these alongside blistering changes the question entirely. The finish coming off is now a symptom of something happening in the wall rather than a coating problem, and no amount of repainting addresses it.',
+  },
+];
+
+/**
+ * The two free checks. This is the section that answers what neither
+ * industry on the SERP answers: how to tell which of their two answers
+ * applies to you.
+ */
+const checks = [
+  {
+    factor: 'Press one, then break one open',
+    body: 'A bubble that is soft, spongy, or damp inside has water behind it. A bubble that is brittle, hollow, and flakes off in dry curls or sheets does not. That single difference separates a wall problem from a paint problem, and it costs nothing to find out.',
+  },
+  {
+    factor: 'Look at what is underneath',
+    body: 'Pull a loose flake and look at the back of it. Old paint stuck to the back means the new coat failed to bond to the old one. Chalky powder or clean bare stucco means it never bonded to the wall. Damp, dark, or crumbling material underneath is a different conversation.',
+  },
+  {
+    factor: 'Watch it through a dry spell',
+    body: 'Give it a week without rain or irrigation on that wall. Blistering driven by moisture usually settles or stops spreading as the wall dries. Blistering from a failed bond carries on regardless, because nothing about the weather changes whether the paint is attached.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Can I just paint over bubbling paint?',
+    a: 'Not over the bubbles themselves — paint only holds to what is under it, so a new coat over a failing one fails with it. Whether you can repaint at all depends on why it bubbled. If the bubbles are dry and brittle and the wall behind them is sound, the answer is yes once the loose material is off and the surface is prepared. If they are soft and water-backed, painting seals moisture into a wall that was trying to dry, and the blistering returns.',
+  },
+  {
+    q: 'Why does my stucco paint keep peeling in the same place?',
+    a: 'Repeating in the same spot is the strongest evidence you can get that something is feeding it. A bond failure tends to spread across a face over time; a moisture problem comes back to the same patch because the water keeps arriving at the same place. If two repaints have failed in one area, the useful next step is finding the water rather than trying a third coat.',
+  },
+  {
+    q: 'Does bubbling paint mean the stucco underneath is bad?',
+    a: 'Often not. Paint can let go of a perfectly sound wall — applied over a damp or dusty surface, or over a chalky old coat that had nothing left to bond to. The wall itself is a separate question, answered by whether it sounds hollow, feels soft, or is cracked. Blistering on a wall that taps solid and shows nothing else is usually a coating problem.',
+  },
+  {
+    q: 'How long should paint last on stucco in Florida?',
+    a: 'We do not publish a figure. It depends on the wall, the exposure, and how the previous coat was prepared, and any single number would be marketing rather than information. What is fair to say is that a coat failing within a couple of years almost always points to something that was wrong before it went on — a damp wall, a surface that was not clean, or water arriving from somewhere nobody addressed.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+/**
+ * Article, not Service. The page sells nothing, and Service markup would
+ * blur the boundary against /stucco-painting/ that keeps this page
+ * defensible.
+ */
+const articleSchema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Bubbling and Peeling Paint on Stucco: What It Means',
+  description,
+  author: { '@type': 'Organization', name: business.name },
+  publisher: { '@type': 'Organization', name: business.name },
+};
+if (serviceArea) articleSchema.about = serviceArea;
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <SiteHeader current="/problems/bubbling-peeling-paint-stucco/" />
+
+  <main id="main">
+    {/*
+      HERO. Dark PageHero, single column - no aside. This is an informational
+      page, not a money page: the conversion affordance is the ContactCta at
+      the foot. Eyebrow, h1 and lede are the same three strings the old local
+      hero rendered. Breadcrumbs are new markup only and emit BreadcrumbList
+      schema from Breadcrumbs.astro.
+    */}
+    <PageHero
+      crumbs={[
+        { href: '/problems/', label: 'Stucco problems' },
+        { href: '/problems/bubbling-peeling-paint-stucco/', label: 'Bubbling & peeling paint' },
+      ]}
+      eyebrow="Stucco problems · Daytona Beach & Volusia County"
+      title="Bubbling and peeling paint on stucco"
+      lede="Paint comes off stucco for two quite different reasons: water pushing out from behind it, or a coating that never properly attached in the first place. They look almost identical and they need opposite responses."
+      actions={[
+        { href: '/contact/', label: 'Request an estimate' },
+        { href: '/stucco-painting/', label: 'Stucco painting & coatings', variant: 'secondary' },
+      ]}
+    />
+
+<section class="section">
+  <div class="wrap">
+    <LeadForm />
+  </div>
+</section>
+
+    {/* QUICK ANSWER — featured-snippet shaped */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="The short version"
+          title="The short version"
+          lede="Press a bubble. If it is soft and gives under your thumb, there is water behind it and the wall is the problem. If it is brittle and flakes off dry, the paint failed to bond and the wall underneath may be perfectly sound."
+        />
+        <p class="lede">
+          That takes ten seconds and it decides everything that follows,
+          including whether a repaint is money well spent or money you will
+          spend again.
+        </p>
+      </div>
+    </section>
+
+    {/* THE FIELD GUIDE — organized by WHERE, the ownable answer */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Location"
+          title="Where it is bubbling tells you what it is"
+          lede="The distribution across a wall is more informative than the blisters themselves. Ordered from least to most concerning."
+        />
+        <div class="grid-hairline cols-2 entries">
+          {patterns.map((p) => (
+            <div class={`entry tone-${p.tone}`}>
+              <h3>{p.name}</h3>
+              <p class="verdict">{p.verdict}</p>
+              <p>{p.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* THE CHECKS — what neither industry on the SERP will tell you */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Three checks"
+          title="Three checks that settle it"
+          lede="All three you can do yourself, today, without anyone coming out."
+        />
+        <div class="grid-hairline cols-3 entries">
+          {checks.map((c) => (
+            <div class="entry">
+              <h3>{c.factor}</h3>
+              <p>{c.body}</p>
+            </div>
+          ))}
+        </div>
+        <div class="caveat">
+          <p>
+            <strong>
+              A wall covered in dry, brittle blisters is a better position to
+              be in than a wall with three soft ones.
+            </strong>{' '}
+            How much of it is peeling matters far less than what is behind
+            the peeling.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* PROOF — null-gated, renders only when a real photo set exists */}
+    {openWallPhotos && openWallPhotos.length > 0 && (
+      <section class="section" id="proof">
+        <div class="wrap">
+          <SectionHead eyebrow="Proof" title="What it looks like behind the finish" />
+          <div class="proof">
+            {openWallPhotos.map((src) => (
+              <img
+                src={src}
+                alt="Stucco opened during repair, showing the condition of the wall behind the finish"
+                loading="lazy"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {/* THE SERP'S ACTUAL PROBLEM, stated as useful context */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Conflicting advice"
+          title="Why you get two different answers"
+          lede="Search this and you will find stucco companies telling you it is moisture and you need testing, and painting companies telling you it is preparation and you need a proper repaint. Both are giving you an accurate description of the problem they see most."
+        />
+        <p class="band-lede">
+          On this coast the two overlap constantly. A wall here rarely dries
+          all the way out, so a coat can go on over material that was damp
+          without anyone realising, and the failure that follows is genuinely
+          both a moisture problem and a preparation problem at once. That is
+          also why blistering is more common here than the national advice
+          suggests, and why it less often means something serious.
+        </p>
+        <p class="band-lede">
+          Which is the long way of saying the checks above are worth doing
+          before you take either answer at face value, including ours.
+        </p>
+      </div>
+    </section>
+
+    {/* WHAT TO DO — the two-link slot plus symptom handoffs */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead eyebrow="Next step" title="What to do about it" />
+        <p class="lede">
+          If the blisters are dry and brittle, the wall taps solid, and
+          nothing else is wrong with it, this is a coating problem with a
+          straightforward answer. Getting the old material off and the
+          surface right is most of that work, and what it involves is set out
+          on our{' '}
+          <a href="/stucco-painting/">stucco painting page</a>. If the finish
+          underneath is worn or patchy rather than just unpainted,{' '}
+          <a href="/stucco-resurfacing/">resurfacing</a> is the comparison
+          worth making before you commit to a repaint.
+        </p>
+        <p class="lede">
+          If any bubble came back soft, or the blistering keeps returning to
+          the same patch, establish whether the wall is wet before you spend
+          anything on how it looks. Our{' '}
+          <a href="/stucco-moisture-testing/">Stucco Moisture Check</a>{' '}
+          settles that with meter readings, and the findings are yours either
+          way. Repair costs, if it comes to that, are on the{' '}
+          <a href="/stucco-repair/#pricing">price ranges</a>.
+        </p>
+        <p class="lede">
+          Blistering rarely arrives alone. If the wall is also marked or
+          discoloured, that is{' '}
+          <a href="/problems/water-stains-on-stucco/">
+            what the stains are telling you
+          </a>. If a patch sounds hollow or gives under hand pressure, that
+          is{' '}
+          <a href="/problems/soft-spots-hollow-stucco/">
+            a separate finding worth reading first
+          </a>, and where water has already gotten in behind the finish, the
+          repair itself is{' '}
+          <a href="/stucco-water-damage-repair/">stucco water damage repair</a>.
+        </p>
+        <p class="note">
+          The one thing worth saying plainly: a fresh coat over a wall that
+          is still wet will fail again, and it takes the evidence with it.
+          Whatever else you decide, do not let anyone paint over blistering
+          without establishing why it blistered.
+        </p>
+      </div>
+    </section>
+
+    {/* FAQ */}
+    <section class="section slab joint" id="faq" aria-labelledby="faq-head">
+      <div class="wrap">
+        <SectionHead id="faq-head" eyebrow="FAQ" title="Frequently asked questions" />
+        <FaqList items={faqs} />
+      </div>
+    </section>
+
+    <section class="section on-dark">
+      <div class="wrap">
+        <ContactCta heading="Describe the blistering and we will tell you which one it is" />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  /*
+   * PAGE-SPECIFIC ONLY. The hero, bands, section heads, cell grid, FAQ rows
+   * and breadcrumbs come from the shared components and the global utilities
+   * in Layout.astro; those rules were deleted here rather than duplicated.
+   * What remains is this page's own furniture.
+   */
+  .band-lede { max-width: 60ch; color: var(--ink-soft); }
+  .lede { max-width: 60ch; color: var(--ink-soft); }
+  .note { color: var(--ink-soft); font-size: 0.9375rem; max-width: 60ch; }
+
+  .caveat {
+    border-left: 3px solid var(--flag);
+    padding-left: 1.25rem;
+    max-width: 60ch;
+  }
+  .caveat p { margin: 0; color: var(--ink-soft); }
+
+  .entry h3 { margin: 0 0 0.5rem; font-size: 1.0625rem; }
+  .entry p { margin: 0; color: var(--ink-soft); }
+
+  .verdict {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.375rem !important;
+    color: var(--ink-soft);
+  }
+  .tone-watch .verdict { color: var(--ink); }
+  .tone-flag .verdict { color: var(--flag); }
+
+  .proof {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .proof img { width: 100%; height: auto; border-radius: 4px; }
+
+  .faq { margin: 1.5rem 0 0; max-width: 44rem; }
+  .qa + .qa { margin-top: 1.5rem; }
+</style>

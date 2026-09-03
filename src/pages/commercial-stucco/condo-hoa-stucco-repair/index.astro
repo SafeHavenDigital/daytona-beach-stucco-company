@@ -1,0 +1,540 @@
+---
+/**
+ * /commercial-stucco/condo-hoa-stucco-repair/ — commercial child page, third
+ * and final page of the commercial pillar. keyword-plan architecture :266.
+ *
+ * NO CONTENT BRIEF EXISTS for this URL. Unlike the milestone page, this one
+ * lives in the plan only as an architecture entry plus two routing decisions
+ * (:581 balcony/parapet keywords route here; :731 preserves the page against
+ * a proposed [CONDO/MULTIFAMILY/HOA] top-level split). The angle below was
+ * therefore derived from live research 2026-09-01, not handed down.
+ *
+ * Target: `condo stucco repair contractor Volusia County`, `HOA stucco
+ * repair Daytona Beach`, `multifamily stucco repair Florida`.
+ * Secondary, routed here per keyword-plan:581: balcony and parapet terms —
+ * which are overwhelmingly multifamily and belong in this funnel as
+ * sections, never as homeowner-facing pages.
+ *
+ * ------------------------------------------------------------------
+ * THE GOVERNING CONSTRAINT, keyword-plan:731 verbatim: "SERP shows FCC
+ * Builders actively holds this ground, unlike the milestone/SIRS SERP which
+ * is empty — so COMPETE ON THE STATUTORY TERMS, NOT THE GENERIC ONES."
+ *
+ * RE-VERIFIED LIVE 2026-09-01 (`condo HOA stucco repair contractor Volusia
+ * County Daytona Beach multifamily`): still contested, and FCC has if
+ * anything strengthened. They rank with an explicit "preferred partner for
+ * HOAs and commercial property managers," 15+ years local, and the phrase
+ * "minimal impact on residents." The rest is Houzz, Yelp, PrimeBuyersReport
+ * and general contractors (Jackson Stucco since 1998, 904 General,
+ * Trousdale n Sons).
+ *
+ * So this page does NOT open with "we serve HOAs." That is FCC's sentence,
+ * they have 15 years behind it, and we have zero publishable project
+ * history to outweigh it. Writing it anyway would be competing on their
+ * ground with a weaker hand and would put an implied-experience claim on a
+ * page whose whole job is honesty.
+ *
+ * THE ANGLE, found in research rather than assumed. The second and third
+ * searches turned up what the entire SERP is silent on: an association
+ * cannot simply decide to repair its walls. Before work happens it must
+ * establish WHO PAYS (common element vs limited common element, per the
+ * declaration and FS 718.113) and then NOTICE THE ASSESSMENT CORRECTLY
+ * (FS 718.112(2)(c) — 14 days, and the notice must carry the estimated cost
+ * AND a description of the specific purposes).
+ *
+ * That last requirement is the commercial hinge of this page and it is
+ * genuinely load-bearing: a board LEGALLY CANNOT notice a special
+ * assessment without a scoped, estimated number in hand. The statute
+ * creates the demand for exactly the deliverable we produce. No competitor
+ * connects those two facts. This is the honest version of urgency — it is
+ * the law's deadline, not a manufactured one.
+ *
+ * SECOND ANGLE, also from research: the common-element boundary runs
+ * straight through a stucco elevation. Exterior walls and the building
+ * envelope are generally common elements and a common expense; balconies
+ * are frequently LIMITED common elements whose maintenance the declaration
+ * MAY assign to the unit owner. So one continuous wall can carry two
+ * different payers, and the damage does not respect the line. This is
+ * precisely why the balcony/parapet keyword group was routed here
+ * (keyword-plan:581) rather than to a homeowner page.
+ *
+ * ------------------------------------------------------------------
+ * WHAT THIS PAGE MAY NOT SAY — the constraint is TIGHTER here than on
+ * either sibling, because the whole competitive set is making experience
+ * claims and the pull to match them is strongest.
+ *
+ * NO PROJECT HISTORY. [N COMPLETED MULTI-FAMILY PROJECTS], [SQ FT / UNIT
+ * COUNTS], [PROPERTY MANAGER / BOARD REFERENCES] are all null. FCC says
+ * "15+ years"; we say nothing about volume, tenure in multifamily, or
+ * number of associations served. There is no "why choose us" section on
+ * this page for exactly that reason — it could only be filled with
+ * unverifiable assertion.
+ *
+ * NO "MINIMAL IMPACT ON RESIDENTS" or any equivalent. That is FCC's claim
+ * and it is a claim about METHOD, which is the specific thing the owner
+ * said is not verified. occupiedBuildingWork:true authorizes that we work
+ * occupied buildings and coordinate access. It does not authorize a
+ * characterisation of how disruptive we are, a notice procedure, a staging
+ * plan, working hours, or elevator protocol.
+ *
+ * NO ACCESS EQUIPMENT. No lift, boom, scissor, swing stage, scaffold, rope
+ * access, mast climber. No storey ceiling stated.
+ * NO INSURANCE LIMITS. No figure, aggregate, per-occurrence, WC detail,
+ * additional-insured or waiver-of-subrogation language.
+ * NO ENGINEER OR CONSULTANT RELATIONSHIPS.
+ * NO PRICE — repairPriceRanges and pricingDisclaimer deliberately not
+ * imported; every range is single-family and would misstate scale.
+ *
+ * ------------------------------------------------------------------
+ * BOUNDARIES ARE AT THEIR MOST ACUTE ON THIS PAGE. `concreteSpallingRepair:
+ * false` is the critical one: the balcony keywords route HERE, and balcony
+ * distress on a coastal Florida condo is very often spalling concrete
+ * rather than stucco. A board arriving from a balcony search is more likely
+ * than not to need a concrete restoration contractor. Saying so plainly
+ * costs us a lead we could not serve and is the only honest option.
+ * `standaloneWaterproofing: false` likewise — FCC's own ranking page is
+ * titled "Structural Waterproofing & Stucco Repair," so the adjacent
+ * expectation is set by the top competitor before the board ever arrives.
+ *
+ * NOT LEGAL ADVICE, and this page carries more statute than either sibling.
+ * FS 718.113 and 718.112(2)(c) are cited as public law. Every reference to
+ * the declaration says the same thing: it depends on YOUR declaration, and
+ * that is a question for the association's attorney. A contractor telling a
+ * board how to read its own governing documents would be both wrong and
+ * dangerous, and the page says so explicitly.
+ *
+ * FIREWALL. Links UP to /commercial-stucco/, ACROSS to the milestone
+ * sibling, and out to /contact/. Nothing else. No homeowner funnel, no
+ * /stucco-moisture-testing/ (paid residential product).
+ *
+ * PILLAR NOW COMPLETE: hub + milestone + condo/HOA. The rejected
+ * /commercial-stucco/sirs-exterior-wall-reserves/ stays rejected; SIRS
+ * lives on the milestone page.
+ * ------------------------------------------------------------------
+ */
+import Layout from '../../../layouts/Layout.astro';
+import SiteHeader from '../../../components/SiteHeader.astro';
+import SiteFooter from '../../../components/SiteFooter.astro';
+import MobileStickyBar from '../../../components/MobileStickyBar.astro';
+import PageHero from '../../../components/PageHero.astro';
+import SectionHead from '../../../components/SectionHead.astro';
+import FaqList from '../../../components/FaqList.astro';
+import { business, serviceArea, email } from '../../../config/site';
+
+const title =
+  'Condo & HOA Stucco Repair | Volusia County Associations';
+const description =
+  'Stucco and exterior wall repair for Florida condominium associations and HOAs. Who pays, what the declaration decides, and what a board needs in hand before it can notice an assessment.';
+
+/**
+ * THE PAGE'S CENTREPIECE. Funding and responsibility — the part every
+ * competitor skips and the part that actually stalls the work.
+ */
+const funding = [
+  {
+    h: 'The exterior wall is usually a common expense',
+    body: 'Maintenance of the common elements is generally the association’s responsibility under FS 718.113, and the building envelope — the exterior walls and the finish on them — is normally a common element. When cracked stucco is letting water into the building, repairing it is normally a common expense shared by all owners rather than a bill for the owner whose unit happens to sit behind the damage.',
+  },
+  {
+    h: 'Balconies are frequently a different answer',
+    body: 'A limited common element is a common element reserved for the use of particular units, and balconies are the most common example. The declaration may assign maintenance of a limited common element to the unit owner; absent that assignment, it stays with the association. So the answer to “who pays for the balcony” is not in the statute. It is in your declaration, and it varies from building to building.',
+  },
+  {
+    h: 'Which means one wall can have two payers',
+    body: 'That boundary runs straight through a stucco elevation, and the damage does not respect it. A single face of a building can carry common-element wall that is unambiguously an association expense and balcony surfaces that may not be, in one continuous run of the same material, cracked by the same water. Establishing where that line falls before pricing is the difference between an assessment that holds up and one an owner successfully challenges.',
+  },
+  {
+    h: 'We scope the wall. Your attorney reads the declaration',
+    body: 'We can tell you what is wrong with the wall, where the damage runs, and what repairing it involves. We cannot tell you who owes for it, and any contractor who offers an opinion on your governing documents is outside their competence. What we can do is scope and price the work in a way that separates the areas cleanly, so counsel has something specific to apply the declaration to.',
+  },
+];
+
+/**
+ * THE COMMERCIAL HINGE. Statutory demand for exactly our deliverable.
+ * Verified live 2026-09-01 against FS 718.112(2)(c).
+ */
+const assessment = [
+  {
+    h: 'The notice has to carry a number and a purpose',
+    body: 'For a non-emergency special assessment, written notice of the meeting must reach unit owners and be posted on the property at least 14 days beforehand. That notice must state that assessments will be considered, give the estimated cost, and describe the specific purposes the money will be collected for.',
+  },
+  {
+    h: 'So the scope has to exist before the meeting',
+    body: 'A board cannot properly notice an assessment for exterior wall repair while the number is still a guess and the purpose is still “the stucco.” The statutory requirement is for an estimated cost and specific purposes, which means the scoping work has to happen before the meeting is even called, not after the money is approved.',
+  },
+  {
+    h: 'This is where associations lose a season',
+    body: 'The common failure is not that a board decides wrongly. It is that the notice goes out thin, an owner challenges it, and the assessment has to be re-noticed and re-voted — which on a 14-day cycle plus a board’s meeting schedule can cost a couple of months. If the building is also under a milestone repair clock, that delay comes directly out of the time available to do the work.',
+  },
+];
+
+const boundaries = [
+  {
+    label: 'Balcony distress is often concrete, and we do not do concrete',
+    body: 'Rusting rebar, spalling balcony edges and slab noses, and failing stair landings are outside our work. This is the most important line on this page. On a coastal Florida condominium, balcony deterioration is very often spalling concrete rather than failing stucco, and if that is what your building has, the contractor you need is a concrete restoration contractor. We would rather tell you that now than after you have spent a meeting on us.',
+  },
+  {
+    label: 'We do not sell building-envelope waterproofing on its own',
+    body: 'Waterproofing may form part of a wall repair we perform, but we do not take it as a standalone contract. Associations frequently arrive expecting stucco and waterproofing bid together as one envelope package, partly because that is how the work is often marketed. If that is the scope, it needs a waterproofing contractor.',
+  },
+  {
+    label: 'We are not engineers and we do not perform inspections',
+    body: 'We do not perform milestone inspections, do not write Phase 1 or Phase 2 reports, and do not produce structural repair specifications — Florida requires those from a licensed engineer or architect. Florida also licenses building inspectors separately. We assess walls in order to scope and price the work we would perform, which is a different thing and should not be substituted for either.',
+  },
+  {
+    label: 'Nothing here is legal advice',
+    body: 'FS 718.113 and FS 718.112(2)(c) are public law, cited as public law. How they interact with your declaration, your bylaws, and your specific situation is a question for the association’s attorney. No board should make a funding or responsibility decision on the strength of a contractor’s website, including this one.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Who pays for stucco repair in a Florida condo — the association or the owner?',
+    a: 'Generally the association, because the exterior wall and building envelope are normally common elements and their maintenance is a common expense under FS 718.113. The complication is limited common elements such as balconies, where the declaration may assign maintenance to the unit owner instead. Since a single elevation can include both, the answer often differs across one wall of one building. Your declaration governs, and your association’s attorney is who reads it.',
+  },
+  {
+    q: 'Do we need a scope and a price before we can notice a special assessment?',
+    a: 'In practical terms yes. For a non-emergency special assessment the notice must go out at least 14 days ahead and must include the estimated cost and a description of the specific purposes the funds will be used for. You cannot satisfy that with a guess, which means the exterior wall work has to be scoped and priced before the meeting is noticed rather than afterwards.',
+  },
+  {
+    q: 'Our balconies are cracking and spalling. Can you repair them?',
+    a: 'If the balcony surfaces are stucco and the damage is in the finish, that is our work. If rebar is rusting, the concrete edge is spalling, or the slab itself is deteriorating, that is not — we do not perform concrete restoration. On coastal buildings the second case is more common than the first, so it is worth having someone establish which one you are looking at before you take bids, because the two are procured from different trades.',
+  },
+  {
+    q: 'Can you work while residents stay in their units?',
+    a: 'Yes. We perform work on occupied buildings and coordinate access with the association or property manager — which elevations are worked when, how residents are notified, and what has to be clear before work begins on a given face of the building. What that looks like on a specific building is settled with the manager rather than assumed in advance.',
+  },
+  {
+    q: 'Can you work on a multi-story building?',
+    a: 'Yes, we perform multi-story stucco work. How a particular building gets accessed depends on its height, the elevations involved, what sits at ground level around it, and what the association permits on site. That is established when we look at the property.',
+  },
+  {
+    q: 'Are you licensed and insured for condominium work?',
+    a: 'Yes, we are licensed and insured for commercial and condominium work. Specific limits, certificate holders, and any additional-insured or endorsement requirements are handled directly with the association or its manager, because those requirements differ from building to building and most associations have their own. Ask us and we will provide current documentation.',
+  },
+  {
+    q: 'Our building is also facing a milestone inspection. Is that the same conversation?',
+    a: 'Related but separate. A milestone inspection is a statutory structural inspection with its own deadline, and repairs identified in a Phase 2 report must begin within 365 days of that report. If that applies to your building, start there, because that clock is fixed and the funding has to be arranged around it.',
+    href: '/commercial-stucco/milestone-inspection-repairs/',
+    hrefLabel: 'Milestone inspection &amp; exterior wall repairs',
+  },
+  {
+    q: 'Will one contractor handle the whole exterior?',
+    a: 'Frequently not, and a board should plan for that. A single elevation can involve stucco, concrete restoration, waterproofing, railings, and paint, and those are different trades with different licenses. We perform the stucco and exterior wall portion. An association expecting one contractor to carry all of it usually finds that the bids either exclude large parts of the work without saying so or carry a substantial markup for subcontracting the rest.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Condominium and HOA stucco repair',
+  serviceType: 'Multifamily stucco and exterior wall repair',
+  provider: { '@type': 'LocalBusiness', name: business.name },
+  ...(serviceArea ? { areaServed: serviceArea.map((a) => ({ '@type': 'Place', name: a })) } : {}),
+  description:
+    'Stucco and exterior wall repair for condominium associations and HOAs in Volusia and Orange County, Florida.',
+};
+
+/**
+ * BREADCRUMB SCHEMA IS NO LONGER BUILT HERE. Breadcrumbs.astro — rendered by
+ * PageHero from the `crumbs` prop — emits its own BreadcrumbList JSON-LD and
+ * prepends the Home entry this hand-rolled version was missing. Two
+ * BreadcrumbList blocks on one page is a markup error, so the local one was
+ * removed rather than kept alongside it. The rendered trail is unchanged
+ * except that Home is now correctly present.
+ */
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <SiteHeader current="/commercial-stucco/condo-hoa-stucco-repair/" />
+
+  <main id="main">
+    {/*
+      HERO. No aside - that slot is where interior money pages put
+      <ContactCta variant="inline" />, the homeowner component, which is not
+      used anywhere in this cluster. h1 and lede are the exact strings the old
+      local hero rendered. Breadcrumbs now come from PageHero and carry the
+      same two-step trail, with Home correctly prepended.
+    */}
+    <PageHero
+      crumbs={[
+        { href: '/commercial-stucco/', label: 'Commercial & condo stucco' },
+        { href: '/commercial-stucco/condo-hoa-stucco-repair/', label: 'Condo & HOA stucco repair' },
+      ]}
+      eyebrow="Condo &amp; HOA · Volusia County"
+      title="Condo & HOA stucco repair"
+      lede="The hard part of an association's exterior wall project is usually not the trowel work. It is establishing who owes for it and getting a number solid enough to put in front of the owners. That is what stalls these projects, and it is what this page is about."
+      actions={[
+        { href: '#send', label: 'Send us the building' },
+        { href: '/commercial-stucco/milestone-inspection-repairs/', label: 'Milestone inspection repairs', variant: 'secondary' },
+      ]}
+    />
+
+    <section class="section">
+      <div class="wrap">
+        <div class="prose">
+          <p>
+            We perform commercial and condominium stucco work across Volusia
+            County and are licensed and insured for it, including multi-story
+            buildings and buildings that stay occupied while the work runs.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Responsibility"
+          title="Who actually pays for it"
+          lede="Worth settling early, because it determines whether you are budgeting a common expense, billing individual owners, or doing both on the same elevation."
+        />
+
+        <div class="grid-hairline cols-2">
+          {funding.map((f) => (
+            <div class="entry">
+              <h3>{f.h}</h3>
+              <p>{f.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Funding"
+          title="What you need before you can notice an assessment"
+          lede="If the work is going to be funded by a special assessment, the statute sets out what the notice has to contain — and that requirement reaches backwards into when the scoping has to happen."
+        />
+
+        <div class="grid-hairline cols-2">
+          {assessment.map((a) => (
+            <div class="entry">
+              <h3>{a.h}</h3>
+              <p>{a.body}</p>
+            </div>
+          ))}
+        </div>
+
+        <p class="note">
+          Sources: FS 718.113 (common elements and maintenance) and FS
+          718.112(2)(c) (notice of meetings at which assessments are
+          considered), as amended. Cited as public law, not as advice.
+        </p>
+      </div>
+    </section>
+
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="The elevation"
+          title="Balconies, parapets, and the rest of the elevation"
+        />
+
+        <div class="prose">
+          <p>
+            These are where multifamily exterior work differs most from a house,
+            and where the most expensive misunderstandings happen. A balcony
+            soffit, a parapet cap, a walkway edge and the wall between them are
+            four different exposures, they fail differently, and as above they do
+            not necessarily share a payer.
+          </p>
+
+          <p>
+            They also do not necessarily share a trade. Before an association
+            takes bids on any of it, somebody should establish whether what is
+            visible is a finish problem, a water problem behind the finish, or
+            concrete deterioration &mdash; because those three go to different
+            contractors, and only the first two are ours.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Access &amp; scheduling"
+          title="Working an occupied building"
+        />
+
+        <div class="prose">
+          <p>
+            Nearly all association exterior work happens with residents in place.
+            We work occupied buildings and coordinate access with the association
+            or property manager: which elevations are worked when, how residents
+            are notified, and what has to be clear before work starts on a given
+            face of the building.
+          </p>
+
+          <p>
+            How a specific building gets accessed depends on the building &mdash;
+            its height, the elevations involved, what sits at ground level around
+            it, and what the association permits on site. That is established when
+            we look at the property rather than promised beforehand.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* COST. No number renders; `pricingDisclaimer` is not imported. */}
+    <section class="section slab joint" id="cost">
+      <div class="wrap">
+        <SectionHead eyebrow="Cost" title="What this costs" />
+
+        <div class="prose">
+          <p>
+            We publish repair price ranges for single-property work elsewhere on
+            this site and are deliberately not repeating them here. They describe a
+            house, and a multi-elevation building is not a large version of a
+            residential repair.
+          </p>
+
+          <p>
+            Association work is priced against a written scope after the building
+            has been looked at. What moves the number is how many elevations are
+            involved, how much of the damage is surface versus water in the
+            assembly, whether balconies and parapets are in scope, access, finish
+            matching, and how the work has to be staged around residents.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Boundaries"
+          title="What we do not do"
+          lede="Several of these sit on the same elevation as the work we perform, so they are worth establishing before an association spends meeting time on a bid we should not be giving."
+        />
+
+        <div class="grid-hairline cols-2">
+          {boundaries.map((b) => (
+            <div class="entry">
+              <h3>{b.label}</h3>
+              <p>{b.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/*
+      FAQ. One entry carried an `href`/`hrefLabel` pair that the old hand-rolled
+      <dl> rendered as a trailing link. FaqList takes {q, a} only, so rather
+      than lose that route to the sibling page - or alter a shared component for
+      one page - the same link and label render directly beneath the block.
+      The destination and the label text are unchanged.
+    */}
+    <section class="section slab joint" id="faq" aria-labelledby="faq-head">
+      <div class="wrap">
+        <SectionHead
+          id="faq-head"
+          eyebrow="FAQ"
+          title="Common questions from boards and managers"
+        />
+        <FaqList items={faqs} />
+
+        {faqs.filter((f) => f.href).map((f) => (
+          <p class="more">
+            <a href={f.href} set:html={f.hrefLabel} />
+          </p>
+        ))}
+      </div>
+    </section>
+
+    {/*
+      Commercial CTA — not the shared homeowner <ContactCta />, which is not
+      imported on this page. Asks for the documents a board already has rather
+      than offering a "free estimate," which is the residential frame.
+      Copy is unchanged from the pre-redesign CTA; only the band is new.
+      PHONE stays null-gated sitewide.
+    */}
+    <section class="section on-dark" id="send">
+      <div class="wrap">
+        <div class="cta-commercial">
+          <h2>Send us the building</h2>
+          <p>
+            Email photographs of the elevations that concern you, along with any
+            engineer&rsquo;s report, reserve study, or previous repair history
+            you have. We will come back with what the exterior wall scope
+            involves, what we would need to see on site to price it, and where
+            it looks like another trade should be doing the work instead.
+          </p>
+          <p>
+            Association and property-manager enquiries are handled directly
+            rather than through the residential form.
+          </p>
+          {email && (
+            <p class="cta-line">
+              <a href={`mailto:${email}`}>{email}</a>
+            </p>
+          )}
+          <p class="cta-line">
+            <a href="/contact/">Contact page</a>
+          </p>
+          <p class="cta-line">
+            <a href="/commercial-stucco/">All commercial &amp; condo work</a>
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  /*
+   * PAGE-SPECIFIC ONLY. Hero, bands, section heads, grid, breadcrumbs and FAQ
+   * come from the shared components and the global utilities in Layout.astro;
+   * those rules were deleted here rather than duplicated.
+   */
+
+  .entry h3 { margin: 0 0 0.5rem; font-size: 1.125rem; }
+  .entry p { line-height: 1.7; margin: 0; color: var(--ink-soft); }
+
+  .note {
+    margin-top: 2.5rem;
+    max-width: 60ch;
+    font-size: 0.9375rem;
+    color: var(--ink-faint);
+    border-left: 2px solid var(--rule);
+    padding-left: 0.875rem;
+  }
+
+  .more { margin-top: 1.5rem; margin-bottom: 0; font-weight: 600; }
+
+  /* Commercial CTA on the dark closing band — --shell tokens, not --paper-warm. */
+  .cta-commercial {
+    max-width: 46rem;
+    padding: 2rem;
+    border: 1px solid var(--shell-rule);
+    border-radius: 2px;
+    background: #1d1f22;
+  }
+
+  .cta-commercial h2 { margin-top: 0; margin-bottom: 1rem; font-size: 1.5rem; }
+  .cta-commercial p { line-height: 1.7; margin-bottom: 1rem; }
+
+  .cta-line { margin-bottom: 0.375rem; font-weight: 600; }
+  .cta-line:last-child { margin-bottom: 0; }
+</style>

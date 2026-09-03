@@ -1,0 +1,273 @@
+---
+/**
+ * /problems/ — CLUSTER HUB. keyword-plan:251 ("What your stucco is
+ * telling you"). Built 2026-08-31.
+ *
+ * WHY THIS PAGE EXISTS: five problem pages shipped under /problems/
+ * and the directory itself had no index, so every one of them was an
+ * orphan under a URL that 404'd. This is a NAVIGATION page. It exists
+ * to route a reader to the right existing page and to make the five
+ * into a crawlable cluster.
+ *
+ * ------------------------------------------------------------------
+ * THIS IS NOT A SERVICE PAGE, and it is not a content page either.
+ * Schema is CollectionPage — NOT Service, and NOT Article, because it
+ * makes no argument of its own. It carries no FAQPage: every question
+ * belongs to a child page and duplicating one here would compete with
+ * the page that owns it.
+ *
+ * OWNER CONSTRAINTS FOR THIS BUILD, all held:
+ *   - NO new problem topics. Exactly five entries, one per SHIPPED
+ *     page. If a sixth problem page ships, add it here; until then
+ *     this page must not name a symptom it cannot route.
+ *   - NO new service claims. The hub sells nothing and describes no
+ *     work. It links to money pages that carry their own claims.
+ *   - NO unsupported facts. Every description below is drawn from the
+ *     child page's own title/description/quick-answer. Nothing is
+ *     asserted here that is not already argued and sourced there.
+ *   - Existing SiteHeader/SiteFooter used unchanged.
+ *   - HEADER NAV NOT MODIFIED (owner instruction). This page is
+ *     currently reachable only by direct URL and by the in-body links
+ *     added to the five children. Adding "/problems/" to the nav in
+ *     SiteHeader.astro is the obvious follow-up when authorized.
+ *
+ * CANNIBALIZATION CONTROL — THE WHOLE RISK ON A HUB IS THAT IT
+ * COMPETES WITH ITS OWN CHILDREN. Each entry gets ONE sentence of
+ * symptom and ONE free self-check, both compressed from the child's
+ * existing quick answer, then hands off. It deliberately does NOT
+ * reproduce any field guide, verdict table, FAQ, or diagnostic
+ * reasoning. If this page ever grows enough substance to rank for a
+ * symptom term itself, it is stealing from the page it exists to
+ * feed. Kept deliberately short for that reason.
+ *
+ * PLUS standing brand constraints: no thermal imaging as proof; NOT a
+ * home inspection (FL licenses inspectors separately); no structural
+ * or engineering assessment; no warranty, licence number, or phone;
+ * no height/access claim; no crew size or project history.
+ * NO PRICE RANGE renders, so `pricingDisclaimer` is NOT imported.
+ * ------------------------------------------------------------------
+ *
+ * VISUAL SYSTEM (redesigned 2026-09-02): migrated from this page's own local
+ * hero/band CSS onto the shared Orlando interior-page components - PageHero,
+ * SectionHead, Breadcrumbs - and the global utilities in Layout.astro
+ * (.section, .slab, .joint, .grid-hairline, .card-link, .on-dark). COPY,
+ * FACTS, SCHEMA, URLS, HEADING TEXT AND INTERNAL LINKS ARE UNCHANGED by that
+ * migration; only the markup carrying them moved.
+ *
+ * The five entries now use .card-link - the whole cell is the link, which is
+ * what the homepage cards do, so the hub reads as the same object. That
+ * collapses the old markup's DOUBLE link per entry (an <a> inside the <h3>
+ * plus a separate "Read the full guide" line) into one. Every destination and
+ * every visible string is preserved; only the number of anchors wrapping them
+ * changed, which is an accessibility improvement rather than an IA change.
+ *
+ * This page keeps its hub register - single-column hero, no aside CTA, no
+ * FAQ - and must NOT grow diagnostic substance. See the cannibalization note
+ * above; that constraint outranks any visual consistency argument. Do not
+ * re-add a local hero or band rule here.
+ */
+import LeadForm from '../../components/LeadForm.astro';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import MobileStickyBar from '../../components/MobileStickyBar.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import { business, serviceArea } from '../../config/site';
+
+const title =
+  'What Your Stucco Is Telling You | Daytona Beach & Volusia County';
+const description =
+  'Cracks, stains, bubbling paint, hollow spots, storm damage — what each one means, and a free check you can run yourself before anyone quotes you for a repair.';
+
+/**
+ * One entry per SHIPPED page. `check` is the free self-test from that
+ * page's own quick answer, compressed to a clause. Ordered by how
+ * commonly the symptom brings someone to the site, cracks first.
+ */
+const problems = [
+  {
+    href: '/problems/cracks-in-stucco/',
+    name: 'Cracks in stucco',
+    seen: 'Lines in the wall — hairline, stepped, or running from the corner of a window.',
+    check:
+      'Cracks are graded by their company, not their width. What sits alongside one decides whether it is ordinary or worth acting on.',
+  },
+  {
+    href: '/problems/water-stains-on-stucco/',
+    name: 'Stains and chalky white marks',
+    seen: 'Darkened patches, rust-coloured runs, or a powdery white bloom on the surface.',
+    check:
+      'Whether a mark comes back is more useful than what it looks like. Something is either sitting on the wall or being delivered to it.',
+  },
+  {
+    href: '/problems/bubbling-peeling-paint-stucco/',
+    name: 'Bubbling or peeling paint',
+    seen: 'Blisters, flaking, or paint lifting away from the wall in sheets.',
+    check:
+      'A bubble tells you which layer failed. Whether it yields to a thumb separates a wall problem from a coating problem, and one of those is far better news.',
+  },
+  {
+    href: '/problems/soft-spots-hollow-stucco/',
+    name: 'Hollow sounds and soft spots',
+    seen: 'A drummy note when you tap the wall, or an area that gives under your thumb.',
+    check:
+      'Extent matters more than the noise. An isolated area and a whole elevation that sounds the same way point at completely different things.',
+  },
+  {
+    href: '/problems/hurricane-storm-stucco-damage/',
+    name: 'Damage after a storm',
+    seen: 'New-looking cracks, impact marks, or damp that has not dried since the weather came through.',
+    check:
+      'Storms reveal more than they cause. The inside of a crack dates it, and dating it changes what you should do next.',
+  },
+];
+
+/**
+ * CollectionPage with an ItemList of the five children. Not Article —
+ * this page makes no argument. Not Service — it sells nothing.
+ */
+const collectionSchema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'What your stucco is telling you',
+  description,
+  publisher: { '@type': 'Organization', name: business.name },
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: problems.map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: p.name,
+      url: p.href,
+    })),
+  },
+};
+if (serviceArea) collectionSchema.about = serviceArea;
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(collectionSchema)} />
+
+  <SiteHeader current="/problems/" />
+
+  <main id="main">
+    {/*
+      HERO. Dark PageHero, single column - no aside. This is a navigation hub,
+      not a money page: it sells nothing, and the conversion affordance is the
+      ContactCta at the foot. Eyebrow, h1 and lede are the same three strings
+      the old local hero rendered. Breadcrumbs are new markup only and emit
+      BreadcrumbList schema from Breadcrumbs.astro.
+
+      The secondary action points at /stucco-repair/ - the work page, not one
+      of the five children, since singling out one child would undercut the
+      hub's whole job of routing evenly. It is not a self-link.
+    */}
+    <PageHero
+      crumbs={[{ href: '/problems/', label: 'Stucco problems' }]}
+      eyebrow="Stucco problems · Daytona Beach & Volusia County"
+      title="What your stucco is telling you"
+      lede="Five things a wall does when something is wrong, and what each one usually means. Every page below starts with a check you can run yourself, for nothing, before anyone quotes you for anything."
+      actions={[
+        { href: '/contact/', label: 'Request an estimate' },
+        { href: '/stucco-repair/', label: 'Stucco repair & costs', variant: 'secondary' },
+      ]}
+    />
+
+<section class="section">
+  <div class="wrap">
+    <LeadForm />
+  </div>
+</section>
+
+    {/* THE INDEX — the whole point of the page */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead eyebrow="The five" title="Start with what you can see" />
+
+        {/*
+          .card-link cells - the whole cell is the anchor, matching the
+          homepage cards. The visible strings are unchanged from the previous
+          markup; what changed is that one <a> now wraps them instead of two
+          pointing at the same href.
+        */}
+        <div class="grid-hairline cols-2 entries">
+          {problems.map((p) => (
+            <a class="card-link" href={p.href}>
+              <h3>{p.name}</h3>
+              <p class="seen">{p.seen}</p>
+              <p>{p.check}</p>
+              <span class="card-go">Read the full guide &rarr;</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* WHERE THESE LEAD — routing, not selling */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Where these lead"
+          title="If you already know what you are looking at"
+          lede="These pages diagnose. The ones below do the work."
+        />
+        <ul class="routes">
+          <li>
+            <a href="/stucco-repair/">Stucco repair</a> &mdash; what the work
+            involves, and{' '}
+            <a href="/stucco-repair/#pricing">typical ranges for the area</a>.
+          </li>
+          <li>
+            <a href="/stucco-moisture-testing/">Moisture testing</a> &mdash;
+            for when the question is whether water is behind the wall right
+            now.
+          </li>
+          <li>
+            <a href="/stucco-water-damage-repair/">Water damage repair</a>{' '}
+            &mdash; when something has already been getting in for a while.
+          </li>
+        </ul>
+        <p class="note">
+          If none of the five above matches what you are seeing, get in touch
+          rather than guessing from a list. Photos help and go by email &mdash;
+          a wall is easier to read than a description of one.
+        </p>
+      </div>
+    </section>
+
+    <section class="section on-dark">
+      <div class="wrap">
+        <ContactCta heading="Not sure which of these you have?" />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  /*
+   * PAGE-SPECIFIC ONLY. The hero, bands, section heads, card cells and
+   * breadcrumbs come from the shared components and the global utilities in
+   * Layout.astro; those rules were deleted here rather than duplicated. What
+   * remains is this page's own furniture: the "what you see" line that leads
+   * each card, and the routing list.
+   */
+
+  /* The symptom line sits at full ink so it reads before the explanation. */
+  .entries .seen { color: var(--ink); }
+
+  .note { color: var(--ink-soft); font-size: 0.9375rem; max-width: 60ch; }
+
+  .routes {
+    margin: 0 0 1.5rem;
+    padding-left: 1.125rem;
+    max-width: 60ch;
+    color: var(--ink-soft);
+  }
+  .routes li + li { margin-top: 0.75rem; }
+</style>

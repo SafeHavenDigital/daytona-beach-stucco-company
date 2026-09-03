@@ -29,6 +29,7 @@
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
+import MobileStickyBar from '../../components/MobileStickyBar.astro';
 import {
   business,
   email,
@@ -41,7 +42,7 @@ import {
 
 const title = `Contact | ${business.name}`;
 const description =
-  'Send a photo of the wall and get a straight answer about what you are looking at. Stucco repair in Daytona Beach and Volusia County. Repair estimates are free.';
+  'Tell us what the wall is doing and get a straight answer about what you are looking at. Stucco repair in Daytona Beach and Volusia County. Repair estimates are free.';
 
 /**
  * ContactPage + the business. Only verified fields are emitted — no
@@ -73,11 +74,18 @@ const schema: Record<string, unknown> = {
   },
 };
 
-/** The three things a useful photo message contains. */
+/**
+ * The three things a useful message contains.
+ *
+ * PHOTOS GO BY EMAIL, NOT THROUGH THE FORM. /api/contact posts JSON and
+ * forwards no attachments, and the form below has no file input by design.
+ * So this checklist describes what to put in an EMAIL, and the heading above
+ * it says so. Do not reword these back into a form instruction.
+ */
 const sendChecklist = [
   {
     title: 'A wide shot of the wall',
-    body: 'Far enough back that I can see where the crack sits on the house — near a window, under a roofline, at a corner. Location tells me more than the crack itself does.',
+    body: 'Far enough back that we can see where the crack sits on the house — near a window, under a roofline, at a corner. Location tells us more than the crack itself does.',
   },
   {
     title: 'A close-up of the worst spot',
@@ -105,17 +113,23 @@ const situations = [
 
   <SiteHeader current="/contact/" />
 
-  <main>
+  <main id="main">
     {/* ---------------------------------------------------------------- */}
-    {/* HERO — the ask is a photo, not a booking. Voice: lower the first ask. */}
+    {/*
+      HERO — the ask is a description, not a booking. Voice: lower the first
+      ask. It is NOT "send a photo": the form on this page cannot accept an
+      attachment (no file input, and /api/contact forwards none). Photos are
+      genuinely useful and genuinely possible — by email — so the photo ask
+      lives on the email line below, where it is true.
+    */}
     {/* ---------------------------------------------------------------- */}
     <section class="hero">
       <div class="wrap">
         <p class="eyebrow">Contact</p>
-        <h1>Send a photo of the wall</h1>
+        <h1>Tell us what the wall is doing</h1>
         <p class="hero-lede">
-          I&rsquo;ll tell you straight what you&rsquo;re looking at. If
-          it&rsquo;s cosmetic, I&rsquo;ll say so and you can stop thinking
+          We&rsquo;ll tell you straight what you&rsquo;re looking at. If
+          it&rsquo;s cosmetic, we&rsquo;ll say so and you can stop thinking
           about it. If there&rsquo;s water behind it, you&rsquo;ll know that
           too, and what it takes to fix it.
         </p>
@@ -148,8 +162,9 @@ const situations = [
         {!phone && (
           <p class="note">
             The phone line isn&rsquo;t published yet. Email and the form below
-            both reach me directly, and a photo gets you a better answer than a
-            phone call would anyway.
+            both reach us directly. The form is text only &mdash; if you have
+            photos of the wall, email them and you&rsquo;ll get a better
+            answer for it.
           </p>
         )}
       </div>
@@ -161,9 +176,9 @@ const situations = [
     <section class="section form-section" id="contact-form">
       <div class="wrap grid">
         <div class="form-col">
-          <h2>Tell me what you&rsquo;re looking at</h2>
+          <h2>Tell us what you&rsquo;re looking at</h2>
           <p>
-            Fill this in and it comes straight to me. Nothing here goes to a
+            Fill this in and it comes straight to us. Nothing here goes to a
             call center and nobody is going to show up in your driveway
             unannounced.
           </p>
@@ -251,8 +266,8 @@ const situations = [
               limits, and object storage — a real change, not a flag flip.
             */}
             <p class="hint standalone">
-              Send this first and reply to my email with the photos attached
-              &mdash; that thread comes straight back to me. If you&rsquo;d
+              Send this first and reply to our email with the photos attached
+              &mdash; that thread comes straight back to us. If you&rsquo;d
               rather lead with the pictures, email{' '}
               {email && <a href={`mailto:${email}`}>{email}</a>} directly.
             </p>
@@ -268,8 +283,8 @@ const situations = [
 
             <p class="hint">
               Repair estimates are free. The {moistureCheck.name} is a separate
-              paid service and I&rsquo;ll tell you the cost before you agree to
-              anything.
+              paid service and we&rsquo;ll tell you the cost before you agree
+              to anything.
             </p>
           </form>
         </div>
@@ -278,7 +293,7 @@ const situations = [
         {/* SIDEBAR — what makes a photo useful, and ruling work out.     */}
         {/* ------------------------------------------------------------ */}
         <aside class="side">
-          <h2 class="side-h">What to send</h2>
+          <h2 class="side-h">What to email us</h2>
           <ol class="checklist">
             {sendChecklist.map((item) => (
               <li>
@@ -293,12 +308,12 @@ const situations = [
             page where work is ruled unnecessary.
           */}
           <div class="ruleout">
-            <h3>You might not need me</h3>
+            <h3>You might not need us</h3>
             <p>
               If the crack is thinner than the edge of a credit card, it
               hasn&rsquo;t moved in a year, and there&rsquo;s no staining
               anywhere near it, that&rsquo;s usually the wall doing what stucco
-              does in Florida. Send the photo anyway and I&rsquo;ll tell you
+              does in Florida. Get in touch anyway and we&rsquo;ll tell you
               that for free rather than sell you a repair you don&rsquo;t need.
             </p>
           </div>
@@ -314,7 +329,7 @@ const situations = [
         <h2>Reasons people usually get in touch</h2>
         <p class="lede">
           If one of these is you, say so in the message. Knowing the deadline
-          changes what I recommend and how fast I need to move.
+          changes what we recommend and how fast we need to move.
         </p>
         <ul class="sit-list">
           {situations.map((s) => <li>{s}</li>)}
@@ -327,11 +342,11 @@ const situations = [
     {/* ---------------------------------------------------------------- */}
     <section class="section next">
       <div class="wrap">
-        <h2>What happens after you send it</h2>
+        <h2>What happens after you get in touch</h2>
         <div class="steps">
           <div class="step">
             <p class="step-n">1</p>
-            <h3>I look at the photos</h3>
+            <h3>We read what you sent</h3>
             <p>
               You get a real answer about what the wall is likely doing, not a
               form reply asking to schedule a consultation.
@@ -339,11 +354,12 @@ const situations = [
           </div>
           <div class="step">
             <p class="step-n">2</p>
-            <h3>I tell you what it needs</h3>
+            <h3>We tell you what it needs</h3>
             <p>
-              Sometimes that&rsquo;s nothing. Sometimes it&rsquo;s a repair I
-              can price from the photos. Sometimes the honest answer is that I
-              can&rsquo;t tell from a picture and the wall needs testing.
+              Sometimes that&rsquo;s nothing. Sometimes it&rsquo;s a repair we
+              can price from what you have described and sent. Sometimes the
+              honest answer is that we can&rsquo;t tell without seeing it, and
+              the wall needs testing.
             </p>
           </div>
           <div class="step">
@@ -400,6 +416,8 @@ const situations = [
   </main>
 
   <SiteFooter />
+
+  <MobileStickyBar />
 </Layout>
 
 <style>
@@ -812,7 +830,7 @@ const situations = [
           form.reset();
           setStatus(
             'success',
-            'Got it — your message is on its way to me. I read these myself and will reply to the email address you gave. If you have photos of the wall, reply to that email with them attached.',
+            'Got it — your message is on its way to us. We read these ourselves and will reply to the email address you gave. If you have photos of the wall, reply to that email with them attached.',
           );
           status?.focus?.();
           return;

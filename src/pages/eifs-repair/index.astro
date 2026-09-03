@@ -1,0 +1,588 @@
+---
+/**
+ * /eifs-repair/ — service money page (keyword-plan architecture, SERVICES).
+ *
+ * Target: `eifs repair florida`, `synthetic stucco repair`, `EIFS stucco
+ * repair`, `EIFS crack repair`, `EIFS water damage`, `EIFS remediation`,
+ * `dryvit repair`, `EIFS replacement`.
+ * Intent: problem-specific commercial. The owner has been told — usually by
+ * an inspector, a buyer's agent, or an insurer — that they have EIFS, and
+ * wants to know whether it can be repaired and who will touch it.
+ *
+ * ------------------------------------------------------------------
+ * SERVICE VERIFICATION: `verifiedServices.eifsRepair` in src/config/site.ts,
+ * confirmed by the client 2026-08-31. That confirms the SERVICE ONLY. It does
+ * NOT authorize any claim about method, manufacturer certification (EIFSmart,
+ * Dryvit/Sto approved applicator), inspection credentials, or EIFS project
+ * history. Several ranking competitors lead with exactly those credentials.
+ * We do not have them on file, so we do not answer them — we compete on the
+ * honest answer instead. Do not add a credential line to this page without a
+ * new verified fact.
+ *
+ * MERGE (keyword-plan §D): all 15 owner EIFS keywords are ONE page. Do not
+ * split EIFS by damage type — `eifs crack repair`, `eifs water damage`,
+ * `eifs remediation`, `eifs replacement` all resolve HERE. The term is
+ * already narrow; fragmenting it would produce four pages that starve.
+ *
+ * CANNIBALIZATION CONTROL. EIFS is a DIFFERENT WALL SYSTEM, which is what
+ * earns it a URL at all. Keep the boundary at the system, not the symptom:
+ *   - Everything specific to EIFS — the foam, barrier vs drainage, why the
+ *     1990s failures happened, why it cannot be patched like hardcoat —
+ *     lives HERE.
+ *   - The general wet-wall case and the repair-vs-replace continuum live on
+ *     /stucco-water-damage-repair/. Link, do not restate.
+ *   - The Moisture Check process lives ONLY on /stucco-moisture-testing/.
+ *     EIFS probe testing is mentioned as the reason to go there, not
+ *     re-explained here.
+ *   - Cost ranges and the full table live on /stucco-repair/#pricing.
+ * If this page grows a general water-damage section, cut it and link.
+ *
+ * THE OWNABLE ANSWER. Live SERP 2026-08-31: the "is it EIFS or hardcoat"
+ * SERP is owned by home inspectors, a construction-litigation law firm, and
+ * out-of-state remodelers. The "can EIFS be repaired" SERP is owned by
+ * out-of-market contractors and inspection firms. In BOTH cases the Florida
+ * homeowner is handed either a diagnosis with nobody to call, or a repair
+ * pitch from someone 1,200 miles away. Nobody in this market answers the
+ * actual question: my house has EIFS, is that a catastrophe or not?
+ * The honest answer — barrier vs drainage decides it, and age is the tell —
+ * is the page. Do not soften it into "call us for a free estimate".
+ *
+ * BARRIER vs DRAINAGE is the one distinction that matters and the one the
+ * SERP consistently buries. It is published trade knowledge, not a claim
+ * about our work. Keep it.
+ *
+ * WHAT WE DO NOT SAY:
+ *   - We do NOT claim EIFS is defective or that it should be removed. It is
+ *     a legitimate system that was widely installed badly in one era. Saying
+ *     otherwise is both false and a disparagement risk — one ranking result
+ *     is a construction-litigation firm, and this is live litigation
+ *     territory in Florida.
+ *   - We do NOT tell anyone whether they have a warranty or insurance claim.
+ *     That is legal and policy territory. Point at it, do not opine.
+ *   - We do NOT claim thermal imaging proves moisture. Brand constraint.
+ *
+ * NOT A HOME INSPECTION: Florida licenses home inspectors separately. This
+ * is our own assessment as the contractor who does the work.
+ *
+ * OMITTED — blocked on missing prerequisites, absent rather than stubbed:
+ *   - [PHOTO SET] — `openWallPhotos` is null and no EIFS-specific set
+ *     exists. The proof block renders once the array is populated. Do NOT
+ *     substitute stock or AI imagery as project documentation.
+ *   - [WARRANTY TERM] — `warrantyTerms` is null. No guarantee module.
+ *   - [LICENSE #], [PHONE] — null in site.ts. Omitted, not stubbed.
+ *   - EIFS-specific pricing — no verified EIFS ranges exist. We reuse the
+ *     general repair ranges with explicit framing that EIFS runs its own
+ *     way, rather than inventing an EIFS number.
+ * ------------------------------------------------------------------
+ *
+ * VISUAL SYSTEM (redesigned 2026-09-02): migrated from this page's own local
+ * hero/band/FAQ CSS onto the shared Orlando interior-page components -
+ * PageHero, SectionHead, FaqList, Breadcrumbs - and the global utilities in
+ * Layout.astro (.section, .slab, .joint, .grid-hairline, .prose, .on-dark).
+ * COPY, FACTS, PRICING, SCHEMA, URLS, HEADING TEXT, ANCHOR IDS AND INTERNAL
+ * LINKS ARE UNCHANGED by that migration; only the markup carrying them moved.
+ * The page keeps its own argument intact - identification, barrier vs
+ * drainage, why it cannot be patched like hardcoat - and is not homogenized
+ * toward the other service pages. Do not re-add a local hero or band rule.
+ */
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import MobileStickyBar from '../../components/MobileStickyBar.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import FaqList from '../../components/FaqList.astro';
+import SiteImage from '../../components/SiteImage.astro';
+import eifsWork from '../../assets/images/residential-eifs-repair-contractors.webp';
+import {
+  business,
+  serviceArea,
+  openWallPhotos,
+  repairPriceRanges,
+  pricingDisclaimer,
+} from '../../config/site';
+
+const title =
+  'EIFS & Synthetic Stucco Repair | Daytona Beach & Volusia County';
+const description =
+  'EIFS repair for Florida homes. How to tell whether you have EIFS or hardcoat, why the system it was built as matters more than the damage you can see, and when it can be repaired rather than replaced.';
+
+const usd = (n: number) => '$' + n.toLocaleString('en-US');
+
+const localizedRange = repairPriceRanges.find(
+  (r) => r.job === 'Larger localized repair',
+);
+const waterDamageRange = repairPriceRanges.find(
+  (r) => r.job === 'Water-damaged stucco repair',
+);
+
+/**
+ * The identification tests. Published trade knowledge — every one of these
+ * is something the owner can do in two minutes without a contractor, which
+ * is the point. The SERP makes people book an inspection to learn this.
+ */
+const idTests = [
+  {
+    test: 'Tap it',
+    label: 'The fastest test',
+    body: 'Knock on the wall with a knuckle. EIFS sounds hollow and drum-like, because there is a foam board behind the finish rather than solid cement. Hardcoat sounds dense the whole way across. This one test settles it most of the time.',
+  },
+  {
+    test: 'Press it',
+    label: 'Confirm the tap',
+    body: 'Push a thumb firmly into the wall. EIFS gives slightly — you are compressing foam through a thin coating. Hardcoat does not move at all. If tapping was ambiguous, pressing usually is not.',
+  },
+  {
+    test: 'Look at the bottom edge',
+    label: 'Where the wall meets the foundation',
+    body: 'Run a hand under the bottom edge of the cladding. EIFS typically stands proud of the foundation by three quarters of an inch or more, because the foam board pushes the whole assembly out from the wall. Hardcoat sits much tighter.',
+  },
+  {
+    test: 'Look behind a fixture',
+    label: 'The definitive one',
+    body: 'Where a light fixture, hose bib, or gutter strap penetrates the wall, the edge of the cut is visible. Foam board means EIFS, and there is nothing ambiguous about seeing it. This is the test that ends the argument.',
+  },
+];
+
+/**
+ * The page's ownable answer. Barrier vs drainage is the distinction that
+ * actually decides the outcome, and the SERP consistently buries it under
+ * generic damage lists.
+ */
+const systems = [
+  {
+    kind: 'Barrier EIFS',
+    era: 'Roughly pre-1998',
+    body: 'The original design, and the one behind the reputation. It was built to keep every drop of water out at the surface, with no path for anything that got past it to escape. That works until a window seal, a deck ledger, or a piece of trim leaks — and then water goes in, cannot get out, and sits against the sheathing. The failures that made the news in the 1990s were overwhelmingly this, and usually made worse by missing flashing rather than by the foam itself.',
+  },
+  {
+    kind: 'Drainage EIFS',
+    era: 'Roughly 1998 onward',
+    body: 'The industry response, and it is a genuinely different assembly. A drainage plane sits behind the foam so water that gets in has somewhere to go and a way back out. Florida code has required drainage provisions for years. A drainage system in good condition is not a liability, and it is not something to tear off.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'How do I know if my house is EIFS or hardcoat stucco?',
+    a: 'Tap it with a knuckle. EIFS sounds hollow because there is foam board behind the finish; hardcoat sounds dense all the way across. Press a thumb into it — EIFS gives slightly, hardcoat does not move. Feel under the bottom edge of the cladding: EIFS usually stands proud of the foundation by three quarters of an inch or more. And where a light fixture or hose bib penetrates the wall, you can often see the cut edge of the foam directly. That last one is definitive.',
+  },
+  {
+    q: 'Can EIFS be repaired, or does it all have to come off?',
+    a: 'Most of it can be repaired. Localized damage — cracks, woodpecker holes, impact damage, a failed detail at one window — is repaired by cutting back to sound material, replacing what is wet or damaged, and rebuilding the layers. Full removal becomes the honest recommendation when moisture has affected a large share of the wall or has damaged the sheathing and framing behind it. The scale of the wet area decides it, not the appearance of the surface.',
+  },
+  {
+    q: 'Is EIFS bad? Should I be worried that my house has it?',
+    a: 'No, and it depends on which system you have. EIFS installed as a drainage system, detailed correctly and kept maintained, performs well and is still installed today. The reputation comes from barrier EIFS built before roughly 1998, which had no way to let out water that got past the surface, combined with flashing that was frequently done badly. If your house is from that era, it is worth testing. If it is newer, or already a drainage system in good condition, it is a wall like any other wall.',
+  },
+  {
+    q: 'Why can EIFS not be patched the same way as regular stucco?',
+    a: 'Because it is not the same wall. Hardcoat stucco is cement plaster over lath and it is solid through its thickness. EIFS is a thin, flexible coating over foam board, and it works as a layered system: adhesive, board, base coat, embedded mesh, finish. A repair has to rebuild those layers in order and lap the mesh into the existing mesh, or the patch separates at its edges. Filling an EIFS crack with cement patching compound is a common mistake and it fails quickly, because a rigid material has been stuck onto a flexible one.',
+  },
+  {
+    q: 'Where does EIFS usually leak?',
+    a: 'Almost never through the field of the wall. It leaks at interruptions — around windows and doors, at deck and railing attachments, where a roofline meets a wall, at penetrations for lights and vents, and at the bottom edge where the system terminates. Those are the details that carry the flashing, and flashing is what failed in most EIFS failures. The foam is rarely the culprit on its own.',
+  },
+  {
+    q: 'Does testing EIFS damage the wall?',
+    a: 'Probe testing leaves small holes, roughly an eighth to a quarter inch, which are sealed afterward. On EIFS this is the standard method, because the moisture that matters is behind the foam where a surface reading cannot see it. It is a deliberate trade: a few sealed holes to find out whether the sheathing behind your wall is wet, which is not a question anyone can answer by looking.',
+  },
+  {
+    q: 'What does EIFS repair cost?',
+    a: localizedRange && waterDamageRange
+      ? `EIFS runs its own way, because the cost is driven by how much wall has to come off rather than by the size of the crack you can see. For scale, researched market ranges for this area put a larger localized repair at roughly ${usd(localizedRange.low)} to ${usd(localizedRange.high)} and a repair where water has already gotten in behind the finish at roughly ${usd(waterDamageRange.low)} to ${usd(waterDamageRange.high)}. Those are area ranges for stucco work generally rather than a quote from us, and an EIFS job is priced after the wall has been tested, not before.`
+      : 'EIFS cost is driven by how much wall has to come off rather than by the size of the damage on the surface, so it is priced after the wall has been tested rather than before.',
+  },
+  {
+    q: 'My inspector flagged EIFS and now the sale is stalling. What do I do?',
+    a: 'Get the wall tested and get the findings in writing. Most EIFS flags on an inspection report are a recommendation for further evaluation rather than a finding of damage — the inspector is telling the buyer that the system cannot be assessed from the surface, which is true. Moisture readings that come back dry are the thing that moves a stalled sale. Readings that come back wet at least turn an open-ended worry into a defined scope with a number attached.',
+  },
+];
+
+const serviceSchema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'EIFS and synthetic stucco repair',
+  serviceType: 'EIFS and synthetic stucco repair',
+  description:
+    'Repair of EIFS and synthetic stucco wall systems. The wall is identified and tested, wet or damaged foam, sheathing and coating are removed back to sound material, the failed detail is corrected, and the layered EIFS assembly is rebuilt and textured to match.',
+  provider: { '@type': 'LocalBusiness', name: business.name },
+};
+if (serviceArea) serviceSchema.areaServed = serviceArea;
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <SiteHeader current="/eifs-repair/" />
+
+  <main id="main">
+    {/*
+      HERO. Dark PageHero with ContactCta in the aside slot - the money-page
+      arrangement PageHero's own doc block describes. Eyebrow, h1 and lede are
+      the same three strings the old local hero rendered. Breadcrumbs are new
+      markup only and emit BreadcrumbList schema from Breadcrumbs.astro.
+      No `actions` array: the aside CTA is the conversion affordance here.
+    */}
+    <PageHero
+      crumbs={[
+        { href: '/services/', label: 'Services' },
+        { href: '/eifs-repair/', label: 'EIFS repair' },
+      ]}
+      eyebrow="Stucco repair · Daytona Beach & Volusia County"
+      title="EIFS and synthetic stucco repair"
+      lede="If someone has told you your house is EIFS, the useful question is not whether EIFS is good or bad. It is which of the two systems you have, because one of them has a real weakness and the other mostly does not."
+      actions={[
+        { href: '/contact/', label: 'Request an estimate' },
+        { href: '/stucco-moisture-testing/', label: 'Testing EIFS for moisture', variant: 'secondary' },
+      ]}
+    >
+      <LeadForm />
+    </PageHero>
+
+    {/* IDENTIFICATION — give away the answer people are booking inspections for */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Identification"
+          title="First, make sure it actually is EIFS"
+          lede="Plenty of people are told they have synthetic stucco and turn out to have ordinary hardcoat. It is worth two minutes to check, because the two walls are repaired completely differently and nothing else on this page applies if it is hardcoat."
+        />
+
+        {/*
+          Four descriptive cells, not links - each is a test the owner runs,
+          not a route. Plain .grid-hairline rather than the .card-link variant.
+        */}
+        <div class="grid-hairline cols-2 entries">
+          {idTests.map((t) => (
+            <div class="entry">
+              <h3>{t.test} <span class="entry-label">{t.label}</span></h3>
+              <p>{t.body}</p>
+            </div>
+          ))}
+        </div>
+        <div class="prose">
+        <p>
+          Hardcoat stucco is cement plaster over lath, solid through its
+          thickness. EIFS is foam board with a thin flexible coating over
+          it. Same look from the curb, different wall entirely.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* THE OWNABLE ANSWER — barrier vs drainage */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="The distinction"
+          title="Which EIFS you have matters more than what you can see"
+          lede="EIFS has a bad reputation in Florida and it was earned by one version of it, built in one era. There are two, and the difference decides almost everything about your situation."
+        />
+
+        <div class="grid-hairline cols-2 entries">
+          {systems.map((s) => (
+            <div class="entry">
+              <h3>{s.kind}</h3>
+              <p class="who">{s.era}</p>
+              <p>{s.body}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="caveat">
+          <p>
+            The thing worth being clear about:{' '}
+            <strong>
+              EIFS is not a defective product, and having it does not mean
+              your house needs to be stripped.
+            </strong>{' '}
+            It is a system that is unusually unforgiving of bad detailing,
+            and a great deal of it was detailed badly during one stretch of
+            the 1990s. A drainage system in good condition is a perfectly
+            sound wall. An older barrier system is worth testing rather than
+            worrying about.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* WHY IT IS DIFFERENT WORK */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Different work"
+          title="Why it cannot be patched like regular stucco"
+        />
+        <div class="prose">
+        <p>
+          This is where most bad EIFS repairs come from. Hardcoat is solid
+          cement plaster, and a competent patch in it is a fairly forgiving
+          thing. EIFS is a layered assembly — adhesive, foam board, base
+          coat, mesh embedded into that base coat, then the finish — and it
+          only works while those layers are continuous.
+        </p>
+        <p>
+          A repair has to rebuild the layers in order and lap the new mesh
+          into the existing mesh beyond the cut. Skip that and the patch
+          separates at its edges within a season or two. Fill an EIFS crack
+          with cement patching compound, which happens constantly, and you
+          have bonded a rigid material onto a flexible one — it will crack
+          again along the same line.
+        </p>
+        <p>
+          There is also a real risk of a repair that looks perfect and hides
+          a wet wall. On EIFS the surface can be sound while the sheathing
+          behind the foam is not, which is the entire reason the system has
+          the reputation it does.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* PROOF — null-gated, renders only when a real photo set exists */}
+    {openWallPhotos && openWallPhotos.length > 0 && (
+      <section class="section" id="proof">
+        <div class="wrap">
+          <SectionHead eyebrow="Proof" title="What it looks like behind the finish" />
+          <div class="proof">
+            {openWallPhotos.map((src) => (
+              <img src={src} alt="Wall opened during repair, showing the condition of the material behind the finish" loading="lazy" />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {/* THE REPAIR */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Scope"
+          title="What the repair involves"
+          lede="The wall is tested first, because on EIFS the surface tells you very little. Where moisture is found, the finish and foam are cut back past the wet material to something sound — that boundary is set by the readings, not by where the damage is visible."
+        />
+
+        {/*
+          ILLUSTRATION, NOT PROOF. AI-generated; not a photograph of a job
+          this company did. NOT placed in the #proof section above, which is
+          null-gated for real photographs - see the same note on
+          /stucco-water-damage-repair/.
+
+          EIFS is the hardest service on the site to explain in words: the
+          layered assembly named in the copy below - board, base coat, mesh,
+          finish - is visible in one frame here. It sits directly above that
+          paragraph so the reader sees the layers as they are named.
+        */}
+        <SiteImage
+          src={eifsWork}
+          variant="inline"
+          alt="Base coat being troweled over reinforcing mesh on an EIFS wall, with a new section of foam board being set into the opening alongside it."
+        />
+
+        <div class="prose">
+        <p>
+          Wet sheathing is replaced. The detail that let water in gets
+          corrected, which is usually flashing at a window, a roof-to-wall
+          junction, or a deck attachment rather than anything wrong with the
+          field of the wall. Then the assembly is rebuilt in order — board,
+          base coat, mesh lapped into the existing mesh, finish — and
+          textured to match what is around it.
+        </p>
+        <p>
+          If the wall turns out to be an older barrier system that has been
+          leaking for years, we will say so plainly, including when the
+          honest answer is that replacing a wall costs less than repairing
+          it piece by piece. That conversation is better had before the work
+          starts than halfway through it.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* DIAGNOSIS HANDOFF */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="A paid diagnostic service"
+          title="Testing comes first on EIFS"
+        />
+        <div class="prose">
+        <p>
+          On a hardcoat wall you can often learn a lot from the outside. On
+          EIFS you cannot — the foam sits between you and everything that
+          matters, and a wall with intact, good-looking finish can have wet
+          sheathing behind it. That is not a scare tactic, it is the
+          specific reason this system is inspected the way it is.
+        </p>
+        <p>
+          Our{' '}
+          <a href="/stucco-moisture-testing/">Stucco Moisture Check</a>{' '}
+          uses probe readings to find out what the wall is actually doing,
+          and you get the findings whether or not you hire us for the
+          repair. If water has already gotten into the structure, what that
+          work involves is on{' '}
+          <a href="/stucco-water-damage-repair/">stucco water damage repair</a>.
+          For hardcoat stucco and general pricing, see{' '}
+          <a href="/stucco-repair/#pricing">stucco repair and pricing</a>.
+          Where EIFS leaks most often is covered on{' '}
+          <a href="/stucco-repair-around-windows/">stucco repair around windows and doors</a>.
+        </p>
+        <p>
+          This is our own assessment of your wall as the contractor who does
+          the work. It is not a home inspection and it is not an independent
+          inspection report.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* COST */}
+    <section class="section slab joint" id="cost">
+      <div class="wrap">
+        <SectionHead eyebrow="Cost" title="What it costs" />
+        {localizedRange && waterDamageRange ? (
+          <>
+            <p class="price">
+              EIFS is priced by how much wall has to come off, not by the
+              size of the damage you can see. For scale, a larger localized
+              repair in this area runs roughly{' '}
+              <strong>
+                {usd(localizedRange.low)}&ndash;{usd(localizedRange.high)}
+              </strong>
+              , and a repair where water has already gotten in behind the
+              finish runs roughly{' '}
+              <strong>
+                {usd(waterDamageRange.low)}&ndash;{usd(waterDamageRange.high)}
+              </strong>
+              .
+            </p>
+            <p class="cost-note">
+              Those are ranges for stucco work generally. An EIFS job gets a
+              number after the wall has been tested, because until then
+              nobody knows how far the wet area runs — and on this system,
+              that is the whole cost.
+            </p>
+            <p class="disclaimer">{pricingDisclaimer}</p>
+          </>
+        ) : (
+          <p class="price">
+            EIFS is priced by how much wall has to come off rather than by
+            the size of the visible damage, so it is quoted after the wall
+            has been tested.
+          </p>
+        )}
+      </div>
+    </section>
+
+    {/*
+      FAQ. The shared FaqList accordion, fed the SAME `faqs` array that builds
+      the FAQPage schema above - one source, so an answer can never drift from
+      its markup. FaqList deliberately emits no schema of its own (see its doc
+      block); the page keeps ownership of that.
+    */}
+    <section class="section" id="faq" aria-labelledby="faq-head">
+      <div class="wrap">
+        <SectionHead id="faq-head" eyebrow="FAQ" title="Frequently asked questions" />
+        <FaqList items={faqs} />
+      </div>
+    </section>
+
+    <section class="section on-dark">
+      <div class="wrap">
+        <ContactCta heading="Tell us what the wall is doing" />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  /*
+   * PAGE-SPECIFIC ONLY. The hero, bands, section heads, prose column, card
+   * grid, FAQ rows and breadcrumbs come from the shared components and the
+   * global utilities in Layout.astro; those rules were deleted here rather
+   * than duplicated. What remains is this page's own furniture: the
+   * identification-test cells, the barrier-vs-drainage cells with their era
+   * label, the flag-ruled caveat, the proof grid, and the price line.
+   */
+
+  /* --- Cells: the id tests, and the two EIFS systems -------------------- */
+  .entry h3 { margin: 0 0 0.5rem; font-size: 1.0625rem; }
+  .entry p { margin: 0; color: var(--ink-soft); }
+
+  .entry-label {
+    display: block;
+    margin-top: 0.375rem;
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: 0.6875rem;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* Era line under "Barrier EIFS" / "Drainage EIFS". */
+  .who {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--flag);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem !important;
+  }
+
+  /* --- The "EIFS is not defective" aside -------------------------------- */
+  .caveat {
+    border-left: 3px solid var(--flag);
+    padding-left: 1.25rem;
+    max-width: 60ch;
+  }
+  .caveat p { margin: 0; color: var(--ink-soft); }
+
+  /* --- Proof grid, rendered only when real photos exist ----------------- */
+  .proof {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+  .proof img { width: 100%; height: auto; display: block; }
+
+  /* --- Price line and its disclaimer ------------------------------------ */
+  .price {
+    font-family: var(--font-display);
+    font-size: clamp(1.125rem, 2.4vw, 1.375rem);
+    line-height: 1.45;
+    max-width: 52ch;
+  }
+  .price strong { color: var(--accent); }
+
+  .cost-note { color: var(--ink-soft); max-width: 60ch; }
+
+  .disclaimer {
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+    max-width: 60ch;
+    border-left: 3px solid var(--rule);
+    padding-left: 1.25rem;
+  }
+</style>

@@ -1,0 +1,80 @@
+---
+/**
+ * Fixed bottom action bar, mobile only. Ported from the Orlando Concrete
+ * Contractors reference, which pairs "Call now" with "Request an Estimate".
+ *
+ * PHONE: `phone` is null in src/config/site.ts and must stay that way until
+ * the client supplies a real number. So the left half falls back to the
+ * VERIFIED email address; if neither exists, the bar renders a single
+ * full-width estimate button rather than a dead affordance.
+ *
+ * SiteFooter must clear this bar on mobile — see the padding-bottom rule at
+ * the end of this file, which is global because it targets the shared footer.
+ */
+import { phone, email } from '../config/site';
+
+const telHref = phone ? `tel:${phone.replace(/[^0-9+]/g, '')}` : null;
+const secondary = telHref
+  ? { href: telHref, label: 'Call now' }
+  : email
+    ? { href: `mailto:${email}`, label: 'Email us' }
+    : null;
+---
+
+<div class="sticky-bar on-dark">
+  {secondary && (
+    <a class="s-secondary" href={secondary.href}>{secondary.label}</a>
+  )}
+  <a class="s-primary" href="/contact/">Request an estimate</a>
+</div>
+
+<style>
+  .sticky-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 90;
+    display: flex;
+    border-top: 1px solid var(--shell-rule);
+  }
+
+  .sticky-bar a {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    min-height: 3.75rem;
+    padding: 0.5rem 0.75rem;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .s-secondary {
+    border-right: 1px solid var(--shell-rule);
+    color: var(--shell-ink);
+  }
+
+  .s-primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  @media (min-width: 62rem) {
+    .sticky-bar { display: none; }
+  }
+</style>
+
+<style is:global>
+  /* Keep the last of the footer clear of the fixed bar. Mirrors the
+   * reference, which pads the footer rather than the body. */
+  .footer { padding-bottom: 3.75rem; }
+
+  @media (min-width: 62rem) {
+    .footer { padding-bottom: 0; }
+  }
+</style>

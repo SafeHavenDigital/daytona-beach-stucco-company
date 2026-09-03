@@ -1,0 +1,505 @@
+---
+/**
+ * /stucco-painting/ — service money page (keyword-plan §C, HELD → CLEARED).
+ *
+ * Target: `stucco painting Daytona Beach`, `stucco painting contractor`,
+ * `exterior stucco paint`, `elastomeric coating stucco`, `repainting stucco
+ * house`, `best paint for stucco Florida`, `how often to repaint stucco`.
+ * Intent: commercial, and a DIFFERENT BUYER STATE again. Nothing is broken
+ * and the surface is not worn out. The colour is tired, or the owner wants a
+ * different one. This is the cheapest purchase on the site and the one most
+ * likely to be bought without anyone looking at the wall first — which is
+ * exactly where the risk is.
+ *
+ * ------------------------------------------------------------------
+ * SERVICE VERIFICATION: `verifiedServices.painting` in src/config/site.ts,
+ * confirmed by the client 2026-08-31. That confirms the SERVICE ONLY. It
+ * does NOT authorize any claim about coating products, brands, systems,
+ * manufacturer approval, warranty, crew, method, or past painting projects.
+ *
+ * THE GATE, AND WHY IT IS CLEARED. keyword-plan:691 held this URL on
+ * `[DOES THE CLIENT PAINT?]` with an explicit instruction: "If the client
+ * does not paint, do not build it, and do not hint at it." The flag is now
+ * verified true. The plan's own SERP note (keyword-plan:533) called this a
+ * "distinct vertical, separate competitor set."
+ *
+ * SPLITTING TEST — passes 4 of 4. Run 2026-08-31 across four live SERPs.
+ *   1. Different work. A coating vs. added material. Different trade
+ *      licence, different crew, different consumables. The site already
+ *      says so at /stucco-resurfacing/ — "a coating is paint, a resurface
+ *      adds real material."
+ *   2. Different buyer state. Colour problem at roughly $1.50-$3/sq ft
+ *      against a surface-condition problem at five figures. Repaint cycles
+ *      of 5-7 years against 20-25 for a re-stucco. Not one decision.
+ *   3. SERP separation — the strongest signal measured on this site.
+ *      `stucco painting contractor Daytona Beach` returns PaintRite
+ *      Daytona, CF Stucco and Painting, Jackson Stucco, plus painting
+ *      directories. `stucco resurfacing Daytona Beach` returns FCC
+ *      Builders, Trousdale n Sons, Kona Home Improvements, 904 General
+ *      Contractors, Florida's Handyman. Near-total competitor separation.
+ *      SUPPLIER CHECK PASSES: every local result is a contractor selling
+ *      the service. The aggregators (Angi, HomeGuide, Fixr) appear only on
+ *      cost queries, and no paint retailer or DIY result ranks on the local
+ *      commercial term. This is the check that killed /stucco-crack-repair/;
+ *      painting survives it because the local SERP is contractors, not cans.
+ *   4. Standalone substance. Prep, breathability, cure timing, repaint
+ *      intervals, and the moisture trap below — none of which fits on a
+ *      page about resurfacing.
+ *
+ * THE OWNABLE ANSWER — the category's cost advice is a trap on a coastal
+ * wall. Every ranking result frames this as cheap-paint vs. expensive-
+ * resurface and stops there. Elastomeric is sold throughout the SERP on
+ * repelling moisture from OUTSIDE. Not one ranking page tells the homeowner
+ * the corresponding failure mode: a wall already holding water gets that
+ * water sealed IN. The cheaper the job, the less likely anyone looked
+ * first — so the buyer least able to absorb the mistake is the one most
+ * exposed to it. Same "check the wall before you coat it" logic the
+ * resurfacing page owns, applied to a buyer spending a tenth as much.
+ *
+ * CANNIBALIZATION CONTROL. The boundary is WHAT THE OWNER WANTS CHANGED:
+ *   - The colour → HERE.
+ *   - The surface itself, texture, patch map → /stucco-resurfacing/.
+ *     THAT PAGE KEEPS THE PAINTING-VS-RESURFACING COMPARISON. It holds the
+ *     H2 (:284), the two-row options table (:150-163), and the FAQ (:173).
+ *     This page must NOT restate that comparison, must NOT carry a
+ *     coating-vs-resurface H2, and must NOT carry a "difference between
+ *     painting and resurfacing" FAQ. It approaches paint from the paint
+ *     side and LINKS for the comparison. Decided deliberately: resurfacing
+ *     argues the comparison from the more expensive side, which is the more
+ *     credible direction — a resurfacing page saying "you might only need
+ *     paint" is not self-serving; a painting page saying the reverse is.
+ *   - Cracks and patching before paint → /stucco-repair/. Link, do not
+ *     restate. No crack-cause framing on this page.
+ *   - Water already behind the wall → /stucco-water-damage-repair/.
+ *   - Is the wall wet → /stucco-moisture-testing/. The Moisture Check
+ *     process is explained ONLY there.
+ *   - Cure before the FIRST paint on NEW stucco → /new-stucco-installation/,
+ *     which owns the 28-30 day / pH 10 sequence. This page is about
+ *     REPAINTING existing walls and does not restate those numbers.
+ *   - `bubbling paint on stucco` / `peeling paint stucco exterior` stay
+ *     with the problems cluster, NOT here. Those are moisture-failure
+ *     symptoms, not paint-purchase intent.
+ *
+ * NO PRICE RENDERS. `repairPriceRanges` contains NO painting entry — the
+ * nine jobs are repair, replacement, and resurfacing work. There is
+ * therefore no verified painting price to publish, so none is published and
+ * `pricingDisclaimer` is NOT imported or rendered: it attaches to published
+ * ranges, and there is no range here. The SERP's $1.50-$5/sq ft and
+ * $3,000-$8,500 figures are third-party market data for OTHER companies and
+ * are not rendered as anything. Cost intent routes to /stucco-repair/#pricing
+ * per keyword-plan:562, which preserves the standing no-cost-URL decision.
+ *
+ * WHAT WE DO NOT SAY:
+ *   - NO coating brand, product, line, system, or manufacturer approval.
+ *     The SERP names Behr and Sherwin-Williams freely. NONE of it transfers.
+ *     The page discusses coatings as a category, never as a product we sell.
+ *   - NO paint lifespan or repaint-interval claim for OUR work. "10 years",
+ *     "5-7 years", "20-25 years" all appear on the SERP as third-party
+ *     figures. `warrantyTerms` is null. Intervals are discussed only as what
+ *     drives them, never as a number we promise.
+ *   - NO wind-driven-rain rating, ASTM figure, or performance spec. Those
+ *     belong to specific products we have not verified using.
+ *   - NO waterproofing or sealing benefit claim.
+ *     `standaloneWaterproofing` is FALSE. This is the single easiest
+ *     constraint to violate on a painting page, because the whole category
+ *     sells elastomeric on moisture resistance. The page inverts it into a
+ *     warning instead.
+ *   - NO claim that paint prevents cracking. It bridges hairlines
+ *     cosmetically; it does not change what the building does.
+ *   - NO method, spray/roll process, prep system, or coat schedule.
+ *     Unverified.
+ *   - NO crew size, duration, turnaround, or lead time. Unverified.
+ *   - NO thermal-imaging-proves-moisture claim. Brand constraint.
+ *   - NO height, storey, lift, or scaffold capability. UNVERIFIED — FIFTH
+ *     build running. A repaint is inherently a whole-elevation job, which
+ *     makes the omission more conspicuous here than anywhere prior. Access
+ *     is discussed ONLY as a cost and planning variable.
+ *   - NO concrete spalling, and no implication of it.
+ *     `concreteSpallingRepair` is VERIFIED FALSE.
+ *
+ * NOT A HOME INSPECTION: Florida licenses home inspectors separately.
+ *
+ * OMITTED — blocked on missing prerequisites, absent rather than stubbed:
+ *   - [BEFORE/AFTER SET] — a repaint is a visual purchase sold here with
+ *     words only. Do NOT substitute stock or AI imagery.
+ *   - [WARRANTY TERM] — `warrantyTerms` is null. No guarantee module.
+ *   - [LICENSE #], [PHONE] — null in site.ts. Omitted, not stubbed.
+ *
+ * INBOUND: /stucco-resurfacing/ (from the comparison it owns) and
+ * /stucco-repair/ (repair-then-paint sequence).
+ * ------------------------------------------------------------------
+ *
+ * VISUAL SYSTEM (redesigned 2026-09-02): migrated from this page's own local
+ * hero/band/FAQ CSS onto the shared Orlando interior-page components -
+ * PageHero, SectionHead, FaqList, Breadcrumbs - and the global utilities in
+ * Layout.astro (.section, .slab, .joint, .grid-hairline, .prose, .on-dark).
+ * COPY, FACTS, SCHEMA, URLS, HEADING TEXT, ANCHOR IDS AND INTERNAL LINKS ARE
+ * UNCHANGED by that migration; only the markup carrying them moved.
+ *
+ * CONVERSION LOGIC PRESERVED: this page's hero carries a single plain link to
+ * /contact/#contact-form - NOT the ContactCta panel every other service page
+ * puts in the hero aside. That is deliberate and it survived the migration
+ * intact, as PageHero's `actions` array: same href, same label, same single
+ * affordance. The closing ContactCta is unchanged. Do not "bring this page
+ * into line" by adding the aside panel - the lighter hero is the point on the
+ * cheapest job on the site. Do not re-add a local hero or band rule here.
+ */
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import MobileStickyBar from '../../components/MobileStickyBar.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import FaqList from '../../components/FaqList.astro';
+import { business, serviceArea } from '../../config/site';
+
+const title =
+  'Stucco Painting | Repainting Stucco Exteriors | Daytona Beach';
+const description =
+  'Stucco painting in Daytona Beach and Volusia County. Why a coastal wall has to be checked for moisture before it is coated, what preparation actually decides, and when paint is the right job rather than resurfacing.';
+
+/**
+ * The failure the category does not name. This is the ownable answer and
+ * the reason the page exists in this order.
+ */
+const risks = [
+  {
+    title: 'A wall that is already wet',
+    flag: 'The expensive one',
+    body: 'Coatings are sold on keeping water out, and they do. What goes unsaid is that they work in both directions. Put a tight coating over a wall already holding moisture and the water stays in there, with the drying path closed off. Blistering and peeling follow within a season or two, and the cheap option becomes preparation for a larger one.',
+  },
+  {
+    title: 'Stucco that has let go of the wall',
+    flag: 'Paint does not attach it',
+    body: 'Tap across the elevation with a knuckle. A hollow, drummy sound means the stucco has separated from what is behind it. Coating over that changes nothing — paint is only as attached as what it lands on. It looks resolved for a year, then comes off carrying the loose stucco with it.',
+  },
+  {
+    title: 'Cracks that have not been dealt with',
+    flag: 'Sequence matters',
+    body: 'Paint bridges a hairline and hides it. It does not bridge a moving crack, or close one wide enough to take water. Anything needing repair gets done first, and needs its own time before anything goes over it. Painting first means paying to paint the same wall twice.',
+  },
+];
+
+/**
+ * What preparation actually is, in the buyer's terms. The SERP treats prep
+ * as a line item. It is most of the job and most of what separates a
+ * repaint that lasts from one that does not.
+ */
+const prep = [
+  {
+    step: 'Getting the wall clean',
+    body: 'Coastal walls carry salt, chalk from the old finish, and growth often mistaken for staining. Anything left on the surface is what the coating bonds to instead of the wall.',
+  },
+  {
+    step: 'Letting it dry',
+    body: 'Washing a wall puts water into it, and stucco holds it longer than it looks. Coating a wall that has not given that back is the same mistake as coating one that was wet to begin with, reached by a different route.',
+  },
+  {
+    step: 'Repairs, then time',
+    body: 'Cracks and damaged areas are repaired before coating, and fresh repair material needs curing time before anything covers it. This is the step schedules compress, and the one that most reliably shows up later.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Can you paint over stucco?',
+    a: 'Yes, and most stucco houses here have been painted at some point. The question worth asking is not whether the wall can be painted but whether it should be right now. Stucco is porous, over an assembly that needs to dry outward. If moisture is moving through it, or areas have separated from the wall behind, a coating locks in a problem rather than solving one. A dry, sound, prepared wall takes paint well and holds it.',
+  },
+  {
+    q: 'How do I know if my stucco is ready to be painted?',
+    a: 'Four checks, all of which you can do yourself. Tap across the elevation with a knuckle and listen for hollow areas, which mean the stucco has let go. Look for rust-coloured streaks, patches that stay dark after a dry week, or chalky white bloom, all of which mean water is moving through the wall. Check the bottom two feet, which fail first. And run a hand over it: heavy chalk on your palm is the old finish breaking down. A wall that passes all four is ready; one that fails any needs that handled first.',
+  },
+  {
+    q: 'Should I paint my stucco or resurface it?',
+    a: 'It depends on whether the problem is the colour or the surface. Paint changes colour and evens out how the wall reads; it adds no thickness, so worn texture and old patches still show through. If those are what bother you, coating over them will not fix it. The full comparison, including how the two price against each other, is on our stucco resurfacing page.',
+  },
+  {
+    q: 'Does painting stucco stop cracks?',
+    a: 'It hides fine ones and does not stop them. A flexible coating bridges hairline cracking cosmetically, which is a real benefit. What it does not do is change why the wall is cracking. Cracks that keep coming back after being painted are telling you something about the building rather than the paint, and that is worth understanding before another coat.',
+  },
+  {
+    q: 'How often does stucco need repainting in Florida?',
+    a: 'Sooner than the same house would inland, and the interval depends on your wall rather than a general figure. Sun exposure is the big one — a south or west elevation ages visibly faster than a north one on the same house. Salt air, how well the wall was prepared last time, and the coating used all move it. Any number quoted without seeing the house is a guess. Worth repainting while the coating is chalking rather than failing, because the preparation is cheaper at that stage.',
+  },
+  {
+    q: 'Do cracks need to be repaired before painting?',
+    a: 'Yes, and this is the sequencing question that costs people money. Painting over unrepaired cracks means paying for the coating now and paying to prepare and recoat those areas later, when the crack reopens through the new finish. Repairs go first, cure, then the wall is coated. See our stucco repair page for what that work involves.',
+  },
+];
+
+const serviceSchema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Stucco painting',
+  serviceType: 'Stucco painting',
+  description:
+    'Exterior painting and coating of stucco walls. The wall is assessed for moisture and soundness, cleaned and prepared, repairs are completed and given time to cure, and the coating is applied. Distinct from resurfacing, which applies a new layer of stucco material.',
+  provider: { '@type': 'LocalBusiness', name: business.name },
+};
+if (serviceArea) serviceSchema.areaServed = serviceArea;
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <SiteHeader current="/stucco-painting/" />
+
+  <main id="main">
+    {/*
+      HERO. Dark PageHero, single-column - no aside slot, deliberately. This
+      page's conversion affordance has always been ONE plain link rather than
+      the ContactCta panel the other service pages carry, and that is kept: it
+      is now PageHero's `actions` array, rendering the same href and label.
+      See the CONVERSION LOGIC note in the doc block above before changing it.
+    */}
+    <PageHero
+      crumbs={[
+        { href: '/services/', label: 'Services' },
+        { href: '/stucco-painting/', label: 'Painting' },
+      ]}
+      eyebrow="Stucco services · Daytona Beach & Volusia County"
+      title="Stucco painting"
+      lede="The cheapest thing you can do to a stucco house, and the one most often done without anyone checking the wall first. Worth ten minutes before it is worth a quote."
+      actions={[
+        { href: '/contact/', label: 'Request an estimate' },
+        { href: '/problems/bubbling-peeling-paint-stucco/', label: 'Why stucco paint peels', variant: 'secondary' },
+      ]}
+    />
+
+<section class="section">
+  <div class="wrap">
+    <LeadForm />
+  </div>
+</section>
+
+    {/* THE OWNABLE ANSWER */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Both directions"
+          title="Paint keeps water out. It also keeps water in."
+          lede="Every guide to painting stucco makes the same case: it is the affordable option, it refreshes the house, and modern coatings resist moisture. All true. Almost none of them mentions the other half of that last point."
+        />
+        <div class="prose">
+        <p>
+          A stucco wall is not a sealed box. It is a porous surface over an
+          assembly that expects to dry outward when it gets wet, which on the
+          Florida coast is often. A coating that resists water from outside
+          also slows drying from inside. On a dry, sound wall that is what
+          you want. On a wall already holding moisture, it is the most
+          expensive thing you can do to it.
+        </p>
+        </div>
+        <div class="caveat">
+          <p>
+            The uncomfortable part is who this catches. Repainting is the cheap
+            job, so it is the one people are least likely to have anyone
+            look at the wall for first &mdash;{' '}
+            <strong>
+              which means the buyer least able to absorb the mistake is the
+              one most exposed to it
+            </strong>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* WHEN NOT TO BUY THIS */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Ruling it out"
+          title="Three walls that should not be painted yet"
+          lede="Not reasons to avoid painting. Reasons to do something else first, and all three you can check this afternoon."
+        />
+
+        {/*
+          Three descriptive cells, not links - each is a wall condition, not a
+          route. Plain .grid-hairline rather than the .card-link variant.
+        */}
+        <div class="grid-hairline cols-3 entries">
+          {risks.map((r) => (
+            <div class="entry">
+              <h3>{r.title}</h3>
+              <p class="who">{r.flag}</p>
+              <p>{r.body}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="prose">
+        <p>
+          If any of those describe your wall, the useful next step is finding
+          out what is behind it rather than collecting painting quotes.
+          Water already in the wall is{' '}
+          <a href="/stucco-water-damage-repair/">stucco water damage repair</a>,
+          and cracks and hollow areas are{' '}
+          <a href="/stucco-repair/">stucco repair</a> &mdash; both of which
+          come before a coating rather than instead of one. And if the paint
+          already on the wall is blistering or peeling, work out{' '}
+          <a href="/problems/bubbling-peeling-paint-stucco/">
+            why it is coming off
+          </a>{' '}before deciding what goes on next &mdash; a dry, brittle
+          failure and a wet one lead to different jobs.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* PREPARATION */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Where the money goes"
+          title="Preparation is most of the job"
+          lede="Two quotes for the same house can differ substantially, and the difference is usually not the coating. It is how much of the following is in it."
+        />
+
+        <div class="grid-hairline cols-2 entries">
+          {prep.map((p) => (
+            <div class="entry">
+              <h3>{p.step}</h3>
+              <p>{p.body}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="prose">
+        <p>
+          Worth asking any painter directly: what preparation is included,
+          what happens if cracks turn up once the wall is clean, and how long
+          it dries between washing and coating. The answers separate quotes
+          that look alike on paper.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* THE BOUNDARY — resurfacing keeps the comparison */}
+    <section class="section slab joint">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="The boundary"
+          title="When paint is not the right job"
+          lede="Paint changes the colour of a wall and evens out how it reads from the street. It adds no thickness. So whatever the surface is doing now — worn texture, a map of old patch marks, a finish that no longer takes colour evenly — it will still be doing under a new shade."
+        />
+        <div class="prose">
+        <p>
+          If those are what bother you, the answer is a new layer of material
+          rather than a new colour. That is a different job at a different
+          price, and the full comparison is on our{' '}
+          <a href="/stucco-resurfacing/">stucco resurfacing page</a>, which
+          is the better place to make that decision.
+        </p>
+        <p>
+          One case that catches people out: newly stuccoed walls are not
+          paintable straight away. Fresh stucco has to cure first, and the
+          wait is measured in weeks rather than days. The sequence is on
+          our{' '}
+          <a href="/new-stucco-installation/">new stucco installation page</a>.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/* IF YOU ARE NOT SURE */}
+    <section class="section">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="A paid diagnostic service"
+          title="If you are not sure the wall is dry"
+        />
+        <div class="prose">
+        <p>
+          The checks above settle most walls. Where they do not &mdash;
+          staining you cannot account for, an area patched more than once,
+          blistering nobody explained &mdash; readings settle it first.
+        </p>
+        <p>
+          Our{' '}
+          <a href="/stucco-moisture-testing/">Stucco Moisture Check</a>{' '}
+          measures what the wall is doing, and you get the findings either
+          way. On most walls that is overkill. On a wall showing any of the
+          signs above, it is the difference between painting once and twice.
+          For repair pricing, see{' '}
+          <a href="/stucco-repair/#pricing">stucco repair and pricing</a>.
+        </p>
+        <p>
+          This is our own assessment of your wall as the contractor who does
+          the work. It is not a home inspection and it is not an independent
+          inspection report.
+        </p>
+        </div>
+      </div>
+    </section>
+
+    {/*
+      FAQ. The shared FaqList accordion, fed the SAME `faqs` array that builds
+      the FAQPage schema above - one source, so an answer can never drift from
+      its markup. FaqList deliberately emits no schema of its own (see its doc
+      block); the page keeps ownership of that.
+    */}
+    <section class="section" id="faq" aria-labelledby="faq-head">
+      <div class="wrap">
+        <SectionHead id="faq-head" eyebrow="FAQ" title="Frequently asked questions" />
+        <FaqList items={faqs} />
+      </div>
+    </section>
+
+    <section class="section on-dark">
+      <div class="wrap">
+        <ContactCta heading="Tell us what the wall looks like" />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  /*
+   * PAGE-SPECIFIC ONLY. The hero, bands, section heads, prose column, card
+   * grid, FAQ rows and breadcrumbs come from the shared components and the
+   * global utilities in Layout.astro; those rules were deleted here rather
+   * than duplicated. What remains is this page's own furniture: the risk and
+   * preparation cells, their flag label, and the two flag-ruled asides.
+   */
+
+  /* --- Cells: the three risky walls, and the preparation steps ---------- */
+  .entry h3 { margin: 0 0 0.5rem; font-size: 1.0625rem; }
+  .entry p { margin: 0; color: var(--ink-soft); }
+
+  /* "The expensive one" / "Paint does not attach it" under each risk. */
+  .who {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--flag);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem !important;
+  }
+
+  /* --- The "who this catches" aside ------------------------------------- */
+  .caveat {
+    border-left: 3px solid var(--flag);
+    padding-left: 1.25rem;
+    max-width: 60ch;
+  }
+  .caveat p { margin: 0; color: var(--ink-soft); }
+</style>
