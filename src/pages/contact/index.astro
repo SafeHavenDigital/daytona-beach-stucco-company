@@ -7,12 +7,10 @@
  * or any commercial term; those belong to the money pages that link here.
  *
  * ------------------------------------------------------------------
- * PHONE: `phone` in src/config/site.ts is null and MUST stay null until the
- * client supplies a real number. No call affordance renders anywhere on this
- * page, and no `telephone` field is emitted in schema. Do not add a
- * placeholder, a "call us" line, or a formatted stand-in. Setting `phone` to
- * the real string is the only change required — the call row below, the
- * masthead link, and the ContactPoint all light up automatically.
+ * PHONE: `phone` in src/config/site.ts was VERIFIED 2026-10-14
+ * ((386) 753-3810). The call row below, the masthead link, and the
+ * ContactPoint/LocalBusiness `telephone` (E.164, `phoneE164`) render from it.
+ * Do not hardcode the number here; change it only in site.ts.
  *
  * FORM DESTINATION: submissions go to `email` (verified 2026-08-28) via
  * Resend, through this site's own endpoint at src/pages/api/contact.ts. The
@@ -22,7 +20,7 @@
  * original mailto: composer with no other change.
  *
  * OMITTED — facts not verified, so the blocks are absent rather than stubbed:
- *   [PHONE] · [HOURS] · [BUSINESS ADDRESS] · [RESPONSE TIME] · [LICENSE #]
+ *   [HOURS] · [BUSINESS ADDRESS] · [RESPONSE TIME] · [LICENSE #]
  *   [SERVICE AREA] municipalities · [REVIEW COUNT] / [RATING]
  * ------------------------------------------------------------------
  */
@@ -33,7 +31,7 @@ import MobileStickyBar from '../../components/MobileStickyBar.astro';
 import {
   business,
   email,
-  phone,
+  phone, phoneE164, phoneHref,
   formEndpoint,
   serviceArea,
   licenseNumber,
@@ -54,7 +52,7 @@ const contactPoint: Record<string, unknown> = {
   availableLanguage: 'English',
 };
 if (email) contactPoint.email = email;
-if (phone) contactPoint.telephone = phone;
+if (phone) contactPoint.telephone = phoneE164;
 
 const schema: Record<string, unknown> = {
   '@context': 'https://schema.org',
@@ -68,7 +66,7 @@ const schema: Record<string, unknown> = {
       'Stucco repair, crack repair, and water damage repair in Daytona Beach and Volusia County, Florida.',
     foundingDate: String(business.founded),
     ...(email ? { email } : {}),
-    ...(phone ? { telephone: phone } : {}),
+    ...(phone ? { telephone: phoneE164 } : {}),
     areaServed: serviceArea ?? { '@type': 'City', name: 'Daytona Beach, FL' },
     contactPoint,
   },
@@ -136,13 +134,13 @@ const situations = [
 
         <div class="reach">
           {/*
-            Renders only when a real number exists. While `phone` is null
-            there is no call row at all — by design.
+            Renders from the verified `phone` (2026-10-14). If it is ever
+            null there is no call row at all — by design.
           */}
           {phone && (
             <p class="reach-line">
               <span class="reach-label">Phone</span>
-              <a href={`tel:${phone.replace(/[^0-9+]/g, '')}`}>{phone}</a>
+              <a href={phoneHref}>{phone}</a>
             </p>
           )}
 

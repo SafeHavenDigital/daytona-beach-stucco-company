@@ -21,7 +21,7 @@
  */
 import { Image } from 'astro:assets';
 import logo from '../assets/images/daytona-beach-stucco-company-logo.webp';
-import { business, phone, email } from '../config/site';
+import { business, phone, phoneHref, email } from '../config/site';
 
 interface Props {
   /** Current path, used to mark the active nav item. */
@@ -100,7 +100,7 @@ const nav = [
   { href: '/contact/', label: 'Contact' },
 ];
 
-const telHref = phone ? `tel:${phone.replace(/[^0-9+]/g, '')}` : null;
+const telHref = phoneHref;
 ---
 
 <a class="skip-link" href="#main">Skip to content</a>

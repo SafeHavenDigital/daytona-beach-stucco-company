@@ -17,7 +17,7 @@
  *      /accessibility/. None of those routes exist here, and shipping three
  *      404s in the sitewide footer is worse than omitting the row. Add it
  *      when the pages exist.
- *   2. NO hours block. `phone` is null and business hours are listed as
+ *   2. NO hours block. Business hours are listed as
  *      OUTSTANDING in src/config/site.ts. Every contact line below is
  *      conditional on a verified value, so nothing renders as a placeholder.
  *
@@ -31,7 +31,7 @@ import {
   licenseNumber,
   serviceArea,
   email,
-  phone,
+  phone, phoneHref,
 } from '../config/site';
 
 const services = [
@@ -66,7 +66,7 @@ const guides = [
   { href: '/about/', label: 'About' },
 ];
 
-const telHref = phone ? `tel:${phone.replace(/[^0-9+]/g, '')}` : null;
+const telHref = phoneHref;
 const year = new Date().getFullYear();
 ---
 

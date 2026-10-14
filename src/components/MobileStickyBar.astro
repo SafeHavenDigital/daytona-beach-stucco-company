@@ -3,17 +3,17 @@
  * Fixed bottom action bar, mobile only. Ported from the Orlando Concrete
  * Contractors reference, which pairs "Call now" with "Request an Estimate".
  *
- * PHONE: `phone` is null in src/config/site.ts and must stay that way until
- * the client supplies a real number. So the left half falls back to the
- * VERIFIED email address; if neither exists, the bar renders a single
+ * PHONE: `phone` in src/config/site.ts was VERIFIED 2026-10-14, so the left
+ * half is "Call now" via `phoneHref`. If `phone` is ever null it falls back
+ * to the VERIFIED email address; if neither exists, the bar renders a single
  * full-width estimate button rather than a dead affordance.
  *
  * SiteFooter must clear this bar on mobile — see the padding-bottom rule at
  * the end of this file, which is global because it targets the shared footer.
  */
-import { phone, email } from '../config/site';
+import { phoneHref, email } from '../config/site';
 
-const telHref = phone ? `tel:${phone.replace(/[^0-9+]/g, '')}` : null;
+const telHref = phoneHref;
 const secondary = telHref
   ? { href: telHref, label: 'Call now' }
   : email

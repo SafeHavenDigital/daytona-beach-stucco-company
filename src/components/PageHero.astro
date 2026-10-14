@@ -7,8 +7,8 @@
  *
  * The reference pairs this with a lead-capture form and a phone callbox.
  * Here the right column is a generic slot instead, because:
- *   - `phone` is null in src/config/site.ts, so a callbox would be a dead
- *     affordance. Never stub one.
+ *   - the phone (verified 2026-10-14) already renders in the header, mobile
+ *     nav, sticky bar, footer, and ContactCta; a hero callbox would repeat it.
  *   - the contact form is already owned by ContactCta.astro, which computes
  *     its own href and honeypot behavior. Pages that want it pass it in.
  *

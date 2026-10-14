@@ -8,7 +8,7 @@ import LeadForm from '../components/LeadForm.astro';
 import {
   business,
   moistureCheck,
-  phone,
+  phone, phoneE164,
   serviceArea,
   serviceAreaProse,
   openWallPhotos,
@@ -89,7 +89,7 @@ const money = (n: number) => `$${n.toLocaleString('en-US')}`;
  *
  * So this array is BUILT, not written. Each entry is conditional on a verified
  * constant in src/config/site.ts. `reviewCount`, `rating`, `warrantyTerms`,
- * `openWallPhotos`, `licenseNumber` and `phone` are all null, so the cells that
+ * `openWallPhotos` and `licenseNumber` are all null, so the cells that
  * would carry them simply do not exist here. When the client supplies one, add
  * its cell — do not add the cell first and fill it later.
  *
@@ -152,7 +152,7 @@ const schema: Record<string, unknown> = {
     },
   },
 };
-if (phone) schema.telephone = phone;
+if (phone) schema.telephone = phoneE164;
 if (serviceArea) schema.areaServed = serviceArea;
 ---
 

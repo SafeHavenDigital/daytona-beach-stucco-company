@@ -429,7 +429,7 @@ Remaining problem pages, remaining service pages (`/stucco-replacement/`, `/eifs
 - `[LICENSE #]` — state license number
 - `[INSURANCE CARRIER]` + `[GL LIMIT]` + `[WC COVERAGE]`
 - `[SERVICE AREA]` — the actual radius/municipalities served
-- `[PHONE]`, `[BUSINESS ADDRESS or service-area designation]`, `[HOURS]`
+- ~~`[PHONE]`~~ — VERIFIED 2026-10-14: (386) 753-3810, live sitewide. Still needed: `[BUSINESS ADDRESS or service-area designation]`, `[HOURS]`
 - `[RESPONSE TIME]` — only if genuinely measured
 
 ### Cost content on `/stucco-repair/` — status 2026-08-28

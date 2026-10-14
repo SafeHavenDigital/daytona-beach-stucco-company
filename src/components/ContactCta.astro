@@ -2,12 +2,11 @@
 /**
  * The single conversion point.
  *
- * PHONE HANDLING: `phone` in src/config/site.ts is null until the client
- * supplies the real number. While null, this renders the email path and
- * NO call affordance at all — no tel: link, no "call us", no stand-in digits.
- * Setting `phone` to the real string is the only change needed; the call
- * button, the tel: link, and the LocalBusiness telephone field all light up
- * automatically. Do not hardcode a number anywhere else.
+ * PHONE HANDLING: `phone` in src/config/site.ts was VERIFIED 2026-10-14
+ * ((386) 753-3810). The call button uses `phoneHref` (tel:+13867533810) from
+ * the same file. If `phone` is ever set back to null, this falls back to the
+ * email path with NO call affordance — no tel: link, no stand-in digits.
+ * Do not hardcode a number anywhere else.
  *
  * NO PHOTO UPLOAD THROUGH THE FORM — corrected 2026-09-02.
  * `/api/contact` posts JSON and forwards no attachments, and the form at
@@ -27,7 +26,7 @@
  * A heading prop overrides nothing here — it renders verbatim above this copy,
  * so those pages still promise an upload. They need editing individually.
  */
-import { phone, email, moistureCheck } from '../config/site';
+import { phone, phoneHref, email, moistureCheck } from '../config/site';
 
 interface Props {
   variant?: 'panel' | 'inline';
@@ -57,7 +56,7 @@ const formHref = onContactPage ? '#contact-form' : '/contact/#contact-form';
 
   <div class="actions">
     {phone && (
-      <a class="btn primary" href={`tel:${phone.replace(/[^0-9+]/g, '')}`}>
+      <a class="btn primary" href={phoneHref}>
         Call {phone}
       </a>
     )}
@@ -72,8 +71,8 @@ const formHref = onContactPage ? '#contact-form' : '/contact/#contact-form';
   </div>
 
   {/*
-    BUILD NOTE — rendered only while `phone === null` in src/config/site.ts.
-    Supply the real number there and this notice disappears along with it.
+    FALLBACK — rendered only if `phone` is null in src/config/site.ts.
+    The number is verified (2026-10-14), so this does not currently render.
     Kept as a JSX comment so it does not ship as an HTML comment.
   */}
   {!phone && (
@@ -134,7 +133,7 @@ const formHref = onContactPage ? '#contact-form' : '/contact/#contact-form';
   }
 
   /* Deep-red CTA token, matching the .btn-primary treatment in
-   * Layout.astro. Renders only once `phone` is non-null. */
+   * Layout.astro. Renders whenever `phone` is set (verified 2026-10-14). */
   .inline .primary { background: var(--cta); color: var(--cta-ink); }
   .inline .secondary {
     background: transparent;

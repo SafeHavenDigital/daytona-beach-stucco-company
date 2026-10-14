@@ -320,3 +320,9 @@ Append-only. What worked, what didn't, what we learned about the audience.
   their SECOND repair, is unknown. The starred "pay for it twice" positioning assumes returning
   cracks are common among actual callers — well-supported as a market claim, unconfirmed as a caller
   pattern. Email 04-value-story asks readers directly; replies are the collection mechanism.
+
+## Phone number verified and published (2026-10-14)
+
+- [2026-10-14] [site] **Phone (386) 753-3810 verified by the client; supersedes the 2026-08-28 "phone still null" entry above.** Set once in `site.ts`; every call affordance and the schema `telephone` came from existing null-gates, so no hardcoded number was added anywhere. **The null-gate pattern paid off: one config change lit up the whole site.**
+- [2026-10-14] [site] **A null-gate that derives a value can still get the format wrong.** Components built `tel:` by stripping non-digits from the display string, which would have shipped `tel:3867533810` without the country code. Fix: store the canonical E.164 / `tel:` form beside the display form in `site.ts` and consume it directly. **When a verified fact has a display form and a machine form, store both; don't derive one from the other.**
+- [2026-10-14] [site] **Turning a null into a verified value leaves stale "this is null" notes behind** in code comments, build notes and brand files. Grep for the fact's placeholder token (`[PHONE]`, "phone is null") across `src/` and `brand/` as part of the change, not after it.

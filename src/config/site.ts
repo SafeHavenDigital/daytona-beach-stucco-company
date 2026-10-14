@@ -44,9 +44,7 @@ export const business = {
  * VERIFIED contact email, confirmed by the client 2026-08-28.
  *
  * This is the company's real inbox and the destination for contact-form
- * submissions. It is the ONLY contact channel currently authorized to
- * publish — `phone` below is still null and must stay that way until a real
- * number is supplied.
+ * submissions. `phone` below was verified separately on 2026-10-14.
  */
 export const email: string | null = 'daytonabeachstucco@gmail.com';
 
@@ -362,8 +360,18 @@ export const verifiedServices = {
 // UNVERIFIED — null until the client supplies them. DO NOT INVENT.
 // ---------------------------------------------------------------------------
 
-/** Real number pending. Contact UI omits call links entirely while null. */
-export const phone: string | null = null;
+/**
+ * VERIFIED phone number, supplied by the client 2026-10-14. Display format.
+ * Contact UI (header, mobile nav, sticky bar, footer, CTAs, /contact/) and
+ * LocalBusiness `telephone` schema all light up from this value.
+ */
+export const phone: string | null = '(386) 753-3810';
+
+/** E.164 form of `phone`, used for tel: links and schema `telephone`. */
+export const phoneE164: string | null = phone ? '+13867533810' : null;
+
+/** Canonical tel: href. Use this rather than deriving one from `phone`. */
+export const phoneHref: string | null = phoneE164 ? `tel:${phoneE164}` : null;
 
 /** Client explicitly declined to provide. Never render a fabricated number. */
 export const licenseNumber: string | null = null;
@@ -421,7 +429,6 @@ export const whatMovesThePrice: string | null = null;
 
 /** Tracks outstanding facts so the gaps stay visible during the build. */
 export const OUTSTANDING: readonly UnverifiedFact[] = [
-  { needed: 'Phone number', unlocks: 'Call buttons, header/footer tel: links, sticky mobile call bar' },
   { needed: 'Form service endpoint (optional)', unlocks: 'Background form POST with photo upload on /contact/, replacing the mailto: composer' },
   { needed: 'Business hours', unlocks: 'Hours block on /contact/, openingHours schema' },
   { needed: 'Typical response time (only if measured)', unlocks: 'Response-time line on /contact/ — never publish an unmeasured guess' },

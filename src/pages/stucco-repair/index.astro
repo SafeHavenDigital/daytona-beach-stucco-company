@@ -56,7 +56,7 @@ import repairWork from '../../assets/images/residential-stucco-repair-contractor
 import {
   business,
   moistureCheck,
-  phone,
+  phone, phoneE164,
   serviceArea,
   serviceAreaProse,
   repairPriceRanges,
@@ -82,8 +82,8 @@ const cheapQuoteOmissions = [
 ];
 
 /**
- * Service schema. `provider` carries only verified fields; telephone and
- * areaServed are appended only when real values exist. No aggregateRating —
+ * Service schema. `provider` carries only verified fields; telephone
+ * (verified 2026-10-14) and areaServed are appended from site.ts. No aggregateRating —
  * review count and rating are unverified (brand/positioning.md).
  */
 const provider: Record<string, unknown> = {
@@ -91,7 +91,7 @@ const provider: Record<string, unknown> = {
   name: business.name,
   foundingDate: String(business.founded),
 };
-if (phone) provider.telephone = phone;
+if (phone) provider.telephone = phoneE164;
 if (serviceArea) provider.areaServed = serviceArea;
 
 const serviceSchema = {
