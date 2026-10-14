@@ -183,13 +183,14 @@ const telHref = phoneHref;
     </nav>
 
     <div class="actions">
-      {phone && telHref && (
-        <a class="call" href={telHref}>
-          <span class="call-label">Call</span>
-          <span class="call-number">{phone}</span>
-        </a>
+      {/* Desktop primary CTA is the verified phone (2026-10-14). Falls back
+          to the estimate route if `phone` is ever null. The mobile menu keeps
+          its own estimate + call buttons below. */}
+      {phone && telHref ? (
+        <a class="btn btn-primary btn-compact" href={telHref}>{phone}</a>
+      ) : (
+        <a class="btn btn-primary btn-compact" href="/contact/">Request an estimate</a>
       )}
-      <a class="btn btn-primary btn-compact" href="/contact/">Request an estimate</a>
     </div>
 
     <button
@@ -397,36 +398,13 @@ const telHref = phoneHref;
     gap: 1.5rem;
   }
 
-  .call {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-    text-decoration: none;
-    color: var(--shell-ink);
-  }
-
-  .call-label {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    line-height: 1;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--shell-ink-soft);
-  }
-
-  .call-number {
-    font-family: var(--font-display);
-    font-size: 1.125rem;
-    font-weight: 700;
-    line-height: 1.1;
-    white-space: nowrap;
-  }
 
   /* Header button runs shorter than the global .btn so the bar holds 80px. */
   .btn-compact {
     min-height: 2.875rem;
     padding: 0.6875rem 1.5rem;
     font-size: 0.9375rem;
+    white-space: nowrap;
   }
 
   /* --- Hamburger ----------------------------------------------------- */
