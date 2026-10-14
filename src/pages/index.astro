@@ -8,7 +8,7 @@ import LeadForm from '../components/LeadForm.astro';
 import {
   business,
   moistureCheck,
-  phone, phoneE164,
+  phone, phoneE164, phoneHref,
   serviceArea,
   serviceAreaProse,
   openWallPhotos,
@@ -187,7 +187,13 @@ if (serviceArea) schema.areaServed = serviceArea;
           </p>
 
           <div class="hero-actions">
-            <a class="btn btn-primary" href="/contact/">Request an estimate</a>
+            {/* Hero primary CTA is the verified phone (2026-10-14); falls back
+                to the estimate route if `phone` is ever null. */}
+            {phone && phoneHref ? (
+              <a class="btn btn-primary" href={phoneHref}>{phone}</a>
+            ) : (
+              <a class="btn btn-primary" href="/contact/">Request an estimate</a>
+            )}
             <a class="btn btn-secondary" href="/stucco-repair/">
               Stucco repair &amp; costs
             </a>
