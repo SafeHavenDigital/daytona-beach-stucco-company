@@ -489,5 +489,5 @@ export const chimneyProject = {
     'The chimney chase was damaged in a storm about a year before the repair.',
   scope:
     'Removed damaged stucco and rotted wood, rebuilt the sheathing and framing, installed moisture barrier and metal lath, removed and reinstalled the base flashing, matched the stucco texture and painted.',
-  estimatedCost: 4200,
+  estimatedCost: 3550,
 } as const;
