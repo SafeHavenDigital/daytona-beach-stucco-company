@@ -18,7 +18,8 @@
  * that rule is unchanged). They use astro:assets <Image> directly: WebP,
  * max 1280px (under the 1600px cap; 1600 left the lath photo at
  * 357 KB), quality 80, intrinsic width/height. The before photo is only
- * 590px wide and is never upscaled.
+ * 590px wide and is never upscaled. The portrait chimney photos cap at
+ * 1024px wide (1024x1280) so the busiest one stays under 250 KB.
  *
  * SCHEMA: BreadcrumbList only (via PageHero crumbs). No Product, Offer,
  * Review or AggregateRating, by owner instruction.
@@ -31,20 +32,41 @@ import MobileStickyBar from '../../components/MobileStickyBar.astro';
 import ContactCta from '../../components/ContactCta.astro';
 import PageHero from '../../components/PageHero.astro';
 import SectionHead from '../../components/SectionHead.astro';
-import { columnWrapProject as job } from '../../config/site';
+import { columnWrapProject as job, chimneyProject as chimney } from '../../config/site';
 
 import beforeImg from '../../assets/images/stucco-column-wrap-before-daytona-beach-watermarked.jpg';
 import lathImg from '../../assets/images/stucco-column-wrap-lath-corner-bead-daytona-beach-watermarked.jpg';
 import afterImg from '../../assets/images/stucco-column-wrap-after-daytona-beach-watermarked.jpg';
+import chimneyBeforeImg from '../../assets/images/stucco-chimney-repair-before-daytona-beach-watermarked.jpg';
+import chimneyWoodImg from '../../assets/images/stucco-chimney-repair-rotted-wood-daytona-beach-watermarked.jpg';
+import chimneyAfterImg from '../../assets/images/stucco-chimney-repair-after-daytona-beach-watermarked.jpg';
 
 const title = 'Stucco Prices in Daytona Beach, FL (2026)';
 const description =
-  'Real stucco prices from a recent project, plus what affects the cost of stucco column wraps, repairs and new stucco. Updated November 2026.';
+  'Explore stucco prices in Daytona Beach, FL, with real project photos, actual project costs and repair estimates. Request a free stucco repair estimate.';
 
-const exactPrice = job.price.toLocaleString('en-US', {
-  style: 'currency',
-  currency: 'USD',
-});
+const usd = (n: number) =>
+  n.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+const exactPrice = usd(job.price);
+const chimneyEstimate = usd(chimney.estimatedCost);
+
+const chimneyPhotos = [
+  {
+    src: chimneyBeforeImg,
+    alt: 'Cracked and bulging stucco at the base of a chimney chase on a tile roof',
+    caption: 'Before: crack and bulge at the base.',
+  },
+  {
+    src: chimneyWoodImg,
+    alt: 'Stucco removed from a chimney chase showing rotted wood sheathing and framing',
+    caption: 'During: rotted wood behind the stucco.',
+  },
+  {
+    src: chimneyAfterImg,
+    alt: 'Repaired chimney chase with new stucco matched to the existing texture and painted',
+    caption: 'After: rebuilt, re-stuccoed and painted.',
+  },
+];
 
 const photos = [
   {
@@ -82,7 +104,7 @@ const factors = [
       crumbs={[{ href: '/stucco-prices-daytona-beach/', label: 'Stucco prices' }]}
       eyebrow="Pricing · Daytona Beach, FL"
       title="Stucco prices in Daytona Beach"
-      lede="What stucco work actually costs, starting with a real project we finished. Every price on this page comes from a completed job."
+      lede="What stucco work costs, shown through real projects we have done. Each price below is labeled as either the actual cost of a completed job or an estimate for similar work."
     />
 
     <section class="section" id="prices">
@@ -92,12 +114,13 @@ const factors = [
         <div class="table-scroll" tabindex="0" role="region" aria-labelledby="prices-caption">
           <table>
             <caption id="prices-caption">
-              Prices from completed projects. Not quotes.
+              Each price is marked as an actual project cost or an estimate
+              for similar work. Neither is a minimum price or a quote.
             </caption>
             <thead>
               <tr>
                 <th scope="col">Service</th>
-                <th scope="col">Typical price</th>
+                <th scope="col">Price</th>
                 <th scope="col">Unit</th>
               </tr>
             </thead>
@@ -106,8 +129,21 @@ const factors = [
                 <th scope="row">
                   <a href="/new-stucco-installation/">Column and beam stucco wraps</a>
                 </th>
-                <td class="figure">From about $3,850</td>
+                <td class="figure">
+                  <span class="price-kind">Actual project cost</span>
+                  {exactPrice}
+                </td>
                 <td>per project (2 columns plus beam)</td>
+              </tr>
+              <tr>
+                <th scope="row">
+                  <a href="/stucco-chimney-repair/">Stucco chimney chase repair (with rotted wood replacement)</a>
+                </th>
+                <td class="figure">
+                  <span class="price-kind">Estimated cost for similar work</span>
+                  {chimneyEstimate}
+                </td>
+                <td>per chimney chase</td>
               </tr>
             </tbody>
           </table>
@@ -115,8 +151,8 @@ const factors = [
 
         <div class="prose">
           <p>
-            More prices coming soon. Call for a free estimate on any stucco
-            project.
+            Prices vary by project. More prices coming soon. Call for a free
+            estimate on any stucco project.
           </p>
           <p>
             Looking for repair costs? Researched market ranges for stucco repair
@@ -194,6 +230,74 @@ const factors = [
           <p>
             Need a <a href="/">stucco contractor in Daytona Beach</a>? Get a
             free estimate from our team.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="chimney-project">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Case study"
+          title="Recent project: stucco chimney chase repair"
+        />
+
+        <div class="photos portrait">
+          {chimneyPhotos.map((p) => (
+            <figure>
+              <Image
+                src={p.src}
+                alt={p.alt}
+                width={Math.min(p.src.width, 1024)}
+                widths={[Math.min(p.src.width, 800), Math.min(p.src.width, 1024)].filter((w, i, a) => a.indexOf(w) === i)}
+                sizes="(min-width: 60rem) 33vw, 100vw"
+                format="webp"
+                quality={80}
+                loading="lazy"
+                decoding="async"
+              />
+              <figcaption>{p.caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+
+        <div class="table-scroll details">
+          <table>
+            <caption>Project details</caption>
+            <tbody>
+              <tr><th scope="row">Scope</th><td>{chimney.scope}</td></tr>
+              <tr><th scope="row">Location</th><td>{chimney.location}</td></tr>
+              <tr>
+                <th scope="row">Price</th>
+                <td>
+                  Estimated cost for similar work: <strong>{chimneyEstimate}</strong>.
+                  This is an estimate, not the historical cost of this job, a
+                  minimum price, or a guaranteed quote.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="prose">
+          <p>
+            Prices vary from project to project. The cost of a chimney chase
+            repair depends on how far the damage goes, how easy the chase is to
+            reach, and material and labor costs at the time of the work.
+          </p>
+          <p>
+            {chimney.background} A crack or bulge low on a chimney chase is
+            often a sign that water is getting in behind the stucco. On this
+            chase it had rotted the wood sheathing and framing. Patching over
+            the surface would have hidden that rot, so the damaged stucco and
+            wood came out, the framing and sheathing were rebuilt, and the
+            stucco system was put back on new moisture barrier and metal lath,
+            with the base flashing removed and reinstalled, the texture
+            matched, and the chase painted.
+          </p>
+          <p>
+            Seeing cracks or a bulge on your chimney? Read more about{' '}
+            <a href="/stucco-chimney-repair/">stucco chimney repair</a>.
           </p>
         </div>
       </div>
@@ -284,6 +388,16 @@ const factors = [
     margin-top: 0.5rem;
     font-size: 0.875rem;
     color: var(--ink-soft, var(--ink));
+  }
+
+  .photos.portrait figure :global(img) { aspect-ratio: 4 / 5; }
+
+  .price-kind {
+    display: block;
+    white-space: normal;
+    font-weight: 400;
+    font-size: 0.8125rem;
+    color: var(--ink-faint);
   }
 
   .factors li + li { margin-top: 0.5rem; }

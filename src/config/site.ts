@@ -468,3 +468,26 @@ export const columnWrapProject = {
     'Prepared 2 wood patio posts and an L-shaped beam, installed paper-backed metal lath and corner bead, and applied three-coat stucco (scratch, brown, finish) with a smooth finish.',
   price: 3850.19,
 } as const;
+
+/**
+ * VERIFIED PROJECT — chimney chase stucco repair, supplied by the owner
+ * 2026-11-25, with real photos (src/assets/images/stucco-chimney-repair-*).
+ *
+ * PRICE FRAMING — different from `columnWrapProject`: `estimatedCost` is the
+ * owner's ESTIMATED COST FOR SIMILAR WORK. It is NOT the historical price of
+ * this job, NOT a minimum ("from") price, and NOT a quote. Render it only as
+ * "Estimated cost for similar work".
+ *
+ * NO DATES OR DURATION, by owner direction. Never call this roofing or roof
+ * repair. Nothing beyond these fields is verified — no materials, methods,
+ * customer, or address.
+ */
+export const chimneyProject = {
+  title: 'Stucco chimney chase repair',
+  location: 'Daytona Beach, FL',
+  background:
+    'The chimney chase was damaged in a storm about a year before the repair.',
+  scope:
+    'Removed damaged stucco and rotted wood, rebuilt the sheathing and framing, installed moisture barrier and metal lath, removed and reinstalled the base flashing, matched the stucco texture and painted.',
+  estimatedCost: 4200,
+} as const;

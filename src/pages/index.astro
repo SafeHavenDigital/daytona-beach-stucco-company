@@ -8,6 +8,8 @@ import LeadForm from '../components/LeadForm.astro';
 import { Image } from 'astro:assets';
 import columnBefore from '../assets/images/stucco-column-wrap-before-daytona-beach-watermarked.jpg';
 import columnAfter from '../assets/images/stucco-column-wrap-after-daytona-beach-watermarked.jpg';
+import chimneyBefore from '../assets/images/stucco-chimney-repair-before-daytona-beach-watermarked.jpg';
+import chimneyAfter from '../assets/images/stucco-chimney-repair-after-daytona-beach-watermarked.jpg';
 import {
   business,
   moistureCheck,
@@ -417,21 +419,22 @@ if (serviceArea) schema.areaServed = serviceArea;
     </section>
 
     {/*
-      RECENT PROJECTS (2026-11-24). Real completed jobs, owner-supplied —
-      facts mirror `columnWrapProject` in src/config/site.ts. REAL photos, so astro:assets
+      RECENT PROJECTS (2026-11-24, chimney added 2026-11-25). Real completed
+      jobs, owner-supplied — facts mirror `columnWrapProject` and
+      `chimneyProject` in src/config/site.ts. REAL photos, so astro:assets
       <Image> directly, not SiteImage, whose no-before/after rule for the AI
       illustrations is unchanged. Below the fold: lazy, never the LCP.
 
       Kept short on purpose: each project links to its full case study on
       /stucco-prices-daytona-beach/. No dates or durations (owner direction).
-      Label every price as an actual cost or an estimate.
+      Price labels must stay distinct: one ACTUAL cost, one ESTIMATE.
       No CTA button here; the page ends with ContactCta.
     */}
     <section class="section" id="recent-projects">
       <div class="wrap">
         <header class="section-head">
           <p class="eyebrow">Recent work</p>
-          <h2>Recent stucco project in Daytona Beach</h2>
+          <h2>Recent Stucco Projects in Daytona Beach</h2>
         </header>
 
         <div class="projects">
@@ -448,7 +451,20 @@ if (serviceArea) schema.areaServed = serviceArea;
               price: '$3,850.19',
               href: '/stucco-prices-daytona-beach/#column-wrap-project',
               linkText: 'See the column wrap case study',
-            }
+            },
+            {
+              name: 'Stucco chimney chase repair',
+              shape: 'portrait',
+              photos: [
+                { src: chimneyBefore, alt: 'Cracked and bulging stucco at the base of a chimney chase on a tile roof', caption: 'Before: crack and bulge at the base' },
+                { src: chimneyAfter, alt: 'Repaired chimney chase with new stucco matched to the existing texture and painted', caption: 'After: rebuilt, re-stuccoed and painted' },
+              ],
+              scope: 'Damaged in a storm about a year before the repair, with rotted wood behind the stucco. The damaged stucco and wood came out, the sheathing and framing were rebuilt, and the chase was re-stuccoed to match and painted.',
+              priceLabel: 'Estimated cost for similar work',
+              price: '$4,200.00',
+              href: '/stucco-prices-daytona-beach/#chimney-project',
+              linkText: 'See the chimney repair case study',
+            },
           ].map((p) => (
             <article class:list={['project', p.shape]}>
               <h3>{p.name}</h3>
