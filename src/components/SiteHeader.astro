@@ -57,6 +57,25 @@ const nav = [
     ],
     allLabel: 'All services',
   },
+  // COMMERCIAL — added 2026-09-02 (moved directly after Services 2026-11-25), top-level and deliberately NOT a twelfth
+  // child of Services. Services is the homeowner funnel; folding procurement
+  // language into that list is the message-blending the commercial firewall
+  // exists to prevent, and it would make a board hunt past eleven residential
+  // repair types. A separate item is a FORK, which is what a two-buyer site
+  // needs, and it costs the homeowner nothing because they do not open it.
+  //
+  // This adds an INBOUND link to the cluster from every page. That does not
+  // breach the firewall: the firewall governs where commercial pages point
+  // OUTWARD (no links into homeowner content), not what may point at them.
+  {
+    href: '/commercial-stucco/',
+    label: 'Commercial',
+    children: [
+      { href: '/commercial-stucco/milestone-inspection-repairs/', label: 'Milestone Inspection Repairs' },
+      { href: '/commercial-stucco/condo-hoa-stucco-repair/', label: 'Condo & HOA Stucco Repair' },
+    ],
+    allLabel: 'Commercial overview',
+  },
   {
     href: '/problems/',
     label: 'Stucco Problems',
@@ -78,25 +97,6 @@ const nav = [
       { href: '/blog/is-stucco-supposed-to-get-wet/', label: 'Is Stucco Supposed to Get Wet?' },
     ],
     allLabel: 'All articles',
-  },
-  // COMMERCIAL — added 2026-09-02, top-level and deliberately NOT a twelfth
-  // child of Services. Services is the homeowner funnel; folding procurement
-  // language into that list is the message-blending the commercial firewall
-  // exists to prevent, and it would make a board hunt past eleven residential
-  // repair types. A separate item is a FORK, which is what a two-buyer site
-  // needs, and it costs the homeowner nothing because they do not open it.
-  //
-  // This adds an INBOUND link to the cluster from every page. That does not
-  // breach the firewall: the firewall governs where commercial pages point
-  // OUTWARD (no links into homeowner content), not what may point at them.
-  {
-    href: '/commercial-stucco/',
-    label: 'Commercial',
-    children: [
-      { href: '/commercial-stucco/milestone-inspection-repairs/', label: 'Milestone Inspection Repairs' },
-      { href: '/commercial-stucco/condo-hoa-stucco-repair/', label: 'Condo & HOA Stucco Repair' },
-    ],
-    allLabel: 'Commercial overview',
   },
   { href: '/contact/', label: 'Contact' },
 ];
