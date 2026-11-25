@@ -1,0 +1,289 @@
+---
+/**
+ * /stucco-prices-daytona-beach/ — pricing page built around one real,
+ * completed project. Added 2026-11-24 by owner direction.
+ *
+ * WHAT IS REAL HERE: everything in `columnWrapProject` (src/config/site.ts),
+ * supplied by the owner, and the three photos, which are REAL photos of that
+ * job. Nothing else is claimed.
+ *
+ * PRICE FRAMING: $3,850.19 is what this one completed job actually cost. It
+ * is not a standard rate, a guaranteed price, or a quote. The price table
+ * carries ONLY rows backed by a real completed job. Do not add placeholder
+ * rows. The researched repair market ranges stay on /stucco-repair/#pricing
+ * and are linked, not copied, so their mandatory disclaimer stays with them.
+ *
+ * PHOTOS: these are real job photos, so they do NOT go through SiteImage
+ * (which governs the AI illustrations and forbids before/after layouts —
+ * that rule is unchanged). They use astro:assets <Image> directly: WebP,
+ * max 1280px (under the 1600px cap; 1600 left the lath photo at
+ * 357 KB), quality 80, intrinsic width/height. The before photo is only
+ * 590px wide and is never upscaled.
+ *
+ * SCHEMA: BreadcrumbList only (via PageHero crumbs). No Product, Offer,
+ * Review or AggregateRating, by owner instruction.
+ */
+import { Image } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import MobileStickyBar from '../../components/MobileStickyBar.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import { columnWrapProject as job } from '../../config/site';
+
+import beforeImg from '../../assets/images/stucco-column-wrap-before-daytona-beach.jpg';
+import lathImg from '../../assets/images/stucco-column-wrap-lath-corner-bead-daytona-beach.jpg';
+import afterImg from '../../assets/images/stucco-column-wrap-after-daytona-beach.jpg';
+
+const title = 'Stucco Prices in Daytona Beach, FL (2026)';
+const description =
+  'Real stucco prices from a recent project, plus what affects the cost of stucco column wraps, repairs and new stucco. Updated November 2026.';
+
+const exactPrice = job.price.toLocaleString('en-US', {
+  style: 'currency',
+  currency: 'USD',
+});
+
+const photos = [
+  {
+    src: beforeImg,
+    alt: 'Bare pressure-treated wood patio posts and beam before stucco',
+    caption: 'Before: bare wood posts and beam.',
+  },
+  {
+    src: lathImg,
+    alt: 'Patio posts and beam wrapped in paper-backed metal lath with corner bead',
+    caption: 'During: paper-backed metal lath and corner bead installed.',
+  },
+  {
+    src: afterImg,
+    alt: 'Finished smooth stucco patio columns and beam, painted gray',
+    caption: 'After: smooth stucco finish, painted.',
+  },
+];
+
+const factors = [
+  ['Surface type', 'Wood needs paper-backed lath before stucco. Concrete block does not.'],
+  ['Corners and edges', 'Every corner gets corner bead and careful finishing, so more corners means more work.'],
+  ['Repairs needed first', 'Rotted or damaged wood or old stucco has to be fixed before new stucco goes on.'],
+  ['Finish texture', 'Different textures take different amounts of hand work.'],
+  ['Painting', 'Whether the finished stucco is painted as part of the job.'],
+  ['Access', 'Areas that are tight or high take longer to work on.'],
+];
+---
+
+<Layout title={title} description={description}>
+  <SiteHeader current="/stucco-prices-daytona-beach/" />
+
+  <main id="main">
+    <PageHero
+      crumbs={[{ href: '/stucco-prices-daytona-beach/', label: 'Stucco prices' }]}
+      eyebrow="Pricing · Daytona Beach, FL"
+      title="Stucco prices in Daytona Beach"
+      lede="What stucco work actually costs, starting with a real project we finished this year. Every price on this page comes from a completed job."
+    />
+
+    <section class="section" id="prices">
+      <div class="wrap">
+        <p class="updated">Prices updated November 2026</p>
+
+        <div class="table-scroll" tabindex="0" role="region" aria-labelledby="prices-caption">
+          <table>
+            <caption id="prices-caption">
+              Prices from completed projects. Not quotes.
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Service</th>
+                <th scope="col">Typical price</th>
+                <th scope="col">Unit</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">
+                  <a href="/new-stucco-installation/">Column and beam stucco wraps</a>
+                </th>
+                <td class="figure">From about $3,850</td>
+                <td>per project (2 columns plus beam)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="prose">
+          <p>
+            More prices coming soon. Call for a free estimate on any stucco
+            project.
+          </p>
+          <p>
+            Looking for repair costs? Researched market ranges for stucco repair
+            in the area are on the{' '}
+            <a href="/stucco-repair/#pricing">stucco repair pricing</a> section.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section slab joint" id="recent-project">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="Case study"
+          title="Recent project: patio column and beam stucco wrap"
+        />
+
+        <div class="photos">
+          {photos.map((p) => (
+            <figure>
+              <Image
+                src={p.src}
+                alt={p.alt}
+                width={Math.min(p.src.width, 1280)}
+                widths={[Math.min(p.src.width, 800), Math.min(p.src.width, 1280)].filter((w, i, a) => a.indexOf(w) === i)}
+                sizes="(min-width: 60rem) 33vw, 100vw"
+                format="webp"
+                quality={80}
+                loading="lazy"
+                decoding="async"
+              />
+              <figcaption>{p.caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+
+        <div class="table-scroll details">
+          <table>
+            <caption>Project details</caption>
+            <tbody>
+              <tr><th scope="row">Scope</th><td>{job.scope}</td></tr>
+              <tr><th scope="row">Location</th><td>{job.location}</td></tr>
+              <tr><th scope="row">Completed</th><td>{job.completed}</td></tr>
+              <tr><th scope="row">Timeline</th><td>{job.duration}</td></tr>
+              <tr>
+                <th scope="row">Price</th>
+                <td>
+                  <strong>{exactPrice}</strong>, the actual price of this
+                  completed project. Not a standard or guaranteed price.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="prose">
+          <p>
+            Prices may vary. Material and labor costs have risen with
+            inflation, so a similar project today could cost more. Your final
+            price depends on the size of the columns and beams, how much wood
+            prep or repair is needed, access, and finish. Every quote is based
+            on an on-site visit.
+          </p>
+          <p>
+            Stucco can&rsquo;t go straight onto wood. The paper-backed lath
+            keeps moisture in the stucco away from the wood and gives the
+            stucco something to grip. Corner bead gives every edge a straight,
+            durable line that holds up to bumps. The three coats &mdash;
+            scratch, brown and finish &mdash; went on over several visits
+            across 6 days, so each coat could set before the next one went on.
+          </p>
+          <p>
+            Planning new stucco on wood or an addition? See{' '}
+            <a href="/new-stucco-installation/">new stucco installation</a>. If
+            the stucco is going to be painted, see{' '}
+            <a href="/stucco-painting/">stucco painting</a>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="price-factors">
+      <div class="wrap">
+        <SectionHead title="What affects your stucco price" />
+        <ul class="prose factors">
+          {factors.map(([name, body]) => (
+            <li><strong>{name}.</strong> {body}</li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="section on-dark">
+      <div class="wrap">
+        <ContactCta heading="Get a free estimate on your stucco project" />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  .updated {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--ink-faint);
+    margin: 0;
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+  }
+  table { border-collapse: collapse; width: 100%; min-width: 30rem; }
+  .details table { min-width: 0; }
+  caption {
+    caption-side: top;
+    text-align: left;
+    padding: 1rem 1.25rem 0;
+    font-size: 0.8125rem;
+    color: var(--ink-faint);
+  }
+  th, td {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  tr:last-child th, tr:last-child td { border-bottom: 0; }
+  thead th {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  tbody th { font-weight: 600; }
+  .details tbody th { width: 9rem; }
+  .figure { font-weight: 600; white-space: nowrap; }
+
+  .photos {
+    display: grid;
+    gap: 1.25rem;
+    margin: 2rem 0;
+  }
+  @media (min-width: 60rem) {
+    .photos { grid-template-columns: repeat(3, 1fr); }
+  }
+  figure { margin: 0; }
+  figure :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    background: var(--paper-warm);
+  }
+  figcaption {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--ink-soft, var(--ink));
+  }
+
+  .factors li + li { margin-top: 0.5rem; }
+</style>

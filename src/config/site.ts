@@ -440,3 +440,30 @@ export const OUTSTANDING: readonly UnverifiedFact[] = [
   { needed: 'Sample line-item quote (client details removed)', unlocks: 'Quote-anatomy section on /stucco-repair/' },
   { needed: 'Typical timeline by job size', unlocks: 'How-long-it-takes section on /stucco-repair/' },
 ];
+
+// ---------------------------------------------------------------------------
+// VERIFIED PROJECT — supplied by the owner 2026-11-24.
+// ---------------------------------------------------------------------------
+
+/**
+ * A real completed job, with real photos (src/assets/images/stucco-column-
+ * wrap-*.jpg). Rendered on /stucco-prices-daytona-beach/.
+ *
+ * These photos are REAL project photos, unlike the AI illustrations governed
+ * by SiteImage.astro. They are placed with astro:assets <Image> directly, and
+ * SiteImage keeps its no-before/after rule unchanged.
+ *
+ * `price` is what this one job ACTUALLY cost. It is not a standard rate, a
+ * starting price the company has committed to, or a quote. Render it with
+ * that framing. Nothing beyond these fields is verified: no customer name,
+ * address, materials brand, or cure-time claim.
+ */
+export const columnWrapProject = {
+  title: 'Patio column and beam stucco wrap',
+  location: 'Daytona Beach, FL',
+  completed: 'April 2026',
+  duration: '6 days',
+  scope:
+    'Prepared 2 wood patio posts and an L-shaped beam, installed paper-backed metal lath and corner bead, and applied three-coat stucco (scratch, brown, finish) with a smooth finish.',
+  price: 3850.19,
+} as const;

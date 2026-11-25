@@ -107,6 +107,17 @@ export default defineConfig({
       // ran" is actively misleading — every page would claim to have changed
       // on every deploy, which trains crawlers to distrust the signal. Omitted
       // deliberately; do not add them without real per-page modification data.
+      //
+      // ONE EXCEPTION, approved 2026-11-24: /stucco-prices-daytona-beach/
+      // carries a real, hand-maintained modification date. Update it only
+      // when that page's content actually changes. Every other URL is left
+      // without lastmod.
+      serialize(item) {
+        if (item.url === 'https://daytonabeachstuccocompany.com/stucco-prices-daytona-beach/') {
+          item.lastmod = '2026-11-24';
+        }
+        return item;
+      },
     }),
   ],
 
