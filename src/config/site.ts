@@ -457,12 +457,13 @@ export const OUTSTANDING: readonly UnverifiedFact[] = [
  * starting price the company has committed to, or a quote. Render it with
  * that framing. Nothing beyond these fields is verified: no customer name,
  * address, materials brand, or cure-time claim.
+ *
+ * NO DATES: by owner direction (2026-11-25) the completion date and project
+ * duration are NOT published. Do not add them back.
  */
 export const columnWrapProject = {
   title: 'Patio column and beam stucco wrap',
   location: 'Daytona Beach, FL',
-  completed: 'April 2026',
-  duration: '6 days',
   scope:
     'Prepared 2 wood patio posts and an L-shaped beam, installed paper-backed metal lath and corner bead, and applied three-coat stucco (scratch, brown, finish) with a smooth finish.',
   price: 3850.19,
