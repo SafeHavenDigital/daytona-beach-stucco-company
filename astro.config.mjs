@@ -117,6 +117,11 @@ export default defineConfig({
           'https://daytonabeachstuccocompany.com/': '2026-11-25',
           'https://daytonabeachstuccocompany.com/stucco-prices-daytona-beach/': '2026-11-25',
           'https://daytonabeachstuccocompany.com/blog/': '2026-11-25',
+          'https://daytonabeachstuccocompany.com/problems/cracks-in-stucco/': '2026-11-25',
+          'https://daytonabeachstuccocompany.com/problems/water-stains-on-stucco/': '2026-11-25',
+          'https://daytonabeachstuccocompany.com/problems/soft-spots-hollow-stucco/': '2026-11-25',
+          'https://daytonabeachstuccocompany.com/problems/bubbling-peeling-paint-stucco/': '2026-11-25',
+          'https://daytonabeachstuccocompany.com/problems/hurricane-storm-stucco-damage/': '2026-11-25',
         }[item.url];
         if (lastmod) item.lastmod = lastmod;
         return item;

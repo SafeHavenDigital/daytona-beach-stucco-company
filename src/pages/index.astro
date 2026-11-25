@@ -252,6 +252,31 @@ if (serviceArea) schema.areaServed = serviceArea;
     )}
 
     {/*
+      HOW WE CAN HELP (2026-11-25). In-body hub links for crawl paths that
+      otherwise only exist in the header/footer: /services/, /commercial-stucco/
+      and /about/. Links already in the homepage body are deliberately not
+      repeated here.
+    */}
+    <section class="section" id="how-we-can-help">
+      <div class="wrap how-help">
+        <header class="section-head">
+          <p class="eyebrow">Where to start</p>
+          <h2>How we can help</h2>
+        </header>
+        <p>
+          Repair, resurfacing, replacement, painting and new installation are
+          all on one page with our{' '}
+          <a href="/services/">stucco services</a>. Condo associations and
+          property managers can start with{' '}
+          <a href="/commercial-stucco/">commercial and HOA stucco repair</a>,
+          including milestone inspection repairs. And if you want to know who
+          you would be dealing with, read{' '}
+          <a href="/about/">about Daytona Beach Stucco Company</a>.
+        </p>
+      </div>
+    </section>
+
+    {/*
       DISTRESS-STATE ROUTER (2026-09-02).
 
       voice-profile.md:226 — "Name the distress state out loud." The audience
@@ -948,6 +973,8 @@ if (serviceArea) schema.areaServed = serviceArea;
   /* --- Section headers -------------------------------------------------
    * The reference stacks eyebrow, h2, and lede with a generous gap, then
    * a large space before the section body. */
+  .how-help p { max-width: 60ch; color: var(--ink-soft); }
+
   .section-head {
     display: flex;
     flex-direction: column;
