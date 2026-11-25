@@ -1,0 +1,115 @@
+---
+/**
+ * /blog/ — index of the site's evergreen guides. Added 2026-11-25.
+ *
+ * WHY IT EXISTS: SiteHeader has linked "Blog" and "All articles" to /blog/
+ * since 15091e3, but no index page was ever built, so every page on the site
+ * carried a link to a 404. This page is that missing index. It does not change
+ * any article URL.
+ *
+ * EVERGREEN: no publication dates, no "latest", no pagination. Each entry is
+ * a permanent guide (see brand/keyword-plan.md — note the review flag there
+ * about the conflicting /blog/ instructions).
+ *
+ * IMAGES: existing AI illustrations through SiteImage, used illustratively,
+ * per that component's rules — never as proof of work. The crack-inspection
+ * illustration is deliberately NOT used: it shows scaffolding, and access
+ * equipment may not be implied (verifiedServices.multiStoryWork in site.ts).
+ *
+ * SCHEMA: BreadcrumbList via PageHero crumbs. Nothing else.
+ */
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import MobileStickyBar from '../../components/MobileStickyBar.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import SiteImage from '../../components/SiteImage.astro';
+
+import moistureImg from '../../assets/images/central-florida-stucco-moisture-inspection.webp';
+import stainsImg from '../../assets/images/daytona-beach-home-stucco-water-stains.webp';
+import stormImg from '../../assets/images/daytona-beach-tropical-storm-stucco-damage.webp';
+
+const title = 'Stucco Blog & Expert Advice | Daytona Beach Stucco Company';
+const description =
+  'Explore expert stucco advice, maintenance tips, moisture damage prevention and repair guides from Daytona Beach Stucco Company.';
+
+const guides = [
+  {
+    href: '/blog/why-stucco-cracks-come-back/',
+    name: 'Your stucco crack came back. Here’s why.',
+    summary:
+      'Most repairs that fail were patched before anyone found the water. What is usually behind a returning crack, how to tell if yours is cosmetic, and what to ask the next contractor.',
+    image: moistureImg,
+    alt: 'A technician checking a stucco wall with a moisture meter while a homeowner watches',
+  },
+  {
+    href: '/blog/is-stucco-supposed-to-get-wet/',
+    name: 'Is stucco supposed to get wet?',
+    summary:
+      'Stucco is not waterproof and was never meant to be. How a stucco wall is designed to take on water and dry out again, and why that depends on which kind of wall you have.',
+    image: stainsImg,
+    alt: 'Dark water stains running down the stucco walls of a two-story house',
+  },
+  {
+    href: '/stucco-crack-triage/',
+    name: 'Stucco cracks: when to worry',
+    summary:
+      'Four crack patterns and what each one usually means. Most are not emergencies. How to tell which one you have, and which kind needs attention now.',
+    image: stormImg,
+    alt: 'Badly cracked and broken stucco on a two-story house, exposing the lath underneath',
+  },
+];
+---
+
+<Layout title={title} description={description}>
+  <SiteHeader current="/blog/" />
+
+  <main id="main">
+    <PageHero
+      crumbs={[{ href: '/blog/', label: 'Blog' }]}
+      eyebrow="Guides · Daytona Beach & Volusia County"
+      title="Stucco Blog & Resources"
+      lede="Plain answers to the stucco questions homeowners ask most: what cracks and stains mean, how water gets behind a wall, and when a problem needs attention."
+    />
+
+    <section class="section">
+      <div class="wrap">
+        <SectionHead eyebrow="Guides" title="Read before you call anyone" />
+
+        <div class="grid-hairline cols-3 entries">
+          {guides.map((g) => (
+            <a class="card-link guide" href={g.href}>
+              <SiteImage
+                src={g.image}
+                alt={g.alt}
+                variant="aside"
+                widths={[480, 800, 1200]}
+                sizes="(min-width: 62rem) 24rem, (min-width: 34rem) 50vw, 100vw"
+              />
+              <h3>{g.name}</h3>
+              <p>{g.summary}</p>
+              <span class="card-go">Read the guide &rarr;</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section on-dark">
+      <div class="wrap">
+        <ContactCta heading="Want a free estimate on your stucco?" />
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <MobileStickyBar />
+</Layout>
+
+<style>
+  .guide :global(.site-image) { margin: 0 0 1rem; }
+  .guide h3 { margin-top: 0; }
+</style>

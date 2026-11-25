@@ -37,7 +37,8 @@ const schema = {
     '@type': 'ListItem',
     position: i + 1,
     name: c.label,
-    item: c.href,
+    // Absolute URLs (2026-11-25): Google expects absolute `item` values.
+    item: new URL(c.href, Astro.site).href,
   })),
 };
 ---

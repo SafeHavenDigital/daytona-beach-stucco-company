@@ -116,6 +116,7 @@ export default defineConfig({
         const lastmod = {
           'https://daytonabeachstuccocompany.com/': '2026-11-25',
           'https://daytonabeachstuccocompany.com/stucco-prices-daytona-beach/': '2026-11-25',
+          'https://daytonabeachstuccocompany.com/blog/': '2026-11-25',
         }[item.url];
         if (lastmod) item.lastmod = lastmod;
         return item;
